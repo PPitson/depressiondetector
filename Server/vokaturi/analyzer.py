@@ -21,7 +21,8 @@ def analyze_file(filename):
     extension = 'dll' if system == 'win' else 'so'
     lib_file = f'Vokaturi_{system}{architecture}.{extension}'
 
-    Vokaturi.load(os.path.join('vokaturi', 'lib', lib_file))
+    lib_dir = os.path.join(os.path.dirname(__file__), 'lib')
+    Vokaturi.load(os.path.join(lib_dir, lib_file))
 
     (sample_rate, samples) = scipy.io.wavfile.read(filename)
 

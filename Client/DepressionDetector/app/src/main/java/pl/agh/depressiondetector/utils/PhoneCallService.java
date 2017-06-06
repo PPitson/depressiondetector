@@ -85,7 +85,11 @@ public class PhoneCallService extends Service {
                     // For debugging purposes only
                     // TO BE DELETED in a later state of the project
                     Toast.makeText(context, "Outgoing call", Toast.LENGTH_LONG).show();
-                    // TODO: recording on outgoing calls
+                    try {
+                        recordPhoneCall();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     break;
@@ -110,7 +114,6 @@ public class PhoneCallService extends Service {
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
-
             mediaRecorder.prepare();
             mediaRecorder.start();
             isRecording = true;

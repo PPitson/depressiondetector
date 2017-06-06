@@ -7,16 +7,16 @@ from vokaturi.analyzer import analyze_file
 from converter.amr2wav import convert
 
 app = Flask(__name__)
+collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
 
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found sth else'}), 404)
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @app.route('/results', methods=['GET'])
 def get_results_all():
-    collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
     result = collection.find()
     result_list = []
     for res in result:
@@ -29,7 +29,6 @@ def get_results_all():
 
 @app.route('/results/<user_id>', methods=['GET'])
 def get_results_by_user(user_id):
-    collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
     result = collection.find({'user': int(user_id)})
     result_list = []
     for res in result:
@@ -49,12 +48,9 @@ def post_sound_file():
         file.write(request.get_data())
     convert(amr_filename)
     emotions = analyze_file(wav_filename)
-    print(emotions)
-    # todo: save results to database
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
         collection.insert({
             'user': 1,
             'datetime': datetime.datetime.now(),

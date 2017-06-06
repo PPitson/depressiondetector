@@ -1,7 +1,6 @@
-from flask import Flask, jsonify, abort, make_response, request
+from flask import Flask, jsonify, make_response, request
 import uuid
 import os
-import json
 from pymongo import MongoClient
 from vokaturi.analyzer import analyze_file
 from converter.amr2wav import convert
@@ -16,7 +15,6 @@ def not_found(error):
 
 @app.route('/results', methods=['GET'])
 def get_results_all():
-    # todo: get all results
     collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
     result = collection.find()
     result_list = []
@@ -30,7 +28,6 @@ def get_results_all():
 
 @app.route('/results/<user_id>', methods=['GET'])
 def get_results_by_user(user_id):
-    # todo: get results of one user
     collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
     result = collection.find({'user': str(user_id)})
     result_list = []
@@ -45,8 +42,8 @@ def get_results_by_user(user_id):
 @app.route('/sound_files', methods=['POST'])
 def post_sound_file():
     filename = uuid.uuid4().hex
-    amr_filename = filename + '.amr'
-    wav_filename = filename + '.wav'
+    amr_filename = f'{filename}.amr'
+    wav_filename = f'{filename}.wav'
     with open(amr_filename, 'wb') as file:
         file.write(request.get_data())
     convert(amr_filename)

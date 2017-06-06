@@ -30,7 +30,7 @@ def get_results_all():
 @app.route('/results/<user_id>', methods=['GET'])
 def get_results_by_user(user_id):
     collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
-    result = collection.find({'user': str(user_id)})
+    result = collection.find({'user': int(user_id)})
     result_list = []
     for res in result:
         result_map = {}

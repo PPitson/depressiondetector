@@ -20,7 +20,12 @@ def get_results_all():
 @app.route('/results/<user_id>', methods=['GET'])
 def get_results_by_user(user_id):
     # todo: get results of one user
-    abort(404)
+    collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
+    result = collection.find({'user': str(user_id)})
+    mess = ''
+    for res in result:
+        mess += str(res) + '\n'
+    return make_response(jsonify(message=mess), 200)
 
 
 @app.route('/sound_files', methods=['POST'])

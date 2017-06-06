@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, abort, make_response, request
 import uuid
 import os
+from pymongo import MongoClient
 from vokaturi.analyzer import analyze_file
+from converter.amr2wav import convert
 
 app = Flask(__name__)
 
@@ -30,16 +32,21 @@ def get_results_by_user(user_id):
 
 @app.route('/sound_files', methods=['POST'])
 def post_sound_file():
-    filename = uuid.uuid4().hex + '.wav'
-    with open(filename, 'wb') as file:
+    filename = uuid.uuid4().hex
+    amr_filename = f'{filename}.amr'
+    wav_filename = f'{filename}.wav'
+    with open(amr_filename, 'wb') as file:
         file.write(request.get_data())
-    emotions = analyze_file(filename)
+    convert(amr_filename)
+    emotions = analyze_file(wav_filename)
     print(emotions)
     # todo: save results to database
-    os.remove(filename)
+    os.remove(amr_filename)
+    os.remove(wav_filename)
     if emotions:
         return make_response(jsonify({'received': True}), 200)
     return make_response(jsonify({'error': 'Failure while analyzing file'}), 400)
+
 
 
 if __name__ == '__main__':

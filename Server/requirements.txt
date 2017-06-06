@@ -9,3 +9,4 @@ scipy==0.19.0
 Werkzeug==0.12.2
 wheel==0.24.0
 pymongo==3.3.0
+cloudconvert==1.0.0

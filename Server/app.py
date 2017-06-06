@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response, request
 import uuid
 import os
+import datetime
 from pymongo import MongoClient
 from vokaturi.analyzer import analyze_file
 from converter.amr2wav import convert
@@ -53,6 +54,16 @@ def post_sound_file():
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
+        collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
+        collection.insert({
+            'user': '1',
+            'datetime': str(datetime.datetime.now()),
+            'neutral': str(round(emotions['neutral'], 3)),
+            'happy': str(round(emotions['happy'], 3)),
+            'sad': str(round(emotions['sad'], 3)),
+            'angry': str(round(emotions['angry'], 3)),
+            'fear': str(round(emotions['fear'], 3))
+        })
         return make_response(jsonify({'received': True}), 200)
     return make_response(jsonify({'error': 'Failure while analyzing file'}), 400)
 

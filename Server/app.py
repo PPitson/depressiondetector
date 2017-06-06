@@ -56,13 +56,13 @@ def post_sound_file():
     if emotions:
         collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
         collection.insert({
-            'user': '1',
-            'datetime': str(datetime.datetime.now()),
-            'neutral': str(round(emotions['neutral'], 3)),
-            'happy': str(round(emotions['happy'], 3)),
-            'sad': str(round(emotions['sad'], 3)),
-            'angry': str(round(emotions['angry'], 3)),
-            'fear': str(round(emotions['fear'], 3))
+            'user': 1,
+            'datetime': datetime.datetime.now(),
+            'neutral': round(emotions['neutral'], 3),
+            'happy': round(emotions['happy'], 3),
+            'sad': round(emotions['sad'], 3),
+            'angry': round(emotions['angry'], 3),
+            'fear': round(emotions['fear'], 3)
         })
         return make_response(jsonify({'received': True}), 200)
     return make_response(jsonify({'error': 'Failure while analyzing file'}), 400)

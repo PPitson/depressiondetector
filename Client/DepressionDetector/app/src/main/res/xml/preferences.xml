@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.preference.PreferenceCategory
+        android:key="pref_cat_analysis"
+        android:title="@string/preferences_analysis">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/pref_analyse_phone_calls"
+            android:title="@string/preferences_analyse_phone_calls"/>
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

@@ -3,4 +3,14 @@
 
     <!-- Main Activity -->
     <string name="main_getresults">Get results</string>
+
+    <!-- General -->
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+
+    <!-- Preferences -->
+    <string name="preferences_analysis">Analysis</string>
+    <string name="pref_analyse_phone_calls_running" translatable="false">pref_analyse_phone_calls</string>
+    <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
+    <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
 </resources>

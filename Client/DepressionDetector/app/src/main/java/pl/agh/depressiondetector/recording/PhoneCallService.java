@@ -29,7 +29,6 @@ public class PhoneCallService extends Service {
     private static final String ACTION_IN_CALL = "android.intent.action.PHONE_STATE";
     private static final String ACTION_OUT_CALL = "android.intent.action.NEW_OUTGOING_CALL";
 
-
     private class CallReceiver extends BroadcastReceiver {
         private static final String TAG = "CallReceiver";
 
@@ -127,7 +126,7 @@ public class PhoneCallService extends Service {
 
         private Context context;
 
-        PostAudioTask(Context context){
+        PostAudioTask(Context context) {
             this.context = context;
         }
 

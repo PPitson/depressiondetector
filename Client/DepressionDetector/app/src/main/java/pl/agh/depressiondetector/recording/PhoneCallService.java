@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.utils;
+package pl.agh.depressiondetector.recording;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -6,21 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+
+import pl.agh.depressiondetector.connection.HttpClient;
+import pl.agh.depressiondetector.utils.FileUtils;
+import pl.agh.depressiondetector.utils.ToastUtils;
 
 public class PhoneCallService extends Service {
+
     private static final String TAG = "PhoneCallService";
 
     private CallReceiver callReceiver;
@@ -47,14 +48,7 @@ public class PhoneCallService extends Service {
                         String state = bundle.getString(TelephonyManager.EXTRA_STATE);
                         if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
                             wasRinging = true;
-
-                            // For debugging purposes only
-                            // TO BE DELETED in a later state of the project
-                            Toast.makeText(context, "Incoming call", Toast.LENGTH_LONG).show();
                         } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) && wasRinging) {
-                            // For debugging purposes only
-                            // TO BE DELETED in a later state of the project
-                            Toast.makeText(context, "Setting up recorder", Toast.LENGTH_LONG).show();
                             try {
                                 recordPhoneCall();
                             } catch (IOException e) {
@@ -62,27 +56,17 @@ public class PhoneCallService extends Service {
                             }
                         } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
                             wasRinging = false;
-
-                            // For debugging purposes only
-                            // TO BE DELETED in a later state of the project
-                            Toast.makeText(context, "Rejected or ended", Toast.LENGTH_LONG).show();
                             if (isRecording) {
                                 isRecording = false;
                                 if (mediaRecorder != null) {
                                     mediaRecorder.stop();
+                                    new PostAudioTask(context).execute(outputFile);
                                 }
-
-                                // For debugging purposes only
-                                // TO BE DELETED in a later state of the project
-                                Toast.makeText(context, "Recorder stopped working", Toast.LENGTH_LONG).show();
                             }
                         }
                     }
                     break;
                 case ACTION_OUT_CALL:
-                    // For debugging purposes only
-                    // TO BE DELETED in a later state of the project
-                    Toast.makeText(context, "Outgoing call", Toast.LENGTH_LONG).show();
                     try {
                         recordPhoneCall();
                     } catch (IOException e) {
@@ -95,16 +79,11 @@ public class PhoneCallService extends Service {
         }
 
         private void recordPhoneCall() throws IOException {
-            File outputDir = new File(Environment.getExternalStorageDirectory(),
-                    "/DepressionDetectorAudio");
-            if (!outputDir.exists()) {
-                if (!outputDir.mkdirs()) {
-                    Log.e(TAG, "Recording phone call: cannot create a new directory.");
-                }
-            }
-            String dateString = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault())
-                    .format(new Date());
-            String fileName = "phone_call" + dateString;
+            File outputDir = FileUtils.getAudioDirectory();
+            if (!FileUtils.createDirectory(outputDir))
+                Log.e(TAG, "Recording phone call: cannot create a new directory.");
+
+            String fileName = FileUtils.getPhoneCallFileName();
             outputFile = File.createTempFile(fileName, ".amr", outputDir);
 
             mediaRecorder = new MediaRecorder();
@@ -142,5 +121,27 @@ public class PhoneCallService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private class PostAudioTask extends AsyncTask<File, Void, Integer> {
+
+        private Context context;
+
+        PostAudioTask(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Integer doInBackground(File... params) {
+            return HttpClient.getInstance().postAudioFile(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Integer requestCode) {
+            if (requestCode == 200)
+                ToastUtils.show(context, "Record successfully sent");   // TODO Delete toast
+            else
+                ToastUtils.show(context, "There was an error while sending a record");   // TODO Delete toast
+        }
     }
 }

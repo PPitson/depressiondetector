@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/PreferencesTheme</item>
+    </style>
+
+    <style name="PreferencesTheme" parent="PreferenceThemeOverlay">
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

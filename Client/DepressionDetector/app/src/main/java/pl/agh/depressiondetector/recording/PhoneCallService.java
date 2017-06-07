@@ -51,8 +51,7 @@ public class PhoneCallService extends Service {
                             // For debugging purposes only
                             // TO BE DELETED in a later state of the project
                             Toast.makeText(context, "Incoming call", Toast.LENGTH_LONG).show();
-                        }
-                        else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) && wasRinging) {
+                        } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) && wasRinging) {
                             // For debugging purposes only
                             // TO BE DELETED in a later state of the project
                             Toast.makeText(context, "Setting up recorder", Toast.LENGTH_LONG).show();
@@ -61,8 +60,7 @@ public class PhoneCallService extends Service {
                             } catch (IOException e) {
                                 Log.e(TAG, "Recording phone call: " + e);
                             }
-                        }
-                        else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
+                        } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
                             wasRinging = false;
 
                             // For debugging purposes only
@@ -105,7 +103,7 @@ public class PhoneCallService extends Service {
                 }
             }
             String dateString = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault())
-                                    .format(new Date());
+                    .format(new Date());
             String fileName = "phone_call" + dateString;
             outputFile = File.createTempFile(fileName, ".amr", outputDir);
 

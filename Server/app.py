@@ -6,37 +6,22 @@ from pymongo import MongoClient
 from vokaturi.analyzer import analyze_file
 from converter.amr2wav import convert
 
+
 app = Flask(__name__)
-collection = MongoClient(os.getenv('MONGOLAB_URI'))['depressiondata']['results']
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+client = MongoClient(os.getenv('MONGOLAB_URI'))
+collection = client['depressiondata']['results']
 
 
 @app.route('/results', methods=['GET'])
 def get_results_all():
-    result = collection.find()
-    result_list = []
-    for res in result:
-        result_map = {}
-        for single in res:
-            result_map[single] = str(res[single])
-        result_list.append(result_map)
-    return make_response(jsonify(result_list), 200)
+    results = collection.find({}, {'_id': 0})
+    return make_response(jsonify(list(results)), 200)
 
 
-@app.route('/results/<user_id>', methods=['GET'])
+@app.route('/results/<int:user_id>', methods=['GET'])
 def get_results_by_user(user_id):
-    result = collection.find({'user': int(user_id)})
-    result_list = []
-    for res in result:
-        result_map = {}
-        for single in res:
-            result_map[single] = str(res[single])
-        result_list.append(result_map)
-    return make_response(jsonify(result_list), 200)
+    results = collection.find({'user': user_id}, {'_id': 0})
+    return make_response(jsonify(list(results)), 200)
 
 
 @app.route('/sound_files', methods=['POST'])
@@ -50,18 +35,14 @@ def post_sound_file():
     emotions = analyze_file(wav_filename)
     os.remove(amr_filename)
     os.remove(wav_filename)
-    if emotions:
-        collection.insert({
-            'user': 1,
-            'datetime': datetime.datetime.now(),
-            'neutral': round(emotions['neutral'], 3),
-            'happy': round(emotions['happy'], 3),
-            'sad': round(emotions['sad'], 3),
-            'angry': round(emotions['angry'], 3),
-            'fear': round(emotions['fear'], 3)
-        })
-        return make_response(jsonify({'received': True}), 200)
-    return make_response(jsonify({'error': 'Failure while analyzing file'}), 400)
+    if not emotions:
+        return make_response(jsonify({'error': 'Failure while analyzing file'}), 400)
+    collection.insert({
+        'user': 1,
+        'datetime': datetime.datetime.now(),
+        **emotions
+    })
+    return make_response(jsonify({'received': True}), 200)
 
 
 if __name__ == '__main__':

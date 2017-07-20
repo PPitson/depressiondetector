@@ -17,7 +17,11 @@ collection = client['depressiondata']['results']
 
 
 @celery.task(name='analyze_file')
-def analyze_file_task(amr_filename, wav_filename):
+def analyze_file_task(file_bytes):
+    filename = uuid.uuid4().hex
+    amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
+    with open(amr_filename, 'wb') as file:
+        file.write(file_bytes)
     convert(amr_filename)
     emotions = extract_emotions(wav_filename)
     os.remove(amr_filename)
@@ -44,11 +48,7 @@ def get_results_by_user(user_id):
 
 @app.route('/sound_files', methods=['POST'])
 def post_sound_file():
-    filename = uuid.uuid4().hex
-    amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
-    with open(amr_filename, 'wb') as file:
-        file.write(request.get_data())
-    analyze_file_task.delay(amr_filename, wav_filename)
+    analyze_file_task.delay(request.get_data())
     return make_response(jsonify({'received': True}), 200)
 
 

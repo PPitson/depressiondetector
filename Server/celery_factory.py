@@ -3,7 +3,12 @@ from celery import Celery
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
-    celery.conf.update(app.config)
+    celery.conf.update(
+        app.config,
+        CELERY_ACCEPT_CONTENT=['pickle'],
+        CELERY_TASK_SERIALIZER='pickle',
+        CELERY_RESULT_SERIALIZER='pickle'
+    )
     TaskBase = celery.Task
 
     class ContextTask(TaskBase):

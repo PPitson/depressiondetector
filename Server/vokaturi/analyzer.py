@@ -12,7 +12,7 @@ def get_system_and_architecture():
     return system, architecture
 
 
-def analyze_file(filename) -> Dict[str, float]:
+def extract_emotions(filename) -> Dict[str, float]:
     system, architecture = get_system_and_architecture()
     extension = 'dll' if system == 'win' else 'so'
     lib_file = f'Vokaturi_{system}{architecture}.{extension}'

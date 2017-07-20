@@ -6,8 +6,8 @@ from typing import Dict
 
 
 def get_system_and_architecture():
-    platform_to_name_dict = {'linux2': 'linux', 'darwin': 'mac', 'win32': 'win'}
-    system = platform_to_name_dict[sys.platform]
+    platform_to_name_dict = {'darwin': 'mac', 'win32': 'win'}
+    system = platform_to_name_dict.get(sys.platform, 'linux')
     architecture = 64 if sys.maxsize > 2 ** 32 else 32
     return system, architecture
 

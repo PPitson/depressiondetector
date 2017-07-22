@@ -2,7 +2,7 @@ from flask import Flask, jsonify, make_response, request
 import uuid
 import os
 import datetime
-from pymongo import MongoClient
+import mongodb
 from celery_factory import make_celery
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
@@ -10,10 +10,9 @@ from converter.amr2wav import convert
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
-celery = make_celery(app)
 
-client = MongoClient(os.getenv('MONGOLAB_URI'))
-collection = client['depressiondata']['results']
+celery = make_celery(app)
+collection = mongodb.get_collection('results')
 
 
 @celery.task(name='analyze_file')
@@ -27,7 +26,8 @@ def analyze_file_task(file_bytes):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        collection.insert({
+        results_collection = mongodb.get_collection('results')
+        results_collection.insert({
             'user': 1,
             'datetime': datetime.datetime.now(),
             **emotions

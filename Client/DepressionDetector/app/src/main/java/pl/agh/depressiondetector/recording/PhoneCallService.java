@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import pl.agh.depressiondetector.connection.HttpClient;
 import pl.agh.depressiondetector.utils.FileUtils;
-import pl.agh.depressiondetector.utils.ToastUtils;
+import pl.agh.depressiondetector.utils.NetworkUtils;
 
 public class PhoneCallService extends Service {
 
@@ -29,8 +29,20 @@ public class PhoneCallService extends Service {
     private static final String ACTION_IN_CALL = "android.intent.action.PHONE_STATE";
     private static final String ACTION_OUT_CALL = "android.intent.action.NEW_OUTGOING_CALL";
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        callReceiver = new CallReceiver();
+
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_IN_CALL);
+        intentFilter.addAction(ACTION_OUT_CALL);
+
+        registerReceiver(callReceiver, intentFilter);
+
+        return START_STICKY;
+    }
+
     private class CallReceiver extends BroadcastReceiver {
-        private static final String TAG = "CallReceiver";
 
         private MediaRecorder mediaRecorder = null;
         private File outputFile;
@@ -97,21 +109,7 @@ public class PhoneCallService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        callReceiver = new CallReceiver();
-
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_IN_CALL);
-        intentFilter.addAction(ACTION_OUT_CALL);
-
-        registerReceiver(callReceiver, intentFilter);
-
-        return START_STICKY;
-    }
-
-    @Override
     public void onDestroy() {
-        Log.d(TAG, "destroy");
         unregisterReceiver(callReceiver);
         super.onDestroy();
     }
@@ -123,8 +121,7 @@ public class PhoneCallService extends Service {
     }
 
     private class PostAudioTask extends AsyncTask<File, Void, Integer> {
-
-        private Context context;
+        Context context;
 
         PostAudioTask(Context context) {
             this.context = context;
@@ -132,15 +129,11 @@ public class PhoneCallService extends Service {
 
         @Override
         protected Integer doInBackground(File... params) {
-            return HttpClient.getInstance().postAudioFile(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Integer requestCode) {
-            if (requestCode == 200)
-                ToastUtils.show(context, "Record successfully sent");   // TODO Delete toast
+            // TODO Add buffor or something, to wait for internet connection
+            if (NetworkUtils.isNetworkAvailable(context))
+                return HttpClient.getInstance().postAudioFile(params[0]);
             else
-                ToastUtils.show(context, "There was an error while sending a record");   // TODO Delete toast
+                return -1;
         }
     }
 }

@@ -9,6 +9,9 @@ import java.util.Locale;
 
 public class FileUtils {
 
+    private FileUtils() {
+    }
+
     public static File getAudioDirectory() {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Audio");
     }
@@ -17,7 +20,7 @@ public class FileUtils {
         return file.exists() || file.mkdirs();
     }
 
-    public static String getPhoneCallFileName(){
+    public static String getPhoneCallFileName() {
         String dateString = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault()).format(new Date());
         return "phone_call" + dateString;
     }

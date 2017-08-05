@@ -10,7 +10,8 @@
 
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>
-    <string name="pref_analyse_phone_calls_running" translatable="false">pref_analyse_phone_calls</string>
-    <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
     <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
+
+    <string name="pref_first_run" translatable="false">pref_first_run</string>
+    <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
 </resources>

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_main_getresults)
-    public void onGetResultsClick(View view) {
+    public void onGetResultsClick() {
         new AsyncTask<Void, Void, String>() {
 
             @Override

@@ -1,18 +1,16 @@
 from flask import Flask, jsonify, make_response, request, abort
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash
 import uuid
 import os
 import datetime
+
 import mongodb
 from celery_factory import make_celery
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
 
-
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
-auth = HTTPBasicAuth()
 
 celery = make_celery(app)
 db = mongodb.get_db()
@@ -67,21 +65,12 @@ def register_user():
     if users_collection.find_one({'username': username}) is not None:
         abort(400)  # user already exists
 
-    hashed_password = generate_password_hash(password)
+    password_hash = generate_password_hash(password)
     users_collection.insert({
         'username': username,
-        'password_hash': hashed_password
+        'password_hash': password_hash
     })
     return make_response(jsonify({'registered': True}), 201)
-
-
-@auth.verify_password
-def verify_password(username, password):
-    user = users_collection.find_one({'username': username})
-    if user is None:
-        return False
-    hashed_password = user['password_hash']
-    return check_password_hash(hashed_password, password)
 
 
 if __name__ == '__main__':

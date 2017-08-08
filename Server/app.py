@@ -8,6 +8,7 @@ import mongodb
 from celery_factory import make_celery
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
+from auth import auth, verify_username
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
@@ -19,7 +20,7 @@ users_collection = db['users']
 
 
 @celery.task(name='analyze_file')
-def analyze_file_task(file_bytes):
+def analyze_file_task(file_bytes, username):
     filename = uuid.uuid4().hex
     amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
     with open(amr_filename, 'wb') as file:
@@ -31,27 +32,31 @@ def analyze_file_task(file_bytes):
     if emotions:
         db = mongodb.get_db()
         db['results'].insert({
-            'user': 1,
+            'user': username,
             'datetime': datetime.datetime.now(),
             **emotions
         })
 
 
-@app.route('/results', methods=['GET'])
+@app.route('/results', methods=['GET'])  # TODO: delete, this endpoint is only for testing
 def get_results_all():
     results = results_collection.find({}, {'_id': 0})
     return make_response(jsonify(list(results)), 200)
 
 
-@app.route('/results/<int:user_id>', methods=['GET'])
-def get_results_by_user(user_id):
-    results = results_collection.find({'user': user_id}, {'_id': 0})
+@app.route('/results/<username>', methods=['GET'])
+@auth.login_required
+@verify_username
+def get_results_by_user(username):
+    results = results_collection.find({'user': username}, {'_id': 0})
     return make_response(jsonify(list(results)), 200)
 
 
-@app.route('/sound_files', methods=['POST'])
-def post_sound_file():
-    analyze_file_task.delay(request.get_data())
+@app.route('/sound_files/<username>', methods=['POST'])
+@auth.login_required
+@verify_username
+def post_sound_file(username):
+    analyze_file_task.delay(request.get_data(), username)
     return make_response(jsonify({'received': True}), 200)
 
 

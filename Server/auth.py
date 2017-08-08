@@ -1,6 +1,8 @@
+from flask import abort
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import check_password_hash
 import mongodb
+from functools import wraps
 
 auth = HTTPBasicAuth()
 
@@ -15,3 +17,13 @@ def verify_password(username, password):
     hashed_password = user['password_hash']
     return check_password_hash(hashed_password, password)
 
+
+def verify_username(f):
+
+    @wraps(f)
+    def inner(username, *args, **kwargs):
+        if auth.username() != username:
+            abort(401)
+        return f(username, *args, **kwargs)
+
+    return inner

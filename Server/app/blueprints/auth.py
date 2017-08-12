@@ -1,5 +1,5 @@
 from flask import jsonify, make_response, request, abort, Blueprint
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import mongodb
 from app.exceptions import UserExistsException
@@ -29,3 +29,17 @@ def register_user():
         'password_hash': password_hash
     })
     return make_response(jsonify({'registered': True}), 201)
+
+
+@auth.route('/login', methods=['POST'])
+def login():
+    request_json = request.get_json()
+    username = request_json.get('username')
+    password = request_json.get('password')
+
+    user = users_collection.find_one({'username': username})
+    if not user:
+        abort(400)
+
+    success = check_password_hash(user['password_hash'], password)
+    return make_response(jsonify({'logged_in': success}), 200)

@@ -1,8 +1,4 @@
-from celery import Celery
-
-
-def make_celery(app):
-    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+def init_celery(app, celery):
     celery.conf.update(
         app.config,
         CELERY_ACCEPT_CONTENT=['pickle'],
@@ -19,4 +15,3 @@ def make_celery(app):
                 return super().__call__(*args, **kwargs)
 
     celery.Task = ContextTask
-    return celery

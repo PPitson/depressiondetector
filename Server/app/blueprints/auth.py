@@ -2,9 +2,11 @@ from flask import jsonify, make_response, request, abort, Blueprint
 from werkzeug.security import generate_password_hash
 
 from app import mongodb
+from app.exceptions import UserExistsException
 
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
+
 db = mongodb.get_db()
 users_collection = db['users']
 
@@ -17,7 +19,7 @@ def register_user():
     if username is None or password is None:
         abort(400)
     if users_collection.find_one({'username': username}) is not None:
-        abort(400)  # user already exists
+        raise UserExistsException(username)
 
     password_hash = generate_password_hash(password)
     users_collection.insert({

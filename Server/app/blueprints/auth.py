@@ -15,8 +15,9 @@ users_collection = db['users']
 def register_user():
     request_json = request.get_json()
     username = request_json.get('username')
+    email = request.json.get('email')
     password = request_json.get('password')
-    if username is None or password is None:
+    if username is None or password is None or email is None:  # todo: delete, this should be done on client side
         abort(400)
     if users_collection.find_one({'username': username}) is not None:
         raise UserExistsException(username)
@@ -24,6 +25,7 @@ def register_user():
     password_hash = generate_password_hash(password)
     users_collection.insert({
         'username': username,
+        'email': email,
         'password_hash': password_hash
     })
     return make_response(jsonify({'registered': True}), 201)

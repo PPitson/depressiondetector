@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import mongodb
 from app.exceptions import UserExistsException
+from app.http_auth import auth as http_basic_auth, verify_username
 
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -43,3 +44,19 @@ def login():
 
     success = check_password_hash(user['password_hash'], password)
     return make_response(jsonify({'logged_in': success}), 200)
+
+
+@auth.route('/change_password/<username>', methods=['POST'])
+@http_basic_auth.login_required
+@verify_username
+def change_password(username):
+    request_json = request.get_json()
+    new_password = request_json.get('new_password')
+    password_hash = generate_password_hash(new_password)
+    users_collection.update_one(
+        {'username': username},
+        {'$set': {
+            'password_hash': password_hash
+        }}
+    )
+    return make_response(jsonify({'changed_password': True}), 200)

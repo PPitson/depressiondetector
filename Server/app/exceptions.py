@@ -15,6 +15,16 @@ class ErrorException(Exception):
 
 
 class UserExistsException(ErrorException):
+    def __init__(self, username, payload=None):
+        super().__init__(message=f'User {username} already exists', payload=payload)
 
-    def __init__(self, username, status_code=None, payload=None):
-        super().__init__(message=f'User {username} already exists', status_code=status_code, payload=payload)
+
+class InvalidUsernameException(ErrorException):
+    def __init__(self, username, payload=None):
+        super().__init__(message=f'User {username} does not exist', payload=payload)
+
+
+class InvalidPasswordException(ErrorException):
+    def __init__(self, payload=None):
+        super().__init__(message=f'Invalid password', status_code=401, payload=payload)
+

@@ -2,7 +2,7 @@ from flask import jsonify, make_response, request, abort, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import mongodb
-from app.exceptions import UserExistsException
+from app.exceptions import UserExistsException, InvalidPasswordException, InvalidUsernameException
 from app.http_auth import auth as http_basic_auth, verify_username
 
 
@@ -40,10 +40,11 @@ def login():
 
     user = users_collection.find_one({'username': username})
     if not user:
-        abort(400)
-
+        raise InvalidUsernameException(username)
     success = check_password_hash(user['password_hash'], password)
-    return make_response(jsonify({'logged_in': success}), 200)
+    if not success:
+        raise InvalidPasswordException()
+    return make_response(jsonify({'logged_in': True}), 200)
 
 
 @auth.route('/change_password/<username>', methods=['POST'])

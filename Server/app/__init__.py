@@ -1,17 +1,20 @@
-import os
+from config import Config
 from celery import Celery
 from flask import Flask
+from flask_mail import Mail
 
 from app.celery.factory import init_celery
 
 
 celery = Celery('app')
+mail = Mail()
 
 
 def create_app():
     app = Flask(__name__)
-    app.config['CELERY_BROKER_URL'] = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+    app.config.from_object(Config)
 
+    mail.init_app(app)
     register_blueprints(app)
     init_celery(app, celery)
 

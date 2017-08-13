@@ -3,6 +3,7 @@ import os
 import datetime
 
 import app.mongodb as mongodb
+from app.email import send_email
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
 from app import celery
@@ -25,3 +26,8 @@ def analyze_file_task(file_bytes, username):
             'datetime': datetime.datetime.now(),
             **emotions
         })
+
+
+@celery.task(name='send_email')
+def send_email_task(*args, **kwargs):
+    send_email(*args, **kwargs)

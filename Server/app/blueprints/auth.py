@@ -1,15 +1,12 @@
-from flask import jsonify, make_response, request, abort, Blueprint
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify, request, abort, Blueprint, g
+from werkzeug.security import generate_password_hash
 
-from app import mongodb
+from app.models import User
+import mongoengine as mongo
 from app.exceptions import UserExistsException, InvalidPasswordException, InvalidUsernameException
-from app.http_auth import auth as http_basic_auth, verify_username
-
+from app.http_auth import auth as http_basic_auth
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
-
-db = mongodb.get_db()
-users_collection = db['users']
 
 
 @auth.route('/register', methods=['POST'])
@@ -20,16 +17,14 @@ def register_user():
     password = request_json.get('password')
     if username is None or password is None or email is None:  # todo: delete, this should be done on client side
         abort(400)
-    if users_collection.find_one({'username': username}) is not None:
+
+    if User.objects.filter(username=username).first() is not None:
         raise UserExistsException(username)
 
     password_hash = generate_password_hash(password)
-    users_collection.insert({
-        'username': username,
-        'email': email,
-        'password_hash': password_hash
-    })
-    return make_response(jsonify({'registered': True}), 201)
+    user = User(username=username, email=email, password_hash=password_hash)
+    user.save()
+    return jsonify({'registered': True}), 201
 
 
 @auth.route('/login', methods=['POST'])
@@ -38,26 +33,31 @@ def login():
     username = request_json.get('username')
     password = request_json.get('password')
 
-    user = users_collection.find_one({'username': username})
-    if not user:
+    try:
+        user = User.objects.get(username=username)
+    except mongo.DoesNotExist:
         raise InvalidUsernameException(username)
-    success = check_password_hash(user['password_hash'], password)
+    success = user.verify_password(password)
     if not success:
         raise InvalidPasswordException()
-    return make_response(jsonify({'logged_in': True}), 200)
+    return jsonify({'logged_in': True}), 200
 
 
-@auth.route('/change_password/<username>', methods=['POST'])
+@auth.route('/change_password', methods=['POST'])
 @http_basic_auth.login_required
-@verify_username
-def change_password(username):
+def change_password():
     request_json = request.get_json()
     new_password = request_json.get('new_password')
     password_hash = generate_password_hash(new_password)
-    users_collection.update_one(
-        {'username': username},
-        {'$set': {
-            'password_hash': password_hash
-        }}
-    )
-    return make_response(jsonify({'changed_password': True}), 200)
+    g.current_user.password_hash = password_hash
+    g.current_user.save()
+    return jsonify({'changed_password': True}), 200
+
+
+@auth.route('/change_email', methods=['POST'])
+@http_basic_auth.login_required
+def change_email():
+    new_email = request.get_json().get('new_email')
+    g.current_user.email = new_email
+    g.current_user.save()
+    return jsonify({'changed_email': True}), 200

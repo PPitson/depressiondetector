@@ -1,8 +1,7 @@
 import uuid
 import os
-import datetime
 
-import app.mongodb as mongodb
+from app.models import EmotionExtractionResult
 from app.email import send_email
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
@@ -20,12 +19,8 @@ def analyze_file_task(file_bytes, username):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        db = mongodb.get_db()
-        db['results'].insert({
-            'user': username,
-            'datetime': datetime.datetime.now(),
-            **emotions
-        })
+        result = EmotionExtractionResult(username=username, **emotions)
+        result.save()
 
 
 @celery.task(name='send_email')

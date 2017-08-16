@@ -2,12 +2,14 @@ from config import Config
 from celery import Celery
 from flask import Flask
 from flask_mail import Mail
+from flask_mongoengine import MongoEngine
 
 from app.celery.factory import init_celery
 
 
 celery = Celery('app')
 mail = Mail()
+db = MongoEngine()
 
 
 def create_app():
@@ -15,6 +17,7 @@ def create_app():
     app.config.from_object(Config)
 
     mail.init_app(app)
+    db.init_app(app)
     register_blueprints(app)
     init_celery(app, celery)
 

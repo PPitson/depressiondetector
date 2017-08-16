@@ -22,7 +22,9 @@ def register_user():
         raise UserExistsException(username)
 
     password_hash = generate_password_hash(password)
-    user = User(username=username, email=email, password_hash=password_hash)
+    sex = request_json.get('sex')
+    date_of_birth = request_json.get('date_of_birth')
+    user = User(username=username, email=email, password_hash=password_hash, sex=sex, date_of_birth=date_of_birth)
     user.save()
     return jsonify({'registered': True}), 201
 

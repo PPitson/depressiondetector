@@ -7,8 +7,10 @@ from datetime import datetime
 class User(db.Document):
 
     username = mongo.StringField(max_length=25)
-    email = mongo.EmailField()
-    password_hash = mongo.StringField()
+    email = mongo.EmailField(required=True)
+    password_hash = mongo.StringField(required=True)
+    sex = mongo.StringField(choices=('M', 'F'))
+    date_of_birth = mongo.DateTimeField()
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)

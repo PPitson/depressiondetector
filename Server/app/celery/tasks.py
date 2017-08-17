@@ -2,7 +2,6 @@ import uuid
 import os
 
 from app.models import EmotionExtractionResult
-from app.email import send_email
 from vokaturi.analyzer import extract_emotions
 from converter.amr2wav import convert
 from app import celery
@@ -21,8 +20,3 @@ def analyze_file_task(file_bytes, username):
     if emotions:
         result = EmotionExtractionResult(username=username, **emotions)
         result.save()
-
-
-@celery.task(name='send_email')
-def send_email_task(*args, **kwargs):
-    send_email(*args, **kwargs)

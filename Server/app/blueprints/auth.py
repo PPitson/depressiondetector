@@ -1,10 +1,12 @@
-from flask import jsonify, request, abort, Blueprint, g
+from flask import jsonify, request, abort, Blueprint, g, render_template, redirect, flash, url_for
 from werkzeug.security import generate_password_hash
 
 from app.models import User
 import mongoengine as mongo
 from app.exceptions import UserExistsException, InvalidPasswordException, InvalidUsernameException
 from app.http_auth import auth as http_basic_auth
+from app.email import send_email
+from app.forms import PasswordResetForm
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -43,6 +45,32 @@ def login():
     if not success:
         raise InvalidPasswordException()
     return jsonify({'logged_in': True}), 200
+
+
+@auth.route('/reset_password', methods=['POST'])
+def reset_password_request():
+    email = request.get_json().get('email')
+    try:
+        user = User.objects.get(email=email)
+    except mongo.DoesNotExist:
+        return jsonify({'error': True}), 400   # todo: custom exception
+
+    token = user.generate_reset_token()
+    send_email(user.email, 'Reset your password', 'mail/reset_password', user=user, token=token)
+    return jsonify({'sent_email': True}), 200
+
+
+@auth.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    form = PasswordResetForm()
+    if form.validate_on_submit():
+        user = User.objects.filter(email=form.email.data).first()
+        if user is not None and user.reset_password(token, form.password.data):
+            flash('Your password has been updated.')
+        else:
+            flash('Failed to update your password')
+        return redirect(url_for('auth.reset_password', token=token))
+    return render_template('reset_password.html', form=form)
 
 
 @auth.route('/change_password', methods=['POST'])

@@ -2,6 +2,7 @@ import os
 
 
 class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'very secret key indeed')
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587

@@ -19,12 +19,23 @@ class UserExistsException(ErrorException):
         super().__init__(message=f'User {username} already exists', payload=payload)
 
 
+class EmailTakenException(ErrorException):
+    def __init__(self, email, payload=None):
+        super().__init__(message=f'Email {email} is already taken', payload=payload)
+
+
 class InvalidUsernameException(ErrorException):
     def __init__(self, username, payload=None):
         super().__init__(message=f'User {username} does not exist', payload=payload)
 
 
+class InvalidEmailException(ErrorException):
+    def __init__(self, email, payload=None):
+        super().__init__(message=f'User with email {email} does not exist', payload=payload)
+
+
 class InvalidPasswordException(ErrorException):
     def __init__(self, payload=None):
         super().__init__(message=f'Invalid password', status_code=401, payload=payload)
+
 

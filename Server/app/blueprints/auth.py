@@ -1,9 +1,9 @@
-from flask import jsonify, request, abort, Blueprint, g, render_template, redirect, flash, url_for
+from flask import jsonify, request, Blueprint, g, render_template, redirect, flash, url_for
 from werkzeug.security import generate_password_hash
 
 from app.models import User
 import mongoengine as mongo
-from app.exceptions import UserExistsException, InvalidPasswordException, InvalidUsernameException
+import app.exceptions as exceptions
 from app.http_auth import auth as http_basic_auth
 from app.email import send_email
 from app.forms import PasswordResetForm
@@ -17,11 +17,11 @@ def register_user():
     username = request_json.get('username')
     email = request.json.get('email')
     password = request_json.get('password')
-    if username is None or password is None or email is None:  # todo: delete, this should be done on client side
-        abort(400)
 
     if User.objects.filter(username=username).first() is not None:
-        raise UserExistsException(username)
+        raise exceptions.UserExistsException(username)
+    if User.objects.filter(email=email).first() is not None:
+        raise exceptions.EmailTakenException(email)
 
     password_hash = generate_password_hash(password)
     sex = request_json.get('sex')
@@ -40,10 +40,11 @@ def login():
     try:
         user = User.objects.get(username=username)
     except mongo.DoesNotExist:
-        raise InvalidUsernameException(username)
-    success = user.verify_password(password)
-    if not success:
-        raise InvalidPasswordException()
+        raise exceptions.InvalidUsernameException(username)
+
+    if not user.verify_password(password):
+        raise exceptions.InvalidPasswordException()
+
     return jsonify({'logged_in': True}), 200
 
 
@@ -53,7 +54,7 @@ def reset_password_request():
     try:
         user = User.objects.get(email=email)
     except mongo.DoesNotExist:
-        return jsonify({'error': True}), 400   # todo: custom exception
+        raise exceptions.InvalidEmailException(email)
 
     token = user.generate_reset_token()
     send_email(user.email, 'Reset your password', 'mail/reset_password', user=user, token=token)

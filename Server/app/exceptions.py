@@ -1,41 +1,34 @@
 class ErrorException(Exception):
     status_code = 400
+    message = 'UNKNOWN_ERROR'
 
-    def __init__(self, message, status_code=None, payload=None):
+    def __init__(self, payload=None):
         super().__init__()
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
         self.payload = payload
 
     def to_dict(self):
         result = dict(self.payload or ())
-        result['error'] = self.message
+        result['message'] = self.message
         return result
 
 
 class UserExistsException(ErrorException):
-    def __init__(self, username, payload=None):
-        super().__init__(message=f'User {username} already exists', payload=payload)
+    message = 'SIGNUP_LOGIN_ALREADY_USED'
 
 
 class EmailTakenException(ErrorException):
-    def __init__(self, email, payload=None):
-        super().__init__(message=f'Email {email} is already taken', payload=payload)
+    message = 'SIGNUP_EMAIL_ALREADY_USED'
 
 
 class InvalidUsernameException(ErrorException):
-    def __init__(self, username, payload=None):
-        super().__init__(message=f'User {username} does not exist', payload=payload)
+    message = 'LOGIN_LOGIN_DOES_NOT_EXIST'
 
 
 class InvalidEmailException(ErrorException):
-    def __init__(self, email, payload=None):
-        super().__init__(message=f'User with email {email} does not exist', payload=payload)
+    message = 'LOGIN_EMAIL_DOES_NOT_EXIST'
 
 
 class InvalidPasswordException(ErrorException):
-    def __init__(self, payload=None):
-        super().__init__(message=f'Invalid password', status_code=401, payload=payload)
-
+    message = 'LOGIN_PASSWORD_INVALID'
+    status_code = 401
 

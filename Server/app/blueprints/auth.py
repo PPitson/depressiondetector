@@ -19,9 +19,9 @@ def register_user():
     password = request_json.get('password')
 
     if User.objects.filter(username=username).first() is not None:
-        raise exceptions.UserExistsException(username)
+        raise exceptions.UserExistsException
     if User.objects.filter(email=email).first() is not None:
-        raise exceptions.EmailTakenException(email)
+        raise exceptions.EmailTakenException
 
     password_hash = generate_password_hash(password)
     sex = request_json.get('sex')
@@ -40,10 +40,10 @@ def login():
     try:
         user = User.objects.get(username=username)
     except mongo.DoesNotExist:
-        raise exceptions.InvalidUsernameException(username)
+        raise exceptions.InvalidUsernameException
 
     if not user.verify_password(password):
-        raise exceptions.InvalidPasswordException()
+        raise exceptions.InvalidPasswordException
 
     return jsonify({'logged_in': True}), 200
 
@@ -54,7 +54,7 @@ def reset_password_request():
     try:
         user = User.objects.get(email=email)
     except mongo.DoesNotExist:
-        raise exceptions.InvalidEmailException(email)
+        raise exceptions.InvalidEmailException
 
     token = user.generate_reset_token()
     send_email(user.email, 'Reset your password', 'mail/reset_password', user=user, token=token)

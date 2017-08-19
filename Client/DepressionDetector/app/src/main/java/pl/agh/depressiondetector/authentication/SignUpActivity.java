@@ -218,9 +218,9 @@ public class SignUpActivity extends AppCompatActivity {
                         case SIGNUP_USER_REGISTERED:
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
                             preferences.edit()
-                                    .putString(LOGIN, login)
-                                    .putString(PASSWORD, password)
-                                    .putString(EMAIL, email)
+                                    .putString(getString(R.string.pref_user_login), login)
+                                    .putString(getString(R.string.pref_user_password), password)
+                                    .putString(getString(R.string.pref_user_email), email)
                                     .commit();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();

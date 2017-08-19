@@ -1,6 +1,6 @@
-from flask import jsonify, make_response, request, Blueprint, render_template
+from flask import jsonify, make_response, request, Blueprint, render_template, g
 
-from app.http_auth import auth, verify_username
+from app.http_auth import auth
 from app.models import EmotionExtractionResult
 from app.celery.tasks import analyze_file_task
 
@@ -8,25 +8,17 @@ from app.celery.tasks import analyze_file_task
 main = Blueprint('main', __name__)
 
 
-@main.route('/results', methods=['GET'])  # TODO: delete, this endpoint is only for testing
-def get_results_all():
-    results = EmotionExtractionResult.objects.exclude('id').all()
+@main.route('/results', methods=['GET'])
+@auth.login_required
+def get_results_by_user():
+    results = g.current_user.emotion_extraction_results
     return make_response(jsonify(list(results)), 200)
 
 
-@main.route('/results/<username>', methods=['GET'])
+@main.route('/sound_files', methods=['POST'])
 @auth.login_required
-@verify_username
-def get_results_by_user(username):
-    results = EmotionExtractionResult.objects.filter(username=username).exclude('id').all()
-    return make_response(jsonify(list(results)), 200)
-
-
-@main.route('/sound_files/<username>', methods=['POST'])
-@auth.login_required
-@verify_username
-def post_sound_file(username):
-    analyze_file_task.delay(request.get_data(), username)
+def post_sound_file():
+    analyze_file_task.delay(request.get_data(), g.current_user)
     return make_response(jsonify({'received': True}), 200)
 
 

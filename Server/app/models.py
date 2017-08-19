@@ -23,6 +23,10 @@ class User(db.Document):
     def password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    @property
+    def emotion_extraction_results(self):
+        return EmotionExtractionResult.objects.filter(user=self).exclude('id').all()
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -43,7 +47,7 @@ class User(db.Document):
 
 class EmotionExtractionResult(db.Document):
 
-    username = mongo.StringField(max_length=25)
+    user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime = mongo.DateTimeField(default=datetime.utcnow())
     neutral = mongo.FloatField()
     happy = mongo.FloatField()

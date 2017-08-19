@@ -8,7 +8,7 @@ from app import celery
 
 
 @celery.task(name='analyze_file')
-def analyze_file_task(file_bytes, username):
+def analyze_file_task(file_bytes, user):
     filename = uuid.uuid4().hex
     amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
     with open(amr_filename, 'wb') as file:
@@ -18,5 +18,5 @@ def analyze_file_task(file_bytes, username):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        result = EmotionExtractionResult(username=username, **emotions)
+        result = EmotionExtractionResult(user=user, **emotions)
         result.save()

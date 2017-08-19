@@ -1,6 +1,5 @@
 package pl.agh.depressiondetector.authentication;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -165,7 +164,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 @Override
                 protected String doInBackground(Void... params) {
-                    String result = UNKNOWN_ERROR;
+                    String message = UNKNOWN_ERROR;
                     try {
                         HttpUrl apiUrl = new HttpUrl.Builder()
                                 .scheme("https")
@@ -185,12 +184,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 .post(RequestBody.create(JSON_TYPE, json.toString()))
                                 .build();
 
-                        Response response = HttpClient
-                                .getClient().newCall(request).execute();
+                        Response response = HttpClient.getClient().newCall(request).execute();
 
                         ResponseBody body = response.body();
                         if (body != null) {
-                            result = new JSONObject(body.string()).optString(MESSAGE, UNKNOWN_ERROR);
+                            message = new JSONObject(body.string()).optString(MESSAGE, UNKNOWN_ERROR);
 
                             if (response.isSuccessful())
                                 Log.i(TAG, "User " + login + " was created");
@@ -200,17 +198,15 @@ public class SignUpActivity extends AppCompatActivity {
                             body.close();
                         }
                     } catch (IOException e) {
-                        result = CONNECTION_ERROR;
+                        message = CONNECTION_ERROR;
                         e.printStackTrace();
                     } catch (JSONException e) {
-                        result = UNKNOWN_ERROR;
+                        message = UNKNOWN_ERROR;
                         e.printStackTrace();
                     }
-                    return result;
+                    return message;
                 }
 
-                // To ensure valid context (activity) until it's needed in SharedPreferences
-                @SuppressLint("ApplySharedPref")
                 @Override
                 protected void onPostExecute(String message) {
                     dialog.cancel();
@@ -221,7 +217,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     .putString(getString(R.string.pref_user_login), login)
                                     .putString(getString(R.string.pref_user_password), password)
                                     .putString(getString(R.string.pref_user_email), email)
-                                    .commit();
+                                    .apply();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();
                             break;

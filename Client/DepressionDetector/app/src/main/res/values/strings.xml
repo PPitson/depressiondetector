@@ -10,12 +10,13 @@
     <string name="sign_up">Sign up</string>
     <string name="login">Login</string>
 
-    <!-- Sign Up Activity -->
+    <!-- Sign Up and Login Activity -->
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="hint_login">@string/login</string>
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of birth</string>
+    <string name="keep_me_logged_in">Keep me logged in</string>
     <string name="man">Man</string>
     <string name="woman">Woman</string>
 
@@ -24,6 +25,8 @@
     <string name="error_network">Network error. Check your internet connection</string>
     <string name="error_login_exists">Login is already used. Try another one</string>
     <string name="error_email_exists">Email is already used. Try another one</string>
+    <string name="error_login_does_not_exist">Login doesn\'t exist</string>
+    <string name="error_password_invalid">Invalid password</string>
     <string name="error_connection">Connection error</string>
     <string name="error_unknown">Unknown error</string>
 

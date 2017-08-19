@@ -35,6 +35,15 @@
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
+
+    <CheckBox
+        android:id="@+id/checkbox_keep_logged_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputLayout_password"
+        android:checked="true"
+        android:text="@string/keep_me_logged_in"/>
+
     <Button
         android:id="@+id/button_login"
         android:layout_width="match_parent"

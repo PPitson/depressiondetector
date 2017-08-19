@@ -28,7 +28,7 @@ def register_user():
     date_of_birth = request_json.get('date_of_birth')
     user = User(username=username, email=email, password_hash=password_hash, sex=sex, date_of_birth=date_of_birth)
     user.save()
-    return jsonify({'registered': True}), 201
+    return jsonify({'message': 'SIGNUP_USER_REGISTERED'}), 201
 
 
 @auth.route('/login', methods=['POST'])
@@ -45,7 +45,7 @@ def login():
     if not user.verify_password(password):
         raise exceptions.InvalidPasswordException
 
-    return jsonify({'logged_in': True}), 200
+    return jsonify({'message': 'LOGIN_USER_LOGGED_IN'}), 200
 
 
 @auth.route('/reset_password', methods=['POST'])

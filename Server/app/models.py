@@ -15,24 +15,30 @@ class User(db.Document):
     sex = mongo.StringField(choices=('M', 'F'))
     date_of_birth = mongo.DateTimeField()
 
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_reset_token(self, expiration=3600):
+    def generate_token(self, expiration=3600):
         serializer = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return serializer.dumps({'reset': self.username})
+        return serializer.dumps({'username': self.username})
 
-    def reset_password(self, token, new_password):
+    @staticmethod
+    def load_user_from_token(token):
         serializer = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = serializer.loads(token)
         except (BadSignature, SignatureExpired):
-            return False
-        if data.get('reset') != self.username:
-            return False
-        self.password_hash = generate_password_hash(new_password)
-        self.save()
-        return True
+            return None
+        username = data.get('username')
+        return User.objects.filter(username=username).first()
 
 
 class EmotionExtractionResult(db.Document):

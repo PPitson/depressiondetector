@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, request, Blueprint
+from flask import jsonify, make_response, request, Blueprint, render_template
 
 from app.http_auth import auth
 from app.models import EmotionExtractionResult
@@ -26,3 +26,8 @@ def get_results_by_user(username):
 def post_sound_file(username):
     analyze_file_task.delay(request.get_data(), username)
     return make_response(jsonify({'received': True}), 200)
+
+
+@main.route('/')
+def index():
+    return render_template('base.html')

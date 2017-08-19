@@ -56,7 +56,7 @@ def reset_password_request():
     except mongo.DoesNotExist:
         raise exceptions.InvalidEmailException
 
-    token = user.generate_reset_token()
+    token = user.generate_token()
     send_email(user.email, 'Reset your password', 'mail/reset_password', user=user, token=token)
     return jsonify({'sent_email': True}), 200
 
@@ -65,22 +65,22 @@ def reset_password_request():
 def reset_password(token):
     form = PasswordResetForm()
     if form.validate_on_submit():
-        user = User.objects.filter(email=form.email.data).first()
-        if user is not None and user.reset_password(token, form.password.data):
+        user = User.load_user_from_token(token)
+        if user is not None:
+            user.password = form.password.data
+            user.save()
             flash('Your password has been updated.')
         else:
-            flash('Failed to update your password')
-        return redirect(url_for('auth.reset_password', token=token))
+            flash('Failed to update your password: token expired or was incorrect, or account was deleted')
+        return redirect(url_for('main.index'))
     return render_template('reset_password.html', form=form)
 
 
 @auth.route('/change_password', methods=['POST'])
 @http_basic_auth.login_required
 def change_password():
-    request_json = request.get_json()
-    new_password = request_json.get('new_password')
-    password_hash = generate_password_hash(new_password)
-    g.current_user.password_hash = password_hash
+    new_password = request.get_json().get('new_password')
+    g.current_user.password = new_password
     g.current_user.save()
     return jsonify({'changed_password': True}), 200
 
@@ -92,3 +92,23 @@ def change_email():
     g.current_user.email = new_email
     g.current_user.save()
     return jsonify({'changed_email': True}), 200
+
+
+@auth.route('/delete_account', methods=['POST'])
+@http_basic_auth.login_required
+def delete_account_request():
+    user = g.current_user
+    token = user.generate_token()
+    send_email(user.email, 'Confirm account deletion', 'mail/delete_account', user=user, token=token)
+    return jsonify({'sent_email': True}), 200
+
+
+@auth.route('/delete_account/<token>')
+def delete_account(token):
+    user = User.load_user_from_token(token)
+    if user is not None:
+        user.delete()
+        flash('Your account has been deleted')
+    else:
+        flash('Failed to delete your account: token expired or was incorrect')
+    return redirect(url_for('main.index'))

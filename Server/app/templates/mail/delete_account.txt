@@ -1,0 +1,12 @@
+Dear {{ user.username }},
+
+We're sorry to hear that you want to delete your account. To confirm, click on the following link:
+
+{{ url_for('auth.delete_account', token=token, _external=True) }}
+
+If you decide against removing your account, simply ignore this message.
+
+Sincerely,
+
+The DepressionDetector Team
+

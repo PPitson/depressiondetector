@@ -1,6 +1,9 @@
+from functools import wraps
+
 from flask import g
 from flask_httpauth import HTTPBasicAuth
 from app.models import User
+import app.exceptions as exceptions
 import mongoengine as mongo
 
 auth = HTTPBasicAuth()
@@ -14,3 +17,14 @@ def verify_password(username, password):
         return False
     g.current_user = user
     return user.verify_password(password)
+
+
+def verify_username(f):
+
+    @wraps(f)
+    def inner(username, *args, **kwargs):
+        if auth.username() != username:
+            raise exceptions.ForbiddenAccessException
+        return f(username, *args, **kwargs)
+
+    return inner

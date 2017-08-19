@@ -1,4 +1,4 @@
-from flask import make_response, jsonify, Blueprint
+from flask import jsonify, Blueprint
 from app.exceptions import ErrorException
 
 errors = Blueprint('errors', __name__)
@@ -6,7 +6,7 @@ errors = Blueprint('errors', __name__)
 
 @errors.app_errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    return jsonify({'error': 'Not found'}), 404
 
 
 @errors.app_errorhandler(ErrorException)

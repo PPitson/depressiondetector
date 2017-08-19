@@ -32,3 +32,8 @@ class InvalidPasswordException(ErrorException):
     message = 'LOGIN_PASSWORD_INVALID'
     status_code = 401
 
+
+class ForbiddenAccessException(ErrorException):
+    message = 'FORBIDDEN_ACCESS'
+    status_code = 403
+

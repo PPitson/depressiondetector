@@ -1,6 +1,6 @@
 from flask import jsonify, make_response, request, Blueprint, render_template
 
-from app.http_auth import auth
+from app.http_auth import auth, verify_username
 from app.models import EmotionExtractionResult
 from app.celery.tasks import analyze_file_task
 
@@ -16,6 +16,7 @@ def get_results_all():
 
 @main.route('/results/<username>', methods=['GET'])
 @auth.login_required
+@verify_username
 def get_results_by_user(username):
     results = EmotionExtractionResult.objects.filter(username=username).exclude('id').all()
     return make_response(jsonify(list(results)), 200)
@@ -23,6 +24,7 @@ def get_results_by_user(username):
 
 @main.route('/sound_files/<username>', methods=['POST'])
 @auth.login_required
+@verify_username
 def post_sound_file(username):
     analyze_file_task.delay(request.get_data(), username)
     return make_response(jsonify({'received': True}), 200)

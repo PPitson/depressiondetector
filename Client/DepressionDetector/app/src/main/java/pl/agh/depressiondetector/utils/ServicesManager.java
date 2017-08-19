@@ -19,7 +19,7 @@ public class ServicesManager {
             // Start recording phone calls
             Intent phoneCall = new Intent(context, PhoneCallService.class);
             context.startService(phoneCall);
-            
+
             preferences.edit().putBoolean(firstRun, false).apply();
         }
     }

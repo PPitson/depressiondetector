@@ -1,10 +1,34 @@
 <resources>
     <string name="app_name">DepressionDetector</string>
+    <string name="title_activity_login">@string/login</string>
+    <string name="title_activity_sign_up">@string/sign_up</string>
 
     <!-- Main Activity -->
     <string name="main_getresults">Get results</string>
 
+    <!-- Authentication Activity -->
+    <string name="sign_up">Sign up</string>
+    <string name="login">Login</string>
+
+    <!-- Sign Up Activity -->
+    <string name="sign_up_with_google">Sign up with Google</string>
+    <string name="hint_login">@string/login</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_date_of_birth">Date of birth</string>
+    <string name="man">Man</string>
+    <string name="woman">Woman</string>
+
+    <string name="error_email_invalid">Email address is incorrect</string>
+    <string name="error_field_empty">Field cannot be empty</string>
+    <string name="error_network">Network error. Check your internet connection</string>
+    <string name="error_login_exists">Login is already used. Try another one</string>
+    <string name="error_email_exists">Email is already used. Try another one</string>
+    <string name="error_connection">Connection error</string>
+    <string name="error_unknown">Unknown error</string>
+
     <!-- General -->
+    <string name="or">Or</string>
     <string name="search">Search</string>
     <string name="settings">Settings</string>
 
@@ -12,6 +36,8 @@
     <string name="preferences_analysis">Analysis</string>
     <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
 
+    <string name="pref_user_name" translatable="false">pref_user_name</string>
+    <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_first_run" translatable="false">pref_first_run</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
 </resources>

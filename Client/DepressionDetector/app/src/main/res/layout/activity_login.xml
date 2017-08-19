@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:layout_marginEnd="10dp"
     android:layout_marginStart="10dp"
+    android:focusableInTouchMode="true"
     tools:context="pl.agh.depressiondetector.authentication.LoginActivity">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayout_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_or"
         android:hint="@string/hint_login">
 
         <android.support.design.widget.TextInputEditText

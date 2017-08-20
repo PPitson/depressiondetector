@@ -10,16 +10,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -27,29 +21,20 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
-import pl.agh.depressiondetector.connection.HttpClient;
 import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
-import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignUpActivity";
-
-    private SimpleDateFormat clientDateFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
-
+    private final SimpleDateFormat clientDateFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
     private final Calendar calendar = Calendar.getInstance();
+
     private Validator validator;
 
     @BindView(R.id.textInputLayout_username)
@@ -138,92 +123,60 @@ public class SignUpActivity extends AppCompatActivity {
         return valid;
     }
 
-    private void singUpUser(final User user) {
-
-        if (!NetworkUtils.isNetworkAvailable(SignUpActivity.this))
+    private void singUpUser(User user) {
+        if (!NetworkUtils.isNetworkAvailable(this))
             ToastUtils.show(this, getString(R.string.error_network));
         else
-            new AsyncTask<Void, Void, String>() {
+            new SingUpTask(user).execute();
+    }
 
-                ProgressDialog dialog;
+    private class SingUpTask extends AsyncTask<Void, Void, String> {
 
-                @Override
-                protected void onPreExecute() {
-                    dialog = new ProgressDialog(SignUpActivity.this);
-                    dialog.show();
-                }
+        private User user;
+        private ProgressDialog dialog;
 
-                @Override
-                protected String doInBackground(Void... params) {
-                    String message = UNKNOWN_ERROR;
-                    try {
-                        HttpUrl apiUrl = new HttpUrl.Builder()
-                                .scheme("https")
-                                .host(HOST)
-                                .addEncodedPathSegments(PATH_REGISTER)
-                                .build();
+        SingUpTask(User user) {
+            this.user = user;
+        }
 
-                        JSONObject json = user.toJSON();
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(SignUpActivity.this);
+            dialog.show();
+        }
 
-                        Request request = new Request.Builder()
-                                .url(apiUrl)
-                                .post(RequestBody.create(JSON_TYPE, json.toString()))
-                                .build();
+        @Override
+        protected String doInBackground(Void... params) {
+            return Authentication.register(user);
+        }
 
-                        Response response = HttpClient.getClient().newCall(request).execute();
-
-                        ResponseBody body = response.body();
-                        if (body != null) {
-                            message = new JSONObject(body.string()).optString(MESSAGE, UNKNOWN_ERROR);
-
-                            if (response.isSuccessful())
-                                Log.i(TAG, "User " + user.name + " was created");
-                            else
-                                Log.i(TAG, "User wasn't created. Server returned: " + response.message() + " with code " + response.code());
-
-                            body.close();
-                        }
-                    } catch(SocketTimeoutException e){
-                        message = TIMEOUT_ERROR;
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        message = CONNECTION_ERROR;
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        message = UNKNOWN_ERROR;
-                        e.printStackTrace();
-                    }
-                    return message;
-                }
-
-                @Override
-                protected void onPostExecute(String message) {
-                    dialog.cancel();
-                    switch (message) {
-                        case SIGNUP_USER_REGISTERED:
-                            saveCredentials(user);
-                            ServicesManager.startServices(SignUpActivity.this);
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                            finish();
-                            break;
-                        case SIGNUP_LOGIN_ALREADY_USED:
-                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_login_exists));
-                            break;
-                        case SIGNUP_EMAIL_ALREADY_USED:
-                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_email_exists));
-                            break;
-                        case TIMEOUT_ERROR:
-                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_timeout));
-                            break;
-                        case CONNECTION_ERROR:
-                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_connection));
-                            break;
-                        default:
-                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_unknown));
-                            break;
-                    }
-                }
-            }.execute();
+        @Override
+        protected void onPostExecute(String message) {
+            dialog.cancel();
+            switch (message) {
+                case SIGNUP_USER_REGISTERED:
+                    saveCredentials(user);
+                    ServicesManager.startServices(SignUpActivity.this);
+                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    finish();
+                    break;
+                case SIGNUP_LOGIN_ALREADY_USED:
+                    ToastUtils.show(SignUpActivity.this, getString(R.string.error_login_exists));
+                    break;
+                case SIGNUP_EMAIL_ALREADY_USED:
+                    ToastUtils.show(SignUpActivity.this, getString(R.string.error_email_exists));
+                    break;
+                case TIMEOUT_ERROR:
+                    ToastUtils.show(SignUpActivity.this, getString(R.string.error_timeout));
+                    break;
+                case CONNECTION_ERROR:
+                    ToastUtils.show(SignUpActivity.this, getString(R.string.error_connection));
+                    break;
+                default:
+                    ToastUtils.show(SignUpActivity.this, getString(R.string.error_unknown));
+                    break;
+            }
+        }
     }
 
 

@@ -11,17 +11,9 @@ import pl.agh.depressiondetector.recording.PhoneCallService;
 public class ServicesManager {
 
     public static void startServices(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String firstRun = context.getString(R.string.pref_first_run);
-
-        if (preferences.getBoolean(firstRun, true)) {
-
-            // Start recording phone calls
-            Intent phoneCall = new Intent(context, PhoneCallService.class);
-            context.startService(phoneCall);
-
-            preferences.edit().putBoolean(firstRun, false).apply();
-        }
+        // Start recording phone calls
+        Intent phoneCall = new Intent(context, PhoneCallService.class);
+        context.startService(phoneCall);
     }
 
     public static void stopServices(Context context) {

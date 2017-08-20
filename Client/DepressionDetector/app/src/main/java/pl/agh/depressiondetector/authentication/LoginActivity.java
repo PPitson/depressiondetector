@@ -29,6 +29,7 @@ import okhttp3.ResponseBody;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.HttpClient;
+import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 protected String doInBackground(Void... params) {
                     String message = UNKNOWN_ERROR;
                     try {
-                        HttpUrl apiUrl = new HttpUrl.Builder()
+                        HttpUrl url = new HttpUrl.Builder()
                                 .scheme("https")
                                 .host(HOST)
                                 .addEncodedPathSegments(PATH_LOGIN)
@@ -93,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         json.put(PASSWORD, password);
 
                         Request request = new Request.Builder()
-                                .url(apiUrl)
+                                .url(url)
                                 .post(RequestBody.create(JSON_TYPE, json.toString()))
                                 .build();
 
@@ -132,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                                         .putString(getString(R.string.pref_user_password), password)
                                         .apply();
                             }
+                            ServicesManager.startServices(LoginActivity.this);
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                             break;

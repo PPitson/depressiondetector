@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -16,9 +15,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
-import pl.agh.depressiondetector.connection.HttpClient;
 import pl.agh.depressiondetector.utils.FileUtils;
-import pl.agh.depressiondetector.utils.NetworkUtils;
 
 public class PhoneCallService extends Service {
 
@@ -52,6 +49,7 @@ public class PhoneCallService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Received intent with action: " + intent.getAction());
             Bundle bundle = intent.getExtras();
             switch (intent.getAction()) {
                 case ACTION_IN_CALL:
@@ -118,22 +116,5 @@ public class PhoneCallService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private class PostAudioTask extends AsyncTask<File, Void, Integer> {
-        Context context;
-
-        PostAudioTask(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected Integer doInBackground(File... params) {
-            // TODO Add buffor or something, to wait for internet connection
-            if (NetworkUtils.isNetworkAvailable(context))
-                return HttpClient.getInstance().postAudioFile(params[0]);
-            else
-                return -1;
-        }
     }
 }

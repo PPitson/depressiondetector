@@ -3,10 +3,10 @@ package pl.agh.depressiondetector.connection;
 public interface API {
     String HOST = "depressionserver.herokuapp.com";
 
-    String PATH_SOUND_FILES = "sound_files";
-    String PATH_RESULTS = "results/1";  // TODO Update address to work with different users
     String PATH_REGISTER = "auth/register";
     String PATH_LOGIN = "auth/login";
+    String PATH_SOUND_FILES = "sound_files";
+    String PATH_RESULTS = "results";
 
 
     String LOGIN = "username";

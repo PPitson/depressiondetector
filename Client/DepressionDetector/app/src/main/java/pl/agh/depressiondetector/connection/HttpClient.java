@@ -1,30 +1,23 @@
 package pl.agh.depressiondetector.connection;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static pl.agh.depressiondetector.connection.API.HOST;
 import static pl.agh.depressiondetector.connection.API.PATH_RESULTS;
-import static pl.agh.depressiondetector.connection.API.PATH_SOUND_FILES;
 
 public class HttpClient {
 
     public static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=utf-8");
-    private static final String TAG = "HttpClient";
+    public static final MediaType AMR_TYPE = MediaType.parse("audio/amr");
 
     private static HttpClient instance;
     private static OkHttpClient client;
@@ -61,39 +54,16 @@ public class HttpClient {
                     .build();
 
             Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                result = response.body().string();
-            } else {
-                if (response.body() != null)
-                    response.body().close();
+            ResponseBody body = response.body();
+            if (body != null) {
+                if (response.isSuccessful())
+                    result = body.string();
+                body.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return result;
-    }
-
-    public int postAudioFile(File file) {
-        int responseCode = -1;
-        try {
-            byte[] data = FileUtils.readFileToByteArray(file);
-            String url = "https://" + HOST + "/" + PATH_SOUND_FILES;
-
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "audio/amr;");
-            conn.setDoOutput(true);
-
-            OutputStream writer = conn.getOutputStream();
-            writer.write(data);
-            writer.flush();
-            writer.close();
-            responseCode = conn.getResponseCode();
-        } catch (IOException e) {
-            Log.e(TAG, "Error while posting audio file " + e);
-        }
-
-        return responseCode;
     }
 }

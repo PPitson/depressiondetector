@@ -33,11 +33,10 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-        final boolean newValue = sp.getBoolean(key, false);
-        final String pref_analyse_phone_calls = getString(R.string.pref_analyse_phone_calls);
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+        boolean newValue = preferences.getBoolean(key, false);
 
-        if (key.equals(pref_analyse_phone_calls)) {
+        if (key.equals(getString(R.string.pref_analyse_phone_calls))) {
             Intent phoneCall = new Intent(this, PhoneCallService.class);
             if (newValue)
                 startService(phoneCall);

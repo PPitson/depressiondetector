@@ -36,6 +36,7 @@ import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.HttpClient;
 import pl.agh.depressiondetector.utils.NetworkUtils;
+import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
@@ -218,6 +219,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     .putString(getString(R.string.pref_user_password), password)
                                     .putString(getString(R.string.pref_user_email), email)
                                     .apply();
+                            ServicesManager.startServices(SignUpActivity.this);
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();
                             break;

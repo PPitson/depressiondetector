@@ -22,6 +22,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import pl.agh.depressiondetector.connection.HttpClient;
+import pl.agh.depressiondetector.settings.ProfileActivity;
 import pl.agh.depressiondetector.settings.SettingsActivity;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.item_main_profile:
+                startActivity(new Intent(this, ProfileActivity.class));
+                break;
             case R.id.item_main_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;

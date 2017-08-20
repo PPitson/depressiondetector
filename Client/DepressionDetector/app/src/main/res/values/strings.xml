@@ -2,6 +2,8 @@
     <string name="app_name">DepressionDetector</string>
     <string name="title_activity_login">@string/login</string>
     <string name="title_activity_sign_up">@string/sign_up</string>
+    <string name="title_activity_profile">@string/profile</string>
+    <string name="title_activity_settings">@string/settings</string>
 
     <!-- Main Activity -->
     <string name="main_getresults">Get results</string>
@@ -35,7 +37,10 @@
     <!-- General -->
     <string name="or">Or</string>
     <string name="search">Search</string>
+    <string name="profile">Profile</string>
     <string name="settings">Settings</string>
+    <string name="delete_account">Delete account</string>
+    <string name="logout">Logout</string>
 
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>

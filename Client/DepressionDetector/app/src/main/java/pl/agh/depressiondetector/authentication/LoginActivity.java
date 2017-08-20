@@ -103,9 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                             .addEncodedPathSegments(PATH_LOGIN)
                             .build();
 
-                    JSONObject json = new JSONObject();
-                    json.put(USERNAME, user.name);
-                    json.put(PASSWORD, user.password);
+                    JSONObject json = user.toJSON();
 
                     Request request = new Request.Builder()
                             .url(url)

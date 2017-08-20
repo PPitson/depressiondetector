@@ -47,8 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private static final String TAG = "SignUpActivity";
 
-    private SimpleDateFormat CLIENT_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-    private SimpleDateFormat SERVER_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    private SimpleDateFormat clientDateFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
 
     private final Calendar calendar = Calendar.getInstance();
     private Validator validator;
@@ -109,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void updateDateOfBirthView() {
-        dateOfBirthView.setText(CLIENT_DATE_FORMAT.format(calendar.getTime()));
+        dateOfBirthView.setText(clientDateFormat.format(calendar.getTime()));
     }
 
     @OnClick(R.id.button_google_sign_up)
@@ -134,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
         boolean valid = validator.validFieldNotEmpty(usernameLayout);
         valid &= validator.validFieldNotEmpty(passwordLayout);
         valid &= validator.validEmailField(emailLayout);
-        valid &= validator.validDateField(dateOfBirthLayout, CLIENT_DATE_FORMAT);
+        valid &= validator.validDateField(dateOfBirthLayout, clientDateFormat);
 
         return valid;
     }
@@ -164,12 +163,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 .addEncodedPathSegments(PATH_REGISTER)
                                 .build();
 
-                        JSONObject json = new JSONObject();
-                        json.put(USERNAME, user.name);
-                        json.put(PASSWORD, user.password);
-                        json.put(EMAIL, user.email);
-                        json.put(SEX, user.sex ? "M" : "F");
-                        json.put(DATE_OF_BIRTH, SERVER_DATE_FORMAT.format(user.dateOfBirth));
+                        JSONObject json = user.toJSON();
 
                         Request request = new Request.Builder()
                                 .url(apiUrl)

@@ -29,4 +29,7 @@ public interface API {
     String UNKNOWN_ERROR = "UNKNOWN_ERROR";
     String TIMEOUT_ERROR = "TIMEOUT_ERROR";
     String CONNECTION_ERROR = "CONNECTION_ERROR";
+
+    String CLIENT_DATE_FORMAT = "dd-MM-yyyy";
+    String SERVER_DATE_FORMAT = "yyyy-MM-dd";
 }

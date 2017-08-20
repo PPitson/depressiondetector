@@ -9,7 +9,7 @@ public interface API {
     String PATH_RESULTS = "results";
 
 
-    String LOGIN = "username";
+    String USERNAME = "username";
     String PASSWORD = "password";
     String EMAIL = "email";
     String SEX = "sex";
@@ -27,5 +27,6 @@ public interface API {
     String LOGIN_PASSWORD_INVALID = "LOGIN_PASSWORD_INVALID";
 
     String UNKNOWN_ERROR = "UNKNOWN_ERROR";
+    String TIMEOUT_ERROR = "TIMEOUT_ERROR";
     String CONNECTION_ERROR = "CONNECTION_ERROR";
 }

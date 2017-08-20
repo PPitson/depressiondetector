@@ -12,7 +12,7 @@
 
     <!-- Sign Up and Login Activity -->
     <string name="sign_up_with_google">Sign up with Google</string>
-    <string name="hint_login">@string/login</string>
+    <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of birth</string>
@@ -20,6 +20,7 @@
     <string name="man">Man</string>
     <string name="woman">Woman</string>
 
+    <string name="error_date_from_past">Date must be somewhere in the past</string>
     <string name="error_email_invalid">Email address is incorrect</string>
     <string name="error_field_empty">Field cannot be empty</string>
     <string name="error_network">Network error. Check your internet connection</string>
@@ -27,6 +28,7 @@
     <string name="error_email_exists">Email is already used. Try another one</string>
     <string name="error_login_does_not_exist">Login doesn\'t exist</string>
     <string name="error_password_invalid">Invalid password</string>
+    <string name="error_timeout">Check your internet connection and try again</string>
     <string name="error_connection">Connection error</string>
     <string name="error_unknown">Unknown error</string>
 
@@ -39,7 +41,7 @@
     <string name="preferences_analysis">Analysis</string>
     <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
 
-    <string name="pref_user_login" translatable="false">pref_user_login</string>
+    <string name="pref_user_username" translatable="false">pref_user_username</string>
     <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_user_email" translatable="false">pref_user_email</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>

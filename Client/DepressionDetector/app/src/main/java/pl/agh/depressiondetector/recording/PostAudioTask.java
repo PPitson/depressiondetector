@@ -42,7 +42,7 @@ class PostAudioTask extends AsyncTask<File, Void, Void> {
     private boolean uploadSoundFile(File file) {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            String login = preferences.getString(context.getString(R.string.pref_user_login), "");
+            String login = preferences.getString(context.getString(R.string.pref_user_username), "");
             String password = preferences.getString(context.getString(R.string.pref_user_password), "");
 
             String credential = Credentials.basic(login, password);

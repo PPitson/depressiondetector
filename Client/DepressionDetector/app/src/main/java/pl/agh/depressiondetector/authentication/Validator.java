@@ -3,6 +3,9 @@ package pl.agh.depressiondetector.authentication;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import pl.agh.depressiondetector.R;
@@ -19,6 +22,11 @@ class Validator {
         this.context = context;
     }
 
+    boolean validFieldNotEmpty(TextInputLayout field) {
+        String text = field.getEditText().getText().toString().trim();
+        return validFieldNotEmpty(field, text);
+    }
+
     boolean validFieldNotEmpty(TextInputLayout field, String text) {
         if (text.isEmpty()) {
             field.setError(context.getString(R.string.error_field_empty));
@@ -29,7 +37,8 @@ class Validator {
         }
     }
 
-    boolean validEmailField(TextInputLayout field, String email) {
+    boolean validEmailField(TextInputLayout field) {
+        String email = field.getEditText().getText().toString().trim();
         if (validFieldNotEmpty(field, email)) {
             if (isEmailValid(email)) {
                 field.setErrorEnabled(false);
@@ -39,7 +48,33 @@ class Validator {
                 return false;
             }
         }
+
         return false;
+    }
+
+    boolean validDateField(TextInputLayout field, SimpleDateFormat dateFormat) {
+        String text = field.getEditText().getText().toString();
+        if (validFieldNotEmpty(field, text)) {
+            try {
+                Date date = dateFormat.parse(text);
+                if (isOlderThanNow(date)) {
+                    field.setErrorEnabled(false);
+                    return true;
+                } else {
+                    field.setError(context.getString(R.string.error_date_from_past));
+                    return false;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isOlderThanNow(Date date) {
+        return date.getTime() < System.currentTimeMillis();
     }
 
     private boolean isEmailValid(String email) {

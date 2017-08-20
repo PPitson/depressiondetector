@@ -17,7 +17,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.contains(getString(R.string.pref_user_login)) && preferences.contains(getString(R.string.pref_user_password)))
+        if (preferences.contains(getString(R.string.pref_user_username)) && preferences.contains(getString(R.string.pref_user_password)))
             startActivity(new Intent(this, MainActivity.class));
         else
             setContentView(R.layout.activity_authentication);

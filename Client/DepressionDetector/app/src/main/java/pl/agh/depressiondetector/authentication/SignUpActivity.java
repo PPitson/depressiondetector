@@ -19,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -35,6 +35,7 @@ import okhttp3.ResponseBody;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.HttpClient;
+import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
@@ -44,18 +45,19 @@ import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private static final String CLIENT_DATE_FORMAT = "dd-MM-yyyy";
-    private static final String SERVER_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "SignUpActivity";
 
-    private final Calendar myCalendar = Calendar.getInstance();
+    private SimpleDateFormat CLIENT_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+    private SimpleDateFormat SERVER_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+    private final Calendar calendar = Calendar.getInstance();
     private Validator validator;
 
-    @BindView(R.id.textInputLayout_login)
-    TextInputLayout loginLayout;
+    @BindView(R.id.textInputLayout_username)
+    TextInputLayout usernameLayout;
 
-    @BindView(R.id.textInputEditText_login)
-    TextInputEditText loginView;
+    @BindView(R.id.textInputEditText_username)
+    TextInputEditText usernameView;
 
     @BindView(R.id.textInputLayout_password)
     TextInputLayout passwordLayout;
@@ -89,66 +91,55 @@ public class SignUpActivity extends AppCompatActivity {
 
     @OnClick(R.id.textInputEditText_date_of_birth)
     public void onDateOfBirthClick(View view) {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateOfBirthView();
             }
 
         };
 
         new DatePickerDialog(this,
-                date,
-                myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                onDateSetListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void updateLabel() {
-        SimpleDateFormat sdf = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
-        dateOfBirthView.setText(sdf.format(myCalendar.getTime()));
+    private void updateDateOfBirthView() {
+        dateOfBirthView.setText(CLIENT_DATE_FORMAT.format(calendar.getTime()));
     }
-
 
     @OnClick(R.id.button_google_sign_up)
     public void onGoogleSignUpClick(View view) {
-
+        ToastUtils.show(this, "Implement me");  // TODO
     }
 
     @OnClick(R.id.button_sign_up)
     public void onSignUpClick(View view) {
-        String login = loginView.getText().toString().trim();
-        String password = passwordView.getText().toString().trim();
-        String email = emailView.getText().toString().trim();
-        boolean man = manView.isChecked();
-
-        SimpleDateFormat clientFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
-        SimpleDateFormat serverFormat = new SimpleDateFormat(SERVER_DATE_FORMAT, Locale.US);
-
-        String dateOfBirth;
-        try {
-            dateOfBirth = serverFormat.format(clientFormat.parse(dateOfBirthView.getText().toString()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            dateOfBirth = "";
+        if (validateFields()) {
+            User user = new User();
+            user.name = usernameView.getText().toString().trim();
+            user.password = passwordView.getText().toString().trim();
+            user.email = emailView.getText().toString().trim();
+            user.sex = manView.isChecked();
+            user.dateOfBirth = calendar.getTime();
+            singUpUser(user);
         }
-
-        if (validateFields(login, password, email, man, dateOfBirth))
-            singUpUser(login, password, email, man, dateOfBirth);
     }
 
-    private boolean validateFields(String login, String password, String email, boolean man, String dateOfBirth) {
-        boolean valid = validator.validFieldNotEmpty(loginLayout, login);
-        valid &= validator.validFieldNotEmpty(passwordLayout, password);
-        valid &= validator.validEmailField(emailLayout, email);
-        valid &= validator.validFieldNotEmpty(dateOfBirthLayout, dateOfBirth);
+    private boolean validateFields() {
+        boolean valid = validator.validFieldNotEmpty(usernameLayout);
+        valid &= validator.validFieldNotEmpty(passwordLayout);
+        valid &= validator.validEmailField(emailLayout);
+        valid &= validator.validDateField(dateOfBirthLayout, CLIENT_DATE_FORMAT);
 
         return valid;
     }
 
-    private void singUpUser(final String login, final String password, final String email, final boolean man, final String dateOfBirth) {
+    private void singUpUser(final User user) {
 
         if (!NetworkUtils.isNetworkAvailable(SignUpActivity.this))
             ToastUtils.show(this, getString(R.string.error_network));
@@ -174,11 +165,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 .build();
 
                         JSONObject json = new JSONObject();
-                        json.put(LOGIN, login);
-                        json.put(PASSWORD, password);
-                        json.put(EMAIL, email);
-                        json.put(SEX, man ? "M" : "F");
-                        json.put(DATE_OF_BIRTH, dateOfBirth);
+                        json.put(USERNAME, user.name);
+                        json.put(PASSWORD, user.password);
+                        json.put(EMAIL, user.email);
+                        json.put(SEX, user.sex ? "M" : "F");
+                        json.put(DATE_OF_BIRTH, SERVER_DATE_FORMAT.format(user.dateOfBirth));
 
                         Request request = new Request.Builder()
                                 .url(apiUrl)
@@ -192,12 +183,15 @@ public class SignUpActivity extends AppCompatActivity {
                             message = new JSONObject(body.string()).optString(MESSAGE, UNKNOWN_ERROR);
 
                             if (response.isSuccessful())
-                                Log.i(TAG, "User " + login + " was created");
+                                Log.i(TAG, "User " + user.name + " was created");
                             else
                                 Log.i(TAG, "User wasn't created. Server returned: " + response.message() + " with code " + response.code());
 
                             body.close();
                         }
+                    } catch(SocketTimeoutException e){
+                        message = TIMEOUT_ERROR;
+                        e.printStackTrace();
                     } catch (IOException e) {
                         message = CONNECTION_ERROR;
                         e.printStackTrace();
@@ -213,12 +207,7 @@ public class SignUpActivity extends AppCompatActivity {
                     dialog.cancel();
                     switch (message) {
                         case SIGNUP_USER_REGISTERED:
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
-                            preferences.edit()
-                                    .putString(getString(R.string.pref_user_login), login)
-                                    .putString(getString(R.string.pref_user_password), password)
-                                    .putString(getString(R.string.pref_user_email), email)
-                                    .apply();
+                            saveCredentials(user);
                             ServicesManager.startServices(SignUpActivity.this);
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();
@@ -229,6 +218,9 @@ public class SignUpActivity extends AppCompatActivity {
                         case SIGNUP_EMAIL_ALREADY_USED:
                             ToastUtils.show(SignUpActivity.this, getString(R.string.error_email_exists));
                             break;
+                        case TIMEOUT_ERROR:
+                            ToastUtils.show(SignUpActivity.this, getString(R.string.error_timeout));
+                            break;
                         case CONNECTION_ERROR:
                             ToastUtils.show(SignUpActivity.this, getString(R.string.error_connection));
                             break;
@@ -238,5 +230,15 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 }
             }.execute();
+    }
+
+
+    private void saveCredentials(User user) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
+        preferences.edit()
+                .putString(getString(R.string.pref_user_username), user.name)
+                .putString(getString(R.string.pref_user_password), user.password)
+                .putString(getString(R.string.pref_user_email), user.email)
+                .apply();
     }
 }

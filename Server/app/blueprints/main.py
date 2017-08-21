@@ -1,7 +1,6 @@
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 
 from app.http_auth import auth
-from app.models import EmotionExtractionResult
 from app.celery.tasks import analyze_file_task
 
 

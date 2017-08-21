@@ -1,5 +1,6 @@
 from flask import current_app
 from app import db
+import app.exceptions as exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 import mongoengine as mongo

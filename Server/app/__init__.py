@@ -34,7 +34,9 @@ def register_extensions(app):
 def register_blueprints(app):
     from app.blueprints.main import main
     from app.blueprints.auth import auth
+    from app.blueprints.account import account
     from app.blueprints.errors import errors
     app.register_blueprint(main)
     app.register_blueprint(auth)
+    app.register_blueprint(account)
     app.register_blueprint(errors)

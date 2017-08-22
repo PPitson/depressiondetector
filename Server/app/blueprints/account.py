@@ -12,7 +12,7 @@ account = Blueprint('account', __name__)
 @auth.login_required
 def update_user():
     for key, value in request.get_json().items():
-        if key == 'email' and User.objects.filter(email=value).first() is not None:
+        if key == 'email' and g.current_user.email != value and User.objects.filter(email=value).first() is not None:
             raise exceptions.EmailTakenException
         setattr(g.current_user, key, value)
     g.current_user.save()

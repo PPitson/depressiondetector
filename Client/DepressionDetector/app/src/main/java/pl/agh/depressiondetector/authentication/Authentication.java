@@ -19,7 +19,7 @@ import pl.agh.depressiondetector.model.User;
 
 import static pl.agh.depressiondetector.connection.API.CONNECTION_ERROR;
 import static pl.agh.depressiondetector.connection.API.HOST;
-import static pl.agh.depressiondetector.connection.API.MESSAGE;
+import static pl.agh.depressiondetector.connection.API.MESSAGE_AUTHENTICATE;
 import static pl.agh.depressiondetector.connection.API.MESSAGE_DELETE;
 import static pl.agh.depressiondetector.connection.API.PATH_DELETE;
 import static pl.agh.depressiondetector.connection.API.PATH_LOGIN;
@@ -58,7 +58,7 @@ public class Authentication {
 
             ResponseBody body = response.body();
             if (body != null) {
-                message = new JSONObject(body.string()).optString(MESSAGE, UNKNOWN_ERROR);
+                message = new JSONObject(body.string()).optString(MESSAGE_AUTHENTICATE, UNKNOWN_ERROR);
 
                 if (response.isSuccessful())
                     Log.i(TAG, "Success for " + user.name);

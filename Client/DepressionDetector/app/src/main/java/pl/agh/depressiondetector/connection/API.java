@@ -17,7 +17,7 @@ public interface API {
     String DATE_OF_BIRTH = "date_of_birth";
 
 
-    String MESSAGE = "message";
+    String MESSAGE_AUTHENTICATE = "message";
     String MESSAGE_DELETE = "sent_email";
 
     String SIGNUP_USER_REGISTERED = "SIGNUP_USER_REGISTERED";

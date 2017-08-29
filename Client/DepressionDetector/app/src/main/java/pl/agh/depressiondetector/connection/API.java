@@ -5,6 +5,7 @@ public interface API {
 
     String PATH_REGISTER = "auth/register";
     String PATH_LOGIN = "auth/login";
+    String PATH_DELETE = "user";
     String PATH_SOUND_FILES = "sound_files";
     String PATH_RESULTS = "results";
 
@@ -17,6 +18,7 @@ public interface API {
 
 
     String MESSAGE = "message";
+    String MESSAGE_DELETE = "sent_email";
 
     String SIGNUP_USER_REGISTERED = "SIGNUP_USER_REGISTERED";
     String SIGNUP_LOGIN_ALREADY_USED = "SIGNUP_LOGIN_ALREADY_USED";
@@ -25,6 +27,8 @@ public interface API {
     String LOGIN_USER_LOGGED_IN = "LOGIN_USER_LOGGED_IN";
     String LOGIN_LOGIN_DOES_NOT_EXIST = "LOGIN_LOGIN_DOES_NOT_EXIST";
     String LOGIN_PASSWORD_INVALID = "LOGIN_PASSWORD_INVALID";
+
+    String SENT_EMAIL = "SENT_EMAIL";
 
     String UNKNOWN_ERROR = "UNKNOWN_ERROR";
     String TIMEOUT_ERROR = "TIMEOUT_ERROR";

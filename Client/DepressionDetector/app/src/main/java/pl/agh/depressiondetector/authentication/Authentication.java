@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
+import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -19,13 +20,17 @@ import pl.agh.depressiondetector.model.User;
 import static pl.agh.depressiondetector.connection.API.CONNECTION_ERROR;
 import static pl.agh.depressiondetector.connection.API.HOST;
 import static pl.agh.depressiondetector.connection.API.MESSAGE;
+import static pl.agh.depressiondetector.connection.API.MESSAGE_DELETE;
+import static pl.agh.depressiondetector.connection.API.PATH_DELETE;
 import static pl.agh.depressiondetector.connection.API.PATH_LOGIN;
 import static pl.agh.depressiondetector.connection.API.PATH_REGISTER;
+import static pl.agh.depressiondetector.connection.API.SENT_EMAIL;
 import static pl.agh.depressiondetector.connection.API.TIMEOUT_ERROR;
 import static pl.agh.depressiondetector.connection.API.UNKNOWN_ERROR;
 import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
-class Authentication {
+
+public class Authentication {
 
     private static final String TAG = "Authentication";
 
@@ -40,11 +45,7 @@ class Authentication {
     private static String authenticate(User user, String path) {
         String message = UNKNOWN_ERROR;
         try {
-            HttpUrl url = new HttpUrl.Builder()
-                    .scheme("https")
-                    .host(HOST)
-                    .addEncodedPathSegments(path)
-                    .build();
+            HttpUrl url = buildHttpsUrl(path);
 
             JSONObject json = user.toJSON();
 
@@ -77,5 +78,55 @@ class Authentication {
             e.printStackTrace();
         }
         return message;
+    }
+
+
+    public static String delete(User user) {
+        String message = UNKNOWN_ERROR;
+        try {
+            HttpUrl url = buildHttpsUrl(PATH_DELETE);
+
+            JSONObject json = user.toJSON();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", Credentials.basic(user.name, user.password))
+                    .delete(RequestBody.create(JSON_TYPE, json.toString()))
+                    .build();
+
+            Response response = HttpClient.getClient().newCall(request).execute();
+
+            ResponseBody body = response.body();
+            if (body != null) {
+                boolean emailSent = new JSONObject(body.string()).getBoolean(MESSAGE_DELETE);
+                if (emailSent)
+                    message = SENT_EMAIL;
+
+                if (response.isSuccessful())
+                    Log.i(TAG, "Success for " + user.name);
+                else
+                    Log.i(TAG, "Failed. Server returned: " + response.message() + " with code " + response.code());
+
+                body.close();
+            }
+        } catch (SocketTimeoutException e) {
+            message = TIMEOUT_ERROR;
+            e.printStackTrace();
+        } catch (IOException e) {
+            message = CONNECTION_ERROR;
+            e.printStackTrace();
+        } catch (JSONException e) {
+            message = UNKNOWN_ERROR;
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+    private static HttpUrl buildHttpsUrl(String path) {
+        return new HttpUrl.Builder()
+                .scheme("https")
+                .host(HOST)
+                .addEncodedPathSegments(path)
+                .build();
     }
 }

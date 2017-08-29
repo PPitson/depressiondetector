@@ -34,7 +34,12 @@
     <string name="error_connection">Connection error</string>
     <string name="error_unknown">Unknown error</string>
 
+    <!-- ProfileActivity -->
+    <string name="delete_successful">Delete successful</string>
+    <string name="delete_message">You will be now logged out. To finish deleting account follow the instructions in email.</string>
+
     <!-- General -->
+    <string name="ok">OK</string>
     <string name="or">Or</string>
     <string name="search">Search</string>
     <string name="profile">Profile</string>

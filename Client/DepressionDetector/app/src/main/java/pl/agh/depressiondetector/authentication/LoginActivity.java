@@ -1,6 +1,7 @@
 package pl.agh.depressiondetector.authentication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -98,28 +99,29 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String message) {
             dialog.cancel();
+            Context context = LoginActivity.this;
             switch (message) {
                 case LOGIN_USER_LOGGED_IN:
                     if (keepLoggedInView.isChecked())
                         saveCredentials(user);
-                    ServicesManager.startServices(LoginActivity.this);
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    ServicesManager.startServices(context);
+                    startActivity(new Intent(context, MainActivity.class));
                     finish();
                     break;
                 case LOGIN_LOGIN_DOES_NOT_EXIST:
-                    ToastUtils.show(LoginActivity.this, getString(R.string.error_login_does_not_exist));
+                    ToastUtils.show(context, getString(R.string.error_login_does_not_exist));
                     break;
                 case LOGIN_PASSWORD_INVALID:
-                    ToastUtils.show(LoginActivity.this, getString(R.string.error_password_invalid));
+                    ToastUtils.show(context, getString(R.string.error_password_invalid));
                     break;
                 case TIMEOUT_ERROR:
-                    ToastUtils.show(LoginActivity.this, getString(R.string.error_timeout));
+                    ToastUtils.show(context, getString(R.string.error_timeout));
                     break;
                 case CONNECTION_ERROR:
-                    ToastUtils.show(LoginActivity.this, getString(R.string.error_connection));
+                    ToastUtils.show(context, getString(R.string.error_connection));
                     break;
                 default:
-                    ToastUtils.show(LoginActivity.this, getString(R.string.error_unknown));
+                    ToastUtils.show(context, getString(R.string.error_unknown));
                     break;
             }
         }

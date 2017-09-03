@@ -9,4 +9,26 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
     MONGODB_HOST = os.environ.get('MONGOLAB_URI')
+
+
+class TestingConfig(Config):
+    TESTING = True
+    MONGODB_HOST = os.environ.get('MONGOLAB_URI_TEST')
+    TEST_DB_NAME = MONGODB_HOST.split('/')[-1]
+    WTF_CSRF_ENABLED = False
+
+
+DEVELOPMENT_CONFIG_NAME = 'development'
+TESTING_CONFIG_NAME = 'testing'
+
+config = {
+    DEVELOPMENT_CONFIG_NAME: DevelopmentConfig,
+    TESTING_CONFIG_NAME: TestingConfig
+}
+
+

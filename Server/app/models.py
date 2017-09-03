@@ -1,11 +1,11 @@
 from flask import current_app
 from app import db
-import app.exceptions as exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 import mongoengine as mongo
 
 from datetime import datetime
+import json
 
 
 class User(db.Document):
@@ -26,7 +26,7 @@ class User(db.Document):
 
     @property
     def emotion_extraction_results(self):
-        return EmotionExtractionResult.objects.filter(user=self).exclude('id').all()
+        return EmotionExtractionResult.objects.filter(user=self).all()
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -45,6 +45,9 @@ class User(db.Document):
         username = data.get('username')
         return User.objects.filter(username=username).first()
 
+    def to_json(self):
+        return json.loads(super().to_json())
+
 
 class EmotionExtractionResult(db.Document):
 
@@ -55,3 +58,6 @@ class EmotionExtractionResult(db.Document):
     sad = mongo.FloatField()
     angry = mongo.FloatField()
     fear = mongo.FloatField()
+
+    def to_json(self):
+        return json.loads(super().to_json())

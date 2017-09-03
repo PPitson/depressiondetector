@@ -1,4 +1,4 @@
-from config import Config
+from config import config, DEVELOPMENT_CONFIG_NAME
 from celery import Celery
 from flask import Flask
 from flask_mail import Mail
@@ -14,9 +14,9 @@ db = MongoEngine()
 bootstrap = Bootstrap()
 
 
-def create_app():
+def create_app(config_name=DEVELOPMENT_CONFIG_NAME):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config[config_name])
 
     register_extensions(app)
     register_blueprints(app)

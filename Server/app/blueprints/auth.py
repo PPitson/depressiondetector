@@ -10,12 +10,19 @@ from app.email import send_email
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
+def get_json_or_raise_exception():
+    request_json = request.get_json()
+    if not request_json:
+        raise exceptions.JSONMissingException
+    return request_json
+
+
 @auth.route('/register', methods=['POST'])
 def register_user():
-    request_json = request.get_json()
-    username = request_json.get('username')
-    email = request.json.get('email')
-    password = request_json.get('password')
+    request_json = get_json_or_raise_exception()
+    username = request_json['username']
+    email = request.json['email']
+    password = request_json['password']
 
     if User.objects.filter(username=username).first() is not None:
         raise exceptions.UserExistsException
@@ -32,9 +39,9 @@ def register_user():
 
 @auth.route('/login', methods=['POST'])
 def login():
-    request_json = request.get_json()
-    username = request_json.get('username')
-    password = request_json.get('password')
+    request_json = get_json_or_raise_exception()
+    username = request_json['username']
+    password = request_json['password']
 
     try:
         user = User.objects.get(username=username)
@@ -49,7 +56,8 @@ def login():
 
 @auth.route('/reset_password', methods=['POST'])
 def reset_password_request():
-    email = request.get_json().get('email')
+    request_json = get_json_or_raise_exception()
+    email = request_json['email']
     try:
         user = User.objects.get(email=email)
     except mongo.DoesNotExist:

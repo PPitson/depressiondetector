@@ -37,3 +37,6 @@ class ForbiddenAccessException(ErrorException):
     message = 'FORBIDDEN_ACCESS'
     status_code = 403
 
+
+class JSONMissingException(ErrorException):
+    message = 'JSON_MISSING'

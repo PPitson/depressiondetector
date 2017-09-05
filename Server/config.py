@@ -21,6 +21,7 @@ class TestingConfig(Config):
     MONGODB_HOST = os.environ.get('MONGOLAB_URI_TEST')
     TEST_DB_NAME = MONGODB_HOST.split('/')[-1]
     WTF_CSRF_ENABLED = False
+    MAIL_USERNAME = 'tester'
 
 
 DEVELOPMENT_CONFIG_NAME = 'development'

@@ -10,7 +10,7 @@ import json
 
 class User(db.Document):
 
-    username = mongo.StringField(max_length=25)
+    username = mongo.StringField(max_length=25, required=True)
     email = mongo.EmailField(required=True)
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
@@ -33,7 +33,7 @@ class User(db.Document):
 
     def generate_token(self, expiration=3600):
         serializer = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return serializer.dumps({'username': self.username})
+        return serializer.dumps({'pk': str(self.pk)})
 
     @staticmethod
     def load_user_from_token(token):
@@ -42,8 +42,8 @@ class User(db.Document):
             data = serializer.loads(token)
         except (BadSignature, SignatureExpired):
             return None
-        username = data.get('username')
-        return User.objects.filter(username=username).first()
+        primary_key = data.get('pk')
+        return User.objects.filter(pk=primary_key).first()
 
     def to_json(self):
         return json.loads(super().to_json())

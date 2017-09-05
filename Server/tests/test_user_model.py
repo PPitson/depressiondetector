@@ -34,12 +34,6 @@ class UserModelTest(CustomTestCase):
         user = User.load_user_from_token(token)
         self.assertEqual(self.user, user)
 
-    def test_load_user_from_token_fails_after_changing_username(self):
-        token = self.user.generate_token()
-        self.user.username = 'changed_username'
-        self.user.save()
-        self.assertIsNone(User.load_user_from_token(token))
-
     def test_load_user_from_token_fails_after_deleting_user(self):
         token = self.user.generate_token()
         self.user.delete()

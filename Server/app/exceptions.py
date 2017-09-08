@@ -33,10 +33,9 @@ class InvalidPasswordException(ErrorException):
     status_code = 401
 
 
-class ForbiddenAccessException(ErrorException):
-    message = 'FORBIDDEN_ACCESS'
-    status_code = 403
-
-
 class JSONMissingException(ErrorException):
     message = 'JSON_MISSING'
+
+
+class InvalidFieldException(ErrorException):
+    message = 'INVALID_FIELD'

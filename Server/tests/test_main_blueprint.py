@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from tests.testcase import CustomTestCase
 from app.models import User, EmotionExtractionResult
 
@@ -22,11 +24,27 @@ class VoiceEmotionResultsTestCase(CustomTestCase):
         self.bob_result = result
         self.bob_result2 = other_result
 
+    def test_unauthorized_get_results(self):
+        response = self.client.get('/results')
+        self.assert401(response)
+
     def test_get_results(self):
-        response = self.client.get('/results', headers=self.get_headers('admin', 'pass'))
+        response = self.client.get('/results', headers=self.get_headers())
         self.assert200(response)
         self.assertIn(self.result.to_json(), response.json)
         self.assertIn(self.result2.to_json(), response.json)
         self.assertEqual([self.result.to_json(), self.result2.to_json()], response.json)
         self.assertNotIn(self.bob_result.to_json(), response.json)
         self.assertNotIn(self.bob_result2.to_json(), response.json)
+
+    def test_unauthorized_post_sound_file(self):
+        response = self.client.post('/sound_files', data=b'123')
+        self.assert401(response)
+
+    @patch('app.blueprints.main.analyze_file_task')
+    def test_post_sound_file(self, task_mock):
+        data = b'123'
+        response = self.client.post('/sound_files', headers=self.get_headers(), data=data)
+        self.assert200(response)
+        task_mock.delay.assert_called_with(data, self.user)
+        self.assertTrue(response.json['received'])

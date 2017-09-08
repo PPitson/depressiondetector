@@ -1,8 +1,9 @@
-from flask import Blueprint, g, jsonify, request, flash, redirect, url_for
+from flask import Blueprint, g, jsonify, flash, redirect, url_for
 
 from app.email import send_email
 from app.http_auth import auth
 from app.models import User
+from app.blueprints.auth import get_json_or_raise_exception
 import app.exceptions as exceptions
 
 account = Blueprint('account', __name__)
@@ -11,9 +12,13 @@ account = Blueprint('account', __name__)
 @account.route('/user', methods=['PUT'])
 @auth.login_required
 def update_user():
-    for key, value in request.get_json().items():
-        if key == 'email' and g.current_user.email != value and User.objects.filter(email=value).first() is not None:
+    for key, value in get_json_or_raise_exception().items():
+        if key not in User.get_fields():
+            raise exceptions.InvalidFieldException(payload={'field': key})
+        if key == 'email' and g.current_user.email != value and User.objects.filter(email=value).first():
             raise exceptions.EmailTakenException
+        elif key == 'username' and g.current_user.username != value and User.objects.filter(username=value).first():
+            raise exceptions.UserExistsException
         setattr(g.current_user, key, value)
     g.current_user.save()
     return jsonify({'message': 'USER_UPDATED'}), 200

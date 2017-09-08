@@ -48,6 +48,13 @@ class User(db.Document):
     def to_json(self):
         return json.loads(super().to_json())
 
+    @staticmethod
+    def get_fields():
+        fields = set(field for field in User._fields_ordered if field != 'id')
+        fields.remove('password_hash')
+        fields.add('password')
+        return fields
+
 
 class EmotionExtractionResult(db.Document):
 

@@ -1,8 +1,10 @@
-import sys
+import uuid
 import os
-from .api import Vokaturi
-import scipy.io.wavfile
-from typing import Dict
+import sys
+
+from app.models import EmotionExtractionResult
+from converter.amr2wav import convert
+from vokaturi.api.Vokaturi import extract_emotions
 
 
 def get_system_and_architecture():
@@ -12,37 +14,24 @@ def get_system_and_architecture():
     return system, architecture
 
 
-def extract_emotions(filename) -> Dict[str, float]:
-    system, architecture = get_system_and_architecture()
+def create_lib_path(system, architecture):
     extension = 'dll' if system == 'win' else 'so'
     lib_file = f'Vokaturi_{system}{architecture}.{extension}'
-
     lib_dir = os.path.join(os.path.dirname(__file__), 'lib')
-    Vokaturi.load(os.path.join(lib_dir, lib_file))
+    return os.path.join(lib_dir, lib_file)
 
-    (sample_rate, samples) = scipy.io.wavfile.read(filename)
 
-    buffer_length = len(samples)
-    c_buffer = Vokaturi.SampleArrayC(buffer_length)
-    if samples.ndim == 1:  # mono
-        c_buffer[:] = samples[:] / 32768.0
-    else:  # stereo
-        c_buffer[:] = 0.5 * (samples[:, 0] + 0.0 + samples[:, 1]) / 32768.0
-
-    voice = Vokaturi.Voice(sample_rate, buffer_length)
-    voice.fill(buffer_length, c_buffer)
-    quality = Vokaturi.Quality()
-    emotion_probabilities = Vokaturi.EmotionProbabilities()
-    voice.extract(quality, emotion_probabilities)
-    voice.destroy()
-
-    if not quality.valid:
-        return {}
-
-    return {
-        'neutral': emotion_probabilities.neutrality,
-        'happy': emotion_probabilities.happiness,
-        'sad': emotion_probabilities.sadness,
-        'angry': emotion_probabilities.anger,
-        'fear': emotion_probabilities.fear
-    }
+def analyze_file(file_bytes, user):
+    filename = uuid.uuid4().hex
+    amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
+    with open(amr_filename, 'wb') as file:
+        file.write(file_bytes)
+    convert(amr_filename)
+    system, architecture = get_system_and_architecture()
+    lib_path = create_lib_path(system, architecture)
+    emotions = extract_emotions(wav_filename, lib_path)
+    os.remove(amr_filename)
+    os.remove(wav_filename)
+    if emotions:
+        result = EmotionExtractionResult(user=user, **emotions)
+        result.save()

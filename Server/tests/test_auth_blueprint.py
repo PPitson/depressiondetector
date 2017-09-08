@@ -13,11 +13,6 @@ class AuthTestCase(CustomTestCase):
     def send_post_request(self, data):
         return self.client.post(self.endpoint, data=json.dumps(data), content_type='application/json')
 
-    def check_response(self, response, status_code, message):
-        self.assertStatus(response, status_code)
-        self.assertIn('message', response.json)
-        self.assertEqual(response.json['message'], message)
-
     def send_empty_request(self):
         response = self.client.post(self.endpoint)
         self.check_response(response, 400, 'JSON_MISSING')
@@ -60,6 +55,18 @@ class RegisterTestCase(AuthTestCase):
         response = self.send_post_request(data)
         self.check_response(response, 400, 'FIELD_REQUIRED')
         self.assertEqual(response.json['field'], 'password')
+
+    def test_invalid_sex(self):
+        data = {'username': 'bob', 'email': 'bob@bob.com', 'password': 'alice', 'sex': 'P'}
+        response = self.send_post_request(data)
+        self.check_response(response, 400, "Value must be one of ('M', 'F')")
+        self.assertEqual(response.json['field'], 'sex')
+
+    def test_invalid_date_of_birth_format(self):
+        data = {'username': 'bob', 'email': 'bob@bob.com', 'password': 'alice', 'date_of_birth': '123456'}
+        response = self.send_post_request(data)
+        self.check_response(response, 400, 'cannot parse date "123456"')
+        self.assertEqual(response.json['field'], 'date_of_birth')
 
     def test_data_missing(self):
         self.send_empty_request()

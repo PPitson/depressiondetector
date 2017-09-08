@@ -28,3 +28,8 @@ class CustomTestCase(TestCase):
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
+
+    def check_response(self, response, status_code, message):
+        self.assertStatus(response, status_code)
+        self.assertIn('message', response.json)
+        self.assertEqual(response.json['message'], message)

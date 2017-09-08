@@ -18,13 +18,3 @@ def verify_password(username, password):
     g.current_user = user
     return user.verify_password(password)
 
-
-def verify_username(f):
-
-    @wraps(f)
-    def inner(username, *args, **kwargs):
-        if auth.username() != username:
-            raise exceptions.ForbiddenAccessException
-        return f(username, *args, **kwargs)
-
-    return inner

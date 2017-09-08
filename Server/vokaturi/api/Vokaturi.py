@@ -6,6 +6,9 @@
 # The declarations are parallel to those in Vokaturi.h.
 
 import ctypes
+import scipy.io.wavfile
+
+from typing import Dict
 
 
 class Quality(ctypes.Structure):
@@ -93,3 +96,33 @@ def versionAndLicense():
 
 def SampleArrayC(size):
     return (ctypes.c_double * size)()
+
+
+def extract_emotions(filename, lib_path) -> Dict[str, float]:
+    load(lib_path)
+    (sample_rate, samples) = scipy.io.wavfile.read(filename)
+
+    buffer_length = len(samples)
+    c_buffer = SampleArrayC(buffer_length)
+    if samples.ndim == 1:  # mono
+        c_buffer[:] = samples[:] / 32768.0
+    else:  # stereo
+        c_buffer[:] = 0.5 * (samples[:, 0] + 0.0 + samples[:, 1]) / 32768.0
+
+    voice = Voice(sample_rate, buffer_length)
+    voice.fill(buffer_length, c_buffer)
+    quality = Quality()
+    emotion_probabilities = EmotionProbabilities()
+    voice.extract(quality, emotion_probabilities)
+    voice.destroy()
+
+    if not quality.valid:
+        return {}
+
+    return {
+        'neutral': emotion_probabilities.neutrality,
+        'happy': emotion_probabilities.happiness,
+        'sad': emotion_probabilities.sadness,
+        'angry': emotion_probabilities.anger,
+        'fear': emotion_probabilities.fear
+    }

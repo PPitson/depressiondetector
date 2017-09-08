@@ -1,1 +1,2 @@
-web: gunicorn app:app
+web: gunicorn run:app
+worker: celery worker -A runcelery.celery

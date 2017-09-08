@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_main_profile"
-        android:title="@string/profile"
+        android:id="@+id/item_profile_delete"
+        android:title="@string/delete_account"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/item_main_settings"
-        android:title="@string/settings"
+        android:id="@+id/item_profile_logout"
+        android:title="@string/logout"
         app:showAsAction="never" />
 
 </menu>

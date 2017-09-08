@@ -31,6 +31,9 @@ dependencies {
     // Appcompat
     compile 'com.android.support:appcompat-v7:25.3.1'
 
+    // Design
+    compile 'com.android.support:design:25.3.1'
+
     // Settings
     compile 'com.android.support:preference-v7:25.3.1'
 

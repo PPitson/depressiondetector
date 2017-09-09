@@ -31,5 +31,3 @@ config = {
     DEVELOPMENT_CONFIG_NAME: DevelopmentConfig,
     TESTING_CONFIG_NAME: TestingConfig
 }
-
-

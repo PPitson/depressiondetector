@@ -18,7 +18,7 @@ class UserModelTest(CustomTestCase):
 
     def test_cant_access_password(self):
         with self.assertRaises(AttributeError):
-            password = self.user.password
+            _ = self.user.password
 
     def test_verify_password(self):
         self.assertTrue(self.user.verify_password('pass'))
@@ -54,6 +54,3 @@ class UserModelTest(CustomTestCase):
         self.assertEqual(self.user.emotion_extraction_results.count(), 2)
         self.assertIn(result, list(self.user.emotion_extraction_results))
         self.assertIn(other_result, list(self.user.emotion_extraction_results))
-
-
-

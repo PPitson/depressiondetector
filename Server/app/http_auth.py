@@ -17,4 +17,3 @@ def verify_password(username, password):
         return False
     g.current_user = user
     return user.verify_password(password)
-

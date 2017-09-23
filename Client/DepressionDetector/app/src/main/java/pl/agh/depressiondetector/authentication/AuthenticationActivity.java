@@ -12,6 +12,8 @@ import pl.agh.depressiondetector.R;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
+    public static final int EXIT_AUTHENTICATION_ACTIVITY = 2309;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +25,23 @@ public class AuthenticationActivity extends AppCompatActivity {
             setContentView(R.layout.activity_authentication);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EXIT_AUTHENTICATION_ACTIVITY:
+                if (resultCode == RESULT_OK)
+                    finish();
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     public void onSignUpClick(View view) {
-        startActivity(new Intent(this, SignUpActivity.class));
+        startActivityForResult(new Intent(this, SignUpActivity.class), EXIT_AUTHENTICATION_ACTIVITY);
     }
 
     public void onLoginClick(View view) {
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivityForResult(new Intent(this, LoginActivity.class), EXIT_AUTHENTICATION_ACTIVITY);
     }
 }

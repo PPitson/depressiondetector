@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                         saveCredentials(user);
                     ServicesManager.startServices(context);
                     startActivity(new Intent(context, MainActivity.class));
-                    finish();
+                    finishWithParent();
                     break;
                 case LOGIN_LOGIN_DOES_NOT_EXIST:
                     ToastUtils.show(context, getString(R.string.error_login_does_not_exist));
@@ -133,5 +133,10 @@ public class LoginActivity extends AppCompatActivity {
                 .putString(getString(R.string.pref_user_username), user.name)
                 .putString(getString(R.string.pref_user_password), user.password)
                 .apply();
+    }
+
+    private void finishWithParent(){
+        setResult(RESULT_OK, null);
+        finish();
     }
 }

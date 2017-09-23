@@ -158,7 +158,7 @@ public class SignUpActivity extends AppCompatActivity {
                     saveCredentials(user);
                     ServicesManager.startServices(SignUpActivity.this);
                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                    finish();
+                    finishWithParent();
                     break;
                 case SIGNUP_LOGIN_ALREADY_USED:
                     ToastUtils.show(SignUpActivity.this, getString(R.string.error_login_exists));
@@ -179,7 +179,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-
     private void saveCredentials(User user) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
         preferences.edit()
@@ -187,5 +186,10 @@ public class SignUpActivity extends AppCompatActivity {
                 .putString(getString(R.string.pref_user_password), user.password)
                 .putString(getString(R.string.pref_user_email), user.email)
                 .apply();
+    }
+
+    private void finishWithParent(){
+        setResult(RESULT_OK, null);
+        finish();
     }
 }

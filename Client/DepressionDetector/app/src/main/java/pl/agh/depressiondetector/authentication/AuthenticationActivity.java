@@ -12,7 +12,7 @@ import pl.agh.depressiondetector.R;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
-    public static final int EXIT_AUTHENTICATION_ACTIVITY = 2309;
+    private static final int EXIT_AUTHENTICATION_ACTIVITY = 2309;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

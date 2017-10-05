@@ -28,6 +28,10 @@ class User(db.Document):
     def emotion_extraction_results(self):
         return EmotionExtractionResult.objects.filter(user=self).all()
 
+    @property
+    def emotion_from_text_extraction_results(self):
+        return EmotionFromTextExtractionResult.objects.filter(user=self).all()
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -65,6 +69,20 @@ class EmotionExtractionResult(db.Document):
     sad = mongo.FloatField()
     angry = mongo.FloatField()
     fear = mongo.FloatField()
+
+    def to_json(self):
+        return json.loads(super().to_json())
+
+
+class EmotionFromTextExtractionResult(db.Document):
+
+    user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
+    datetime = mongo.DateTimeField(default=datetime.utcnow())
+    anger = mongo.FloatField()
+    joy = mongo.FloatField()
+    fear = mongo.FloatField()
+    sadness = mongo.FloatField()
+    surprise = mongo.FloatField()
 
     def to_json(self):
         return json.loads(super().to_json())

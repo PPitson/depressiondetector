@@ -9,5 +9,5 @@ def analyze_file_task(file_bytes, user):
 
 
 @celery.task(name='analyze_text')
-def analyze_text_task(file_bytes, user):
-    analyze_text(file_bytes, user)
+def analyze_text_task(msg, user):
+    analyze_text(msg, user)

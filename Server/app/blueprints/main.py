@@ -1,5 +1,6 @@
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 
+from app.blueprints.auth import get_json_or_raise_exception
 from app.celery.tasks import analyze_file_task, analyze_text_task
 from app.http_auth import auth
 
@@ -13,6 +14,13 @@ def get_results_by_user():
     return make_response(jsonify(list(results)), 200)
 
 
+@main.route('/text_results', methods=['GET'])
+@auth.login_required
+def get_text_results_by_user():
+    results = g.current_user.emotion_from_text_extraction_results
+    return make_response(jsonify(list(results)), 200)
+
+
 @main.route('/sound_files', methods=['POST'])
 @auth.login_required
 def post_sound_file():
@@ -23,8 +31,9 @@ def post_sound_file():
 @main.route('/text_files', methods=['POST'])
 @auth.login_required
 def post_text_file():
-    print(request.get_data().decode("utf-8"))
-    analyze_text_task.delay(request.get_data(), g.current_user)
+    request_json = get_json_or_raise_exception()
+    message = request_json['message']
+    analyze_text_task.delay(message, g.current_user)
     return make_response(jsonify({'received': True}), 200)
 
 

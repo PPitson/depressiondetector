@@ -1,6 +1,6 @@
 from googletrans import Translator
 
 
-def translate(original, src, dest):
+def translate(original, dest):
     translator = Translator()
-    return translator.translate(original, src=src, dest=dest)
+    return translator.translate(original, dest=dest)

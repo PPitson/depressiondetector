@@ -1,5 +1,4 @@
 import indicoio
-import os
 from celery import Celery
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -23,9 +22,13 @@ def create_app(config_name=DEVELOPMENT_CONFIG_NAME):
     register_blueprints(app)
     init_celery(app, celery)
 
-    indicoio.config.api_key = os.environ.get('INDICO_KEY')
+    set_indico_key(config[config_name])
 
     return app
+
+
+def set_indico_key(cfg):
+    indicoio.config.api_key = cfg.INDICO_KEY
 
 
 def register_extensions(app):

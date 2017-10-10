@@ -50,9 +50,11 @@
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>
     <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
+    <string name="preferences_analyse_text_messages">Analyse text messages</string>
 
     <string name="pref_user_username" translatable="false">pref_user_username</string>
     <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_user_email" translatable="false">pref_user_email</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
+    <string name="pref_analyse_text_messages" translatable="false">pref_analyse_text_messages</string>
 </resources>

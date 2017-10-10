@@ -9,6 +9,11 @@
             android:key="@string/pref_analyse_phone_calls"
             android:title="@string/preferences_analyse_phone_calls"/>
 
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/pref_analyse_text_messages"
+            android:title="@string/preferences_analyse_text_messages"/>
+
     </android.support.v7.preference.PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

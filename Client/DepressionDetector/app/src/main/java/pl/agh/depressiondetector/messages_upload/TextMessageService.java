@@ -7,13 +7,13 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
-public class TextMessagesService extends Service {
+public class TextMessageService extends Service {
 
-    private final static String TAG = "TextMessagesService";
+    private final static String TAG = "TextMessageService";
 
     private TextMessagesObserver textMessagesObserver;
 
@@ -22,10 +22,8 @@ public class TextMessagesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         textMessagesObserver = new TextMessagesObserver(new Handler());
-        contentResolver = this.getApplicationContext().getContentResolver();
-        contentResolver.registerContentObserver(Uri.parse("content://sms/out"), true, textMessagesObserver);
-
-        Toast.makeText(this.getApplicationContext(), "Starting TextMessagesService", Toast.LENGTH_LONG).show();
+        contentResolver = this.getContentResolver();
+        contentResolver.registerContentObserver(Telephony.Sms.Sent.CONTENT_URI, true, textMessagesObserver);
 
         return START_STICKY;
     }
@@ -43,8 +41,7 @@ public class TextMessagesService extends Service {
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange, uri);
-            Toast.makeText(getApplicationContext(), "sms in outbox", Toast.LENGTH_LONG).show();
+            Log.i(TAG, "SMS sent");
         }
     }
 

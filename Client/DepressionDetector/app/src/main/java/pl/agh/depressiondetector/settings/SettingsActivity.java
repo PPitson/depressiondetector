@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import pl.agh.depressiondetector.R;
+import pl.agh.depressiondetector.messages_upload.TextMessageService;
 import pl.agh.depressiondetector.recording.PhoneCallService;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -42,6 +43,14 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 startService(phoneCall);
             else
                 stopService(phoneCall);
+        }
+
+        if (key.equals(getString(R.string.pref_analyse_text_messages))) {
+            Intent textMessage = new Intent(this, TextMessageService.class);
+            if (newValue)
+                startService(textMessage);
+            else
+                stopService(textMessage);
         }
     }
 

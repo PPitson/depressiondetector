@@ -12,6 +12,12 @@ import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import pl.agh.depressiondetector.utils.FileUtils;
+
 public class TextMessageService extends Service {
 
     private final static String TAG = "TextMessageService";
@@ -33,6 +39,8 @@ public class TextMessageService extends Service {
     private class TextMessagesObserver extends ContentObserver {
 
         private String lastTextMessageId;
+
+        private File outputFile;
 
         TextMessagesObserver(Handler handler) {
             super(handler);
@@ -63,10 +71,28 @@ public class TextMessageService extends Service {
                 if (!id.equals(lastTextMessageId)) {
                     lastTextMessageId = id;
                     String textMessage = cursor.getString(cursor.getColumnIndex("body"));
-                    //TODO: send textMessage to the server or save it on the device's memory to process later
+                    // TO USE LATER (right now we don't need to save messages in the device's memory)
+//                    try {
+//                        saveTextMessage(textMessage);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    new PostMessageTask(getApplicationContext()).execute(textMessage);
                 }
                 cursor.close();
             }
+        }
+
+        private void saveTextMessage(String textMessage) throws IOException {
+            File outputDir = FileUtils.getTextMessagesDirectory();
+            if (!FileUtils.createDirectory(outputDir))
+                Log.e(TAG, "Uploading text messages: cannot create a new directory.");
+
+            String fileName = FileUtils.getTextMessageFileName();
+            outputFile = new File(outputDir, fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            fileOutputStream.write(textMessage.getBytes());
+            fileOutputStream.close();
         }
     }
 

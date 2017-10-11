@@ -7,6 +7,7 @@ public interface API {
     String PATH_LOGIN = "auth/login";
     String PATH_DELETE = "user";
     String PATH_SOUND_FILES = "sound_files";
+    String PATH_TEXT_MESSAGES = "text_files";
     String PATH_RESULTS = "results";
 
 

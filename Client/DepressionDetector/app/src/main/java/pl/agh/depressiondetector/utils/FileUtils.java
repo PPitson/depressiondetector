@@ -16,12 +16,23 @@ public class FileUtils {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Audio");
     }
 
+    public static File getTextMessagesDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/TextMessages");
+    }
+
     public static boolean createDirectory(File file) {
         return file.exists() || file.mkdirs();
     }
 
     public static String getPhoneCallFileName() {
-        String dateString = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault()).format(new Date());
-        return "phone_call" + dateString;
+        return "phone_call" + getDateString();
+    }
+
+    public static String getTextMessageFileName() {
+        return "text_message" + getDateString() + ".txt";
+    }
+
+    private static String getDateString() {
+        return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault()).format(new Date());
     }
 }

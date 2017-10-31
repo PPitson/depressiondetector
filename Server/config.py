@@ -10,6 +10,8 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     INDICO_KEY = os.environ.get('INDICO_KEY')
+    SMSAPI_USERNAME = os.environ.get('SMSAPI_USERNAME')
+    SMSAPI_PASSWORD = os.environ.get('SMSAPI_PASSWORD')
 
 
 class DevelopmentConfig(Config):

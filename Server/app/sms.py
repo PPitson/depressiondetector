@@ -16,4 +16,3 @@ def send_sms(message, recipient):
         return True
     except ApiError:
         return False
-

@@ -7,17 +7,17 @@ from app.http_auth import auth
 main = Blueprint('main', __name__)
 
 
-@main.route('/results', methods=['GET'])
+@main.route('/voice_results', methods=['GET'])
 @auth.login_required
 def get_results_by_user():
-    results = g.current_user.emotion_extraction_results
+    results = g.current_user.voice_results
     return make_response(jsonify(list(results)), 200)
 
 
 @main.route('/text_results', methods=['GET'])
 @auth.login_required
 def get_text_results_by_user():
-    results = g.current_user.emotion_from_text_extraction_results
+    results = g.current_user.text_results
     return make_response(jsonify(list(results)), 200)
 
 

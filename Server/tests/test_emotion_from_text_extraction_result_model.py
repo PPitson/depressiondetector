@@ -1,4 +1,4 @@
-from app.models import EmotionFromTextExtractionResult
+from app.models import EmotionFromTextExtractionResult, HappinessLevel
 from tests.testcase import CustomTestCase
 
 
@@ -21,3 +21,18 @@ class EmotionExtractionFromTextResultModelTestCase(CustomTestCase):
         self.assertEqual(EmotionFromTextExtractionResult.objects.count(), 3)
         self.user.delete()
         self.assertEqual(EmotionFromTextExtractionResult.objects.count(), 0)
+
+    def test_happiness_level_is_saved_after_emotion_extraction_result_is_saved(self):
+        emotions = {'joy': 0.5, 'sadness': 0.07, 'anger': 0.03, 'fear': 0.3, 'surprise': 0.1}
+        EmotionFromTextExtractionResult.objects.create(user=self.user, **emotions)
+        self.assertEqual(HappinessLevel.objects.count(), 1)
+
+    def test_compute_happiness_level(self):
+        emotions = {'joy': 0.5, 'sadness': 0.07, 'anger': 0.03, 'fear': 0.3, 'surprise': 0.1}
+        emotion_result = EmotionFromTextExtractionResult(user=self.user, **emotions)
+        self.assertEqual(emotion_result.compute_happiness_level(), 0.5)
+
+    def test_is_subclass_of_data_source_mongo_document(self):
+        emotions = {'joy': 0.5, 'sadness': 0.07, 'anger': 0.03, 'fear': 0.3, 'surprise': 0.1}
+        emotion_result = EmotionFromTextExtractionResult(user=self.user, **emotions)
+        self.assertTrue(isinstance(emotion_result, EmotionFromTextExtractionResult))

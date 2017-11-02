@@ -12,7 +12,6 @@ from app import db
 
 
 class MongoDocument(db.Document):
-
     meta = {'allow_inheritance': True}
 
     def to_json(self):
@@ -23,7 +22,6 @@ class MongoDocument(db.Document):
 
 
 class DataSourceMongoDocument(MongoDocument):
-
     meta = {'allow_inheritance': True}
 
     @abstractmethod
@@ -46,12 +44,13 @@ class DataSourceMongoDocument(MongoDocument):
 
 
 class User(MongoDocument):
-
     username = mongo.StringField(max_length=25, required=True)
     email = mongo.EmailField(required=True)
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
     date_of_birth = mongo.DateTimeField()
+    contact_person_email = mongo.EmailField()
+    contact_person_phone = mongo.StringField()
 
     @property
     def password(self):
@@ -96,7 +95,6 @@ class User(MongoDocument):
 
 
 class EmotionExtractionResult(DataSourceMongoDocument):
-
     data_source = 'voice'
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime = mongo.DateTimeField(default=datetime.utcnow)
@@ -111,7 +109,6 @@ class EmotionExtractionResult(DataSourceMongoDocument):
 
 
 class EmotionFromTextExtractionResult(DataSourceMongoDocument):
-
     data_source = 'text'
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime = mongo.DateTimeField(default=datetime.utcnow)
@@ -126,7 +123,6 @@ class EmotionFromTextExtractionResult(DataSourceMongoDocument):
 
 
 class HappinessLevel(MongoDocument):
-
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     date = mongo.DateTimeField(default=datetime.utcnow().date())
     voice_happiness_level = mongo.FloatField()

@@ -7,7 +7,6 @@ from app import mail
 
 
 class AuthTestCase(CustomTestCase):
-
     endpoint = '/auth'
 
     def send_post_request(self, data):
@@ -19,7 +18,6 @@ class AuthTestCase(CustomTestCase):
 
 
 class RegisterTestCase(AuthTestCase):
-
     endpoint = AuthTestCase.endpoint + '/register'
 
     def test_successful_register(self):
@@ -27,6 +25,12 @@ class RegisterTestCase(AuthTestCase):
         response = self.send_post_request(data)
         self.check_response(response, 201, 'SIGNUP_USER_REGISTERED')
         self.assertIsNotNone(User.objects.filter(username='bob').first())
+
+        data = {'username': 'emma', 'email': 'emma@emma.com', 'password': 'watson', 'sex': 'F',
+                'date_of_birth': '15-04-1990', 'contact_person_email': 'pi@pi.com', 'contact_person_phone': '123456789'}
+        response = self.send_post_request(data)
+        self.check_response(response, 201, 'SIGNUP_USER_REGISTERED')
+        self.assertIsNotNone(User.objects.filter(username='emma').first())
 
     def test_username_exists(self):
         data = {'username': self.user.username, 'email': 'bob@bob.com', 'password': 'alice'}
@@ -36,7 +40,7 @@ class RegisterTestCase(AuthTestCase):
     def test_email_exists(self):
         data = {'username': 'mary', 'email': self.user.email, 'password': 'alice'}
         response = self.send_post_request(data)
-        self.check_response(response, 400,  'SIGNUP_EMAIL_ALREADY_USED')
+        self.check_response(response, 400, 'SIGNUP_EMAIL_ALREADY_USED')
 
     def test_username_missing(self):
         data = {'email': 'bob@bob.com', 'password': 'alice'}
@@ -73,7 +77,6 @@ class RegisterTestCase(AuthTestCase):
 
 
 class LoginTestCase(AuthTestCase):
-
     endpoint = AuthTestCase.endpoint + '/login'
 
     def test_successful_login(self):
@@ -96,7 +99,6 @@ class LoginTestCase(AuthTestCase):
 
 
 class ResetPasswordTestCase(AuthTestCase):
-
     endpoint = AuthTestCase.endpoint + '/reset_password'
 
     def check_reset_password_response(self, token, expected_flashed_message):

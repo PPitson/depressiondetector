@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import pl.agh.depressiondetector.R;
-import pl.agh.depressiondetector.messages_upload.TextMessageService;
-import pl.agh.depressiondetector.recording.PhoneCallService;
+import pl.agh.depressiondetector.analytics.messages_upload.TextMessageService;
+import pl.agh.depressiondetector.analytics.recording.PhoneCallService;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 

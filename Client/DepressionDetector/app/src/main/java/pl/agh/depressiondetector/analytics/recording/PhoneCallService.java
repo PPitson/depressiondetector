@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.recording;
+package pl.agh.depressiondetector.analytics.recording;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;

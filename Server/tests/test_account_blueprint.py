@@ -8,7 +8,6 @@ from app import mail
 
 
 class UpdateAccountTestCase(CustomTestCase):
-
     endpoint = '/user'
 
     def send_put_request(self, data):
@@ -26,7 +25,8 @@ class UpdateAccountTestCase(CustomTestCase):
         self.check_response(response, 400, 'JSON_MISSING')
 
     def test_successful_update_user(self):
-        data = {'username': 'bob', 'email': 'b@b.com', 'sex': 'F', 'password': 'bobby', 'date_of_birth': '1995-10-20'}
+        data = {'username': 'bob', 'email': 'b@b.com', 'sex': 'F', 'password': 'bobby', 'date_of_birth': '1995-10-20',
+                'contact_person_email': 'emma@emma.com', 'contact_person_phone': '123456789'}
         response = self.send_put_request(data)
         self.check_response(response, 200, 'USER_UPDATED')
         updated_user = User.objects.filter(pk=self.user.pk).first()
@@ -34,6 +34,8 @@ class UpdateAccountTestCase(CustomTestCase):
         self.assertEqual(updated_user.sex, 'F')
         self.assertEqual(updated_user.email, 'b@b.com')
         self.assertEqual(updated_user.date_of_birth.strftime('%Y-%m-%d'), '1995-10-20')
+        self.assertEqual(updated_user.contact_person_email, 'emma@emma.com')
+        self.assertEqual(updated_user.contact_person_phone, '123456789')
         self.assertNotEqual(updated_user.password_hash, self.user.password_hash)
 
     def test_email_taken(self):
@@ -78,7 +80,6 @@ class UpdateAccountTestCase(CustomTestCase):
 
 
 class DeleteAccountTestCase(CustomTestCase):
-
     endpoint = '/user'
 
     def check_delete_account_response(self, token, expected_flashed_message):

@@ -11,30 +11,32 @@ EMOTIONS_DICT = {'happy': 0.5, 'sad': 0.07, 'angry': 0.03, 'fear': 0.3, 'neutral
 
 @patch('vokaturi.analyzer.convert', Mock(return_value=''))
 @patch('vokaturi.analyzer.open', mock_open())
-@patch('vokaturi.analyzer.os.remove')
 class VokaturiAnalyzerTestCase(CustomTestCase):
 
     @patch('uuid.uuid4', Mock(return_value=Mock(hex=HEX)))
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
+    @patch('vokaturi.analyzer.os.remove')
     def test_removes_files_after_analyzing(self, os_remove):
         analyze_file(b'123', self.user)
         amr_filename, wav_filename = f'{HEX}.amr', f'{HEX}.wav'
         self.assertEqual(os_remove.mock_calls, [call(amr_filename), call(wav_filename)])
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value=EMOTIONS_DICT))
-    def test_saves_results_after_successful_analysis(self, os_remove):
+    @patch('vokaturi.analyzer.os.remove', Mock())
+    def test_saves_results_after_successful_analysis(self):
         analyze_file(b'123', self.user)
         self.assertEqual(EmotionExtractionResult.objects.count(), 1)
         emotion_result = EmotionExtractionResult.objects.first()
         self.assertEqual(emotion_result.user, self.user)
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
-    def test_doesnt_save_results_after_unsuccessful_analysis(self, os_remove):
+    @patch('vokaturi.analyzer.os.remove', Mock())
+    def test_doesnt_save_results_after_unsuccessful_analysis(self):
         analyze_file(b'123', self.user)
         self.assertEqual(EmotionExtractionResult.objects.count(), 0)
 
     @patch('vokaturi.analyzer.sys')
-    def test_get_system_and_architecture(self, sys, os_remove):
+    def test_get_system_and_architecture(self, sys):
         sys.platform = 'win32'
         sys.maxsize = 2 ** 32 + 1
         system, architecture = get_system_and_architecture()
@@ -53,7 +55,7 @@ class VokaturiAnalyzerTestCase(CustomTestCase):
         self.assertEqual(system, 'linux')
         self.assertEqual(architecture, 32)
 
-    def test_create_lib_path(self, os_remove):
+    def test_create_lib_path(self):
         path = create_lib_path('win', 32)
         self.assertTrue(path.endswith(os.path.join('lib', os.path.sep, 'Vokaturi_win32.dll')), f'returned: {path}')
         path = create_lib_path('win', 64)

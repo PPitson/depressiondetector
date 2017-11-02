@@ -9,6 +9,8 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    INDICO_KEY = os.environ.get('INDICO_KEY')
+    SMSAPI_TOKEN = os.environ.get('SMSAPI_TOKEN')
 
 
 class DevelopmentConfig(Config):
@@ -31,5 +33,3 @@ config = {
     DEVELOPMENT_CONFIG_NAME: DevelopmentConfig,
     TESTING_CONFIG_NAME: TestingConfig
 }
-
-

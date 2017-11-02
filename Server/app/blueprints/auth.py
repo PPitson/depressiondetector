@@ -1,11 +1,10 @@
 from flask import jsonify, request, Blueprint, render_template, flash, redirect, url_for
-
-from app.models import User
 import mongoengine as mongo
+
 import app.exceptions as exceptions
+from app.models import User
 from app.forms import PasswordResetForm
 from app.email import send_email
-
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -31,7 +30,10 @@ def register_user():
 
     sex = request_json.get('sex')
     date_of_birth = request_json.get('date_of_birth')
-    user = User(username=username, email=email, sex=sex, date_of_birth=date_of_birth)
+    contact_person_email = request_json.get('contact_person_email')
+    contact_person_phone = request_json.get('contact_person_phone')
+    user = User(username=username, email=email, sex=sex, date_of_birth=date_of_birth,
+                contact_person_email=contact_person_email, contact_person_phone=contact_person_phone)
     user.password = password
     user.save()
     return jsonify({'message': 'SIGNUP_USER_REGISTERED'}), 201

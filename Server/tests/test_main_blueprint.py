@@ -1,41 +1,46 @@
 from unittest.mock import patch
+from datetime import datetime, timedelta
 
 from tests.testcase import CustomTestCase
-from app.models import User, EmotionExtractionResult
+from app.models import HappinessLevel
 
 
 class VoiceEmotionResultsTestCase(CustomTestCase):
-
-    def setUp(self):
-        super().setUp()
-        result = EmotionExtractionResult(user=self.user, neutral=0.1, happy=0.3, sad=0.1, angry=0.1, fear=0.4)
-        result.save()
-        other_result = EmotionExtractionResult(user=self.user, neutral=0.3, happy=0.55, sad=0.5, angry=0.07, fear=0.03)
-        other_result.save()
-        self.result = result
-        self.result2 = other_result
-
-        self.bob = User(username='bob', email='bob@bob.com', password_hash='hash')
-        self.bob.save()
-        result = EmotionExtractionResult(user=self.bob, neutral=0.1, happy=0.3, sad=0.1, angry=0.1, fear=0.4)
-        result.save()
-        other_result = EmotionExtractionResult(user=self.bob, neutral=0.3, happy=0.55, sad=0.5, angry=0.07, fear=0.03)
-        other_result.save()
-        self.bob_result = result
-        self.bob_result2 = other_result
-
-    def test_unauthorized_get_results(self):
-        response = self.client.get('/results')
+    def test_unauthorized_get_voice_results(self):
+        response = self.client.get('/voice_results')
         self.assert401(response)
 
-    def test_get_results(self):
-        response = self.client.get('/results', headers=self.get_headers())
+    def test_get_voice_results(self):
+        now = datetime.utcnow().date()
+        for i in range(3):
+            HappinessLevel.objects.create(user=self.user, date=now - timedelta(days=i),
+                                          voice_happiness_level=0.1 * i, text_happiness_level=0.1 * i)
+
+        response = self.client.get('/voice_results', headers=self.get_headers())
         self.assert200(response)
-        self.assertIn(self.result.to_json(), response.json)
-        self.assertIn(self.result2.to_json(), response.json)
-        self.assertEqual([self.result.to_json(), self.result2.to_json()], response.json)
-        self.assertNotIn(self.bob_result.to_json(), response.json)
-        self.assertNotIn(self.bob_result2.to_json(), response.json)
+        self.assertEqual(len(response.json), 3)
+        for result in response.json:
+            self.assertIn('voice_happiness_level', result)
+            self.assertIn('date', result)
+            self.assertNotIn('text_happiness_level', result)
+
+    def test_unauthorized_get_text_results(self):
+        response = self.client.get('/text_results')
+        self.assert401(response)
+
+    def test_get_text_results(self):
+        now = datetime.utcnow().date()
+        for i in range(3):
+            HappinessLevel.objects.create(user=self.user, date=now - timedelta(days=i),
+                                          voice_happiness_level=0.1 * i, text_happiness_level=0.1 * i)
+
+        response = self.client.get('/text_results', headers=self.get_headers())
+        self.assert200(response)
+        self.assertEqual(len(response.json), 3)
+        for result in response.json:
+            self.assertIn('text_happiness_level', result)
+            self.assertIn('date', result)
+            self.assertNotIn('voice_happiness_level', result)
 
     def test_unauthorized_post_sound_file(self):
         response = self.client.post('/sound_files', data=b'123')

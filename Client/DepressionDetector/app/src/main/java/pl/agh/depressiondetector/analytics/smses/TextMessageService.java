@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.messages_upload;
+package pl.agh.depressiondetector.analytics.smses;
 
 import android.app.Service;
 import android.content.ContentResolver;

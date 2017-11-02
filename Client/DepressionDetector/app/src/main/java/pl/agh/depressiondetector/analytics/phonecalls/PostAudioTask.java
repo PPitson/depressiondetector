@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.recording;
+package pl.agh.depressiondetector.analytics.phonecalls;
 
 import android.content.Context;
 import android.content.SharedPreferences;

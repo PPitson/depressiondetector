@@ -3,8 +3,8 @@ package pl.agh.depressiondetector.utils;
 import android.content.Context;
 import android.content.Intent;
 
-import pl.agh.depressiondetector.analytics.messages_upload.TextMessageService;
-import pl.agh.depressiondetector.analytics.recording.PhoneCallService;
+import pl.agh.depressiondetector.analytics.smses.TextMessageService;
+import pl.agh.depressiondetector.analytics.phonecalls.PhoneCallService;
 
 public class ServicesManager {
 

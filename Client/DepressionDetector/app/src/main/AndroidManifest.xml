@@ -51,9 +51,9 @@
             android:parentActivityName=".MainActivity" />
 
 
-        <service android:name=".analytics.recording.PhoneCallService" />
+        <service android:name=".analytics.phonecalls.PhoneCallService" />
 
-        <service android:name=".analytics.messages_upload.TextMessageService"/>
+        <service android:name=".analytics.smses.TextMessageService"/>
 
     </application>
 

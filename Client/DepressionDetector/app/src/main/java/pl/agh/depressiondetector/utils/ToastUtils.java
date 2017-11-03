@@ -3,7 +3,7 @@ package pl.agh.depressiondetector.utils;
 import android.content.Context;
 import android.widget.Toast;
 
-public class ToastUtils {
+public final class ToastUtils {
 
     private ToastUtils() {
     }

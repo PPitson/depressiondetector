@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class FileUtils {
+public final class FileUtils {
 
     private FileUtils() {
     }

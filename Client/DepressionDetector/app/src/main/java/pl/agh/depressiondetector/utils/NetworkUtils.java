@@ -22,7 +22,7 @@ import pl.agh.depressiondetector.connection.HttpClient;
 
 import static pl.agh.depressiondetector.connection.API.HOST;
 
-public class NetworkUtils {
+public final class NetworkUtils {
 
     private NetworkUtils() {
     }

@@ -14,12 +14,12 @@ public class ServicesManager {
         context.startService(phoneCall);
 
         // Start listening for outgoing messages
-        Intent textMessage = new Intent(context, TextMessageService.class);
-        context.startService(textMessage);
+        // Intent textMessage = new Intent(context, TextMessageService.class); TODO Should not explode when there is no permission granted
+        // context.startService(textMessage);
     }
 
     public static void stopServices(Context context) {
         context.stopService(new Intent(context, PhoneCallService.class));
-        context.stopService(new Intent(context, TextMessageService.class));
+        //context.stopService(new Intent(context, TextMessageService.class));
     }
 }

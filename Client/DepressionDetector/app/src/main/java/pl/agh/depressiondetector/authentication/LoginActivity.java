@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.model.User;
+import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
@@ -104,7 +105,8 @@ public class LoginActivity extends AppCompatActivity {
                 case LOGIN_USER_LOGGED_IN:
                     if (keepLoggedInView.isChecked())
                         saveCredentials(user);
-                    ServicesManager.startServices(context);
+                    ServicesManager.startServices(LoginActivity.this);
+                    UploadScheduler.schedule(LoginActivity.this);
                     startActivity(new Intent(context, MainActivity.class));
                     finishWithParent();
                     break;
@@ -128,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveCredentials(User user) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.edit()
                 .putString(getString(R.string.pref_user_username), user.name)
                 .putString(getString(R.string.pref_user_password), user.password)

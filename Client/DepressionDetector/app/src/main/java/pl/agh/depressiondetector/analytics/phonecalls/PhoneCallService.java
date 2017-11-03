@@ -17,6 +17,11 @@ import java.io.IOException;
 
 import pl.agh.depressiondetector.utils.FileUtils;
 
+import static pl.agh.depressiondetector.utils.FileUtils.copyFile;
+import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallFileName;
+import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallsDirectory;
+import static pl.agh.depressiondetector.utils.FileUtils.getTemporaryDirectory;
+
 public class PhoneCallService extends Service {
 
     private static final String TAG = "PhoneCallService";
@@ -51,50 +56,46 @@ public class PhoneCallService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "Received intent with action: " + intent.getAction());
             Bundle bundle = intent.getExtras();
-            switch (intent.getAction()) {
-                case ACTION_IN_CALL:
-                    if (bundle != null) {
-                        String state = bundle.getString(TelephonyManager.EXTRA_STATE);
-                        if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
-                            wasRinging = true;
-                        } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) && wasRinging) {
-                            try {
+            try {
+                switch (intent.getAction()) {
+                    case ACTION_IN_CALL:
+                        if (bundle != null) {
+                            String state = bundle.getString(TelephonyManager.EXTRA_STATE);
+                            if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
+                                wasRinging = true;
+                            } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state) && wasRinging) {
                                 recordPhoneCall();
-                            } catch (IOException e) {
-                                Log.e(TAG, "Recording phone call: " + e);
-                            }
-                        } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
-                            wasRinging = false;
-                            if (isRecording) {
-                                isRecording = false;
-                                if (mediaRecorder != null) {
-                                    mediaRecorder.stop();
-                                    new PostAudioTask(context).execute(outputFile);
+                            } else if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
+                                wasRinging = false;
+                                if (isRecording) {
+                                    isRecording = false;
+                                    if (mediaRecorder != null) {
+                                        mediaRecorder.stop();
+                                        File phoneCallsDir = getPhoneCallsDirectory();
+                                        FileUtils.createDirectory(phoneCallsDir);
+                                        copyFile(outputFile, new File(phoneCallsDir, outputFile.getName()));
+                                        outputFile.delete();
+                                    }
                                 }
                             }
                         }
-                    }
-                    break;
-                case ACTION_OUT_CALL:
-                    try {
+                        break;
+                    case ACTION_OUT_CALL:
                         recordPhoneCall();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         private void recordPhoneCall() throws IOException {
-            File outputDir = FileUtils.getAudioDirectory();
-            if (!FileUtils.createDirectory(outputDir))
-                Log.e(TAG, "Recording phone call: cannot create a new directory.");
+            File outputDir = getTemporaryDirectory();
+            FileUtils.createDirectory(outputDir);
 
-            String fileName = FileUtils.getPhoneCallFileName();
-            outputFile = File.createTempFile(fileName, ".amr", outputDir);
-
+            outputFile = new File(outputDir, getPhoneCallFileName() + ".amr");
             mediaRecorder = new MediaRecorder();
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);

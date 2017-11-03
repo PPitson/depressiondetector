@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.model.User;
+import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
@@ -157,6 +158,7 @@ public class SignUpActivity extends AppCompatActivity {
                 case SIGNUP_USER_REGISTERED:
                     saveCredentials(user);
                     ServicesManager.startServices(SignUpActivity.this);
+                    UploadScheduler.schedule(SignUpActivity.this);
                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                     finishWithParent();
                     break;

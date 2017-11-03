@@ -25,6 +25,13 @@ def handle_missing_key(error):
     return response
 
 
+@errors.app_errorhandler(ValueError)
+def handle_wrong_datetime(error):
+    response = jsonify({'message': str(error)})
+    response.status_code = 400
+    return response
+
+
 @errors.app_errorhandler(ValidationError)
 def handle_validation_error(error):
     field_name, message = list(error.to_dict().items())[0]

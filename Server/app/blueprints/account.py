@@ -3,7 +3,7 @@ from flask import Blueprint, g, jsonify, flash, redirect, url_for
 from app.email import send_email
 from app.http_auth import auth
 from app.models import User
-from app.blueprints.auth import get_json_or_raise_exception
+from app.commons import get_json_or_raise_exception
 import app.exceptions as exceptions
 
 account = Blueprint('account', __name__)

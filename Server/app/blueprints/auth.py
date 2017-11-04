@@ -1,19 +1,13 @@
-from flask import jsonify, request, Blueprint, render_template, flash, redirect, url_for
 import mongoengine as mongo
+from flask import jsonify, request, Blueprint, render_template, flash, redirect, url_for
 
 import app.exceptions as exceptions
-from app.models import User
-from app.forms import PasswordResetForm
+from app.commons import get_json_or_raise_exception
 from app.email import send_email
+from app.forms import PasswordResetForm
+from app.models import User
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
-
-
-def get_json_or_raise_exception():
-    request_json = request.get_json()
-    if not request_json:
-        raise exceptions.JSONMissingException
-    return request_json
 
 
 @auth.route('/register', methods=['POST'])

@@ -1,46 +1,24 @@
-from datetime import datetime, timedelta
 import json
+from abc import abstractmethod
+from datetime import datetime, timedelta
 
-from flask import current_app
 import mongoengine as mongo
 import numpy as np
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
-from abc import abstractmethod
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 
 
 class MongoDocument(db.Document):
-    meta = {'allow_inheritance': True}
+    meta = {'allow_inheritance': True, 'abstract': True}
 
     def to_json(self):
         return json.loads(super().to_json())
 
     def __repr__(self):
         return self.to_mongo()
-
-
-class DataSourceMongoDocument(MongoDocument):
-    meta = {'allow_inheritance': True}
-
-    @abstractmethod
-    def compute_happiness_level(self):
-        pass
-
-    def save(self, **kwargs):
-        super().save(**kwargs)
-        start_date = self.datetime.date()
-        end_date = start_date + timedelta(days=1)
-        happiness_levels = [emotions_result.compute_happiness_level() for emotions_result
-                            in self.__class__.objects(datetime__gte=start_date, datetime__lt=end_date)]
-        average = np.mean(happiness_levels)
-        try:
-            happiness = HappinessLevel.objects.get(user=self.user, date__gte=start_date, date__lt=end_date)
-        except mongo.DoesNotExist:
-            happiness = HappinessLevel(user=self.user, date=start_date)
-        setattr(happiness, f'{self.data_source}_happiness_level', average)
-        happiness.save()
 
 
 class User(MongoDocument):
@@ -69,6 +47,10 @@ class User(MongoDocument):
         return HappinessLevel.get_results_by_data_source(user=self,
                                                          data_source=EmotionFromTextExtractionResult.data_source)
 
+    @property
+    def mood_results(self):
+        return HappinessLevel.get_results_by_data_source(user=self, data_source=Mood.data_source)
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -94,10 +76,33 @@ class User(MongoDocument):
         return fields
 
 
+class DataSourceMongoDocument(MongoDocument):
+    meta = {'allow_inheritance': True, 'abstract': True}
+
+    user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
+    datetime: datetime = mongo.DateTimeField(default=datetime.utcnow)
+
+    @abstractmethod
+    def compute_happiness_level(self):
+        pass
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        start_date = self.datetime.date()
+        end_date = start_date + timedelta(days=1)
+        happiness_levels = [emotions_result.compute_happiness_level() for emotions_result
+                            in self.__class__.objects(datetime__gte=start_date, datetime__lt=end_date)]
+        average = np.mean(happiness_levels)
+        try:
+            happiness = HappinessLevel.objects.get(user=self.user, date__gte=start_date, date__lt=end_date)
+        except mongo.DoesNotExist:
+            happiness = HappinessLevel(user=self.user, date=start_date)
+        setattr(happiness, f'{self.data_source}_happiness_level', average)
+        happiness.save()
+
+
 class EmotionExtractionResult(DataSourceMongoDocument):
     data_source = 'voice'
-    user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
-    datetime = mongo.DateTimeField(default=datetime.utcnow)
     neutral = mongo.FloatField()
     happy = mongo.FloatField()
     sad = mongo.FloatField()
@@ -110,8 +115,6 @@ class EmotionExtractionResult(DataSourceMongoDocument):
 
 class EmotionFromTextExtractionResult(DataSourceMongoDocument):
     data_source = 'text'
-    user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
-    datetime = mongo.DateTimeField(default=datetime.utcnow)
     anger = mongo.FloatField()
     joy = mongo.FloatField()
     fear = mongo.FloatField()
@@ -122,15 +125,25 @@ class EmotionFromTextExtractionResult(DataSourceMongoDocument):
         return self.joy
 
 
+class Mood(DataSourceMongoDocument):
+    data_source = 'mood'
+    mood_level: int = mongo.IntField(min_value=1, max_value=5)
+
+    def compute_happiness_level(self):
+        return (self.mood_level - 1) / 4
+
+
 class HappinessLevel(MongoDocument):
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     date = mongo.DateTimeField(default=datetime.utcnow().date())
     voice_happiness_level = mongo.FloatField()
     text_happiness_level = mongo.FloatField()
+    mood_happiness_level = mongo.FloatField()
 
     @staticmethod
     def get_results_by_data_source(user, data_source):
-        assert data_source in (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source)
+        assert data_source in (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
+                               Mood.data_source)
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
-                for result in HappinessLevel.objects.filter(user=user).all()]
+                for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]

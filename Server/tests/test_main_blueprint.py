@@ -84,9 +84,15 @@ class MoodResultsTestCase(CustomTestCase):
         response = self.client.post('/moods', data=json.dumps({'a': 1}), content_type='application/json')
         self.assert401(response)
 
-    def test_returns_json_missing_error(self):
+    def test_returns_json_list_missing_error(self):
+        response = self.client.post('/moods', headers=self.get_headers(), data=b'123')
+        self.check_response(response, 400, 'JSON_LIST_MISSING')
+        response = self.client.post('/moods', headers=self.get_headers(), data=json.dumps({}))
+        self.check_response(response, 400, 'JSON_LIST_MISSING')
         response = self.client.post('/moods', headers=self.get_headers(), data=json.dumps([]))
-        self.check_response(response, 400, 'JSON_MISSING')
+        self.check_response(response, 400, 'JSON_LIST_MISSING')
+        response = self.client.post('/moods', headers=self.get_headers(), data=json.dumps({'a': 1}))
+        self.check_response(response, 400, 'JSON_LIST_MISSING')
 
     def test_saves_mood_objects(self):
         data = json.dumps([

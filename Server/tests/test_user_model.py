@@ -2,11 +2,10 @@ import time
 from datetime import datetime, timedelta
 
 from tests.testcase import CustomTestCase
-from app.models import User, EmotionExtractionResult, EmotionFromTextExtractionResult, HappinessLevel
+from app.models import User, EmotionExtractionResult, EmotionFromTextExtractionResult, HappinessLevel, Mood
 
 
 class UserModelTest(CustomTestCase):
-
     def test_user_save(self):
         saved_user = User.objects.first()
         self.assertEqual(self.user, saved_user)
@@ -53,7 +52,9 @@ class UserModelTest(CustomTestCase):
         EmotionExtractionResult.objects.create(user=self.user, datetime=yesterday, neutral=0.1, happy=0.3, sad=0.1,
                                                angry=0.1, fear=0.4)
         EmotionFromTextExtractionResult.objects.create(user=self.user, datetime=yesterday, surprise=0.1, joy=0.3,
-                                                       sadness=0.1, anger=0.1, fear=0.4) # to check if it's not returned
+                                                       sadness=0.1, anger=0.1,
+                                                       fear=0.4)  # to check if it's not returned
+        Mood.objects.create(user=self.user, mood_level=2)
         EmotionExtractionResult.objects.create(user=self.user, neutral=0.3, happy=0.55, sad=0.5, angry=0.07, fear=0.03)
         EmotionExtractionResult.objects.create(user=self.user, neutral=0.6, happy=0.25, sad=0.5, angry=0.07, fear=0.03)
         self.assertEqual(EmotionExtractionResult.objects.count(), 3)
@@ -73,7 +74,8 @@ class UserModelTest(CustomTestCase):
         EmotionFromTextExtractionResult.objects.create(user=self.user, datetime=yesterday, surprise=0.1, joy=0.3,
                                                        sadness=0.1, anger=0.1, fear=0.4)
         EmotionExtractionResult.objects.create(user=self.user, datetime=yesterday, neutral=0.1, happy=0.3, sad=0.1,
-                                               angry=0.1, fear=0.4) # to check if it's not returned
+                                               angry=0.1, fear=0.4)  # to check if it's not returned
+        Mood.objects.create(user=self.user, mood_level=2)
         EmotionFromTextExtractionResult.objects.create(user=self.user, surprise=0.3, joy=0.55, sadness=0.5, anger=0.07,
                                                        fear=0.03)
         EmotionFromTextExtractionResult.objects.create(user=self.user, surprise=0.6, joy=0.25, sadness=0.5, anger=0.07,
@@ -87,3 +89,24 @@ class UserModelTest(CustomTestCase):
         self.assertEqual(text_results[1]['date'], now.date().strftime(date_format))
         self.assertEqual(text_results[0]['text_happiness_level'], 0.3)
         self.assertEqual(text_results[1]['text_happiness_level'], 0.4)
+
+    def test_user_mood_results(self):
+        now = datetime.utcnow()
+        yesterday = now - timedelta(days=1)
+        date_format = '%d-%m-%Y'
+        Mood.objects.create(user=self.user, datetime=yesterday, mood_level=3)
+        EmotionExtractionResult.objects.create(user=self.user, datetime=yesterday, neutral=0.1, happy=0.3, sad=0.1,
+                                               angry=0.1, fear=0.4)
+        EmotionFromTextExtractionResult.objects.create(user=self.user, surprise=0.3, joy=0.55, sadness=0.5, anger=0.07,
+                                                       fear=0.03)
+        Mood.objects.create(user=self.user, mood_level=2)
+        Mood.objects.create(user=self.user, mood_level=5)
+        self.assertEqual(Mood.objects.count(), 3)
+        self.assertEqual(HappinessLevel.objects.count(), 2)
+        mood_results = list(self.user.mood_results)
+        self.assertEqual(len(mood_results), 2)
+        self.assertEqual(list(mood_results[0].keys()), ['date', 'mood_happiness_level'])
+        self.assertEqual(mood_results[0]['date'], yesterday.date().strftime(date_format))
+        self.assertEqual(mood_results[1]['date'], now.date().strftime(date_format))
+        self.assertEqual(mood_results[0]['mood_happiness_level'], 0.5)
+        self.assertEqual(mood_results[1]['mood_happiness_level'], 0.625)

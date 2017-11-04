@@ -1,18 +1,18 @@
-from datetime import datetime, timedelta
 import json
+from abc import abstractmethod
+from datetime import datetime, timedelta
 
-from flask import current_app
 import mongoengine as mongo
 import numpy as np
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
-from abc import abstractmethod
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 
 
 class MongoDocument(db.Document):
-    meta = {'allow_inheritance': True}
+    meta = {'allow_inheritance': True, 'abstract': True}
 
     def to_json(self):
         return json.loads(super().to_json())
@@ -77,7 +77,7 @@ class User(MongoDocument):
 
 
 class DataSourceMongoDocument(MongoDocument):
-    meta = {'allow_inheritance': True}
+    meta = {'allow_inheritance': True, 'abstract': True}
 
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime: datetime = mongo.DateTimeField(default=datetime.utcnow)
@@ -146,4 +146,4 @@ class HappinessLevel(MongoDocument):
                                Mood.data_source)
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
-                for result in HappinessLevel.objects.filter(user=user).all()]
+                for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]

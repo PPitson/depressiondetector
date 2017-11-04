@@ -1,8 +1,8 @@
 import time
 from datetime import datetime, timedelta
 
-from tests.testcase import CustomTestCase
 from app.models import User, EmotionExtractionResult, EmotionFromTextExtractionResult, HappinessLevel, Mood
+from tests.testcase import CustomTestCase
 
 
 class UserModelTest(CustomTestCase):
@@ -94,6 +94,8 @@ class UserModelTest(CustomTestCase):
         now = datetime.utcnow()
         yesterday = now - timedelta(days=1)
         date_format = '%d-%m-%Y'
+        EmotionExtractionResult.objects.create(user=self.user, datetime=now - timedelta(days=2), neutral=0.1, happy=0.3,
+                                               sad=0.1, angry=0.1, fear=0.4)
         Mood.objects.create(user=self.user, datetime=yesterday, mood_level=3)
         EmotionExtractionResult.objects.create(user=self.user, datetime=yesterday, neutral=0.1, happy=0.3, sad=0.1,
                                                angry=0.1, fear=0.4)
@@ -102,7 +104,7 @@ class UserModelTest(CustomTestCase):
         Mood.objects.create(user=self.user, mood_level=2)
         Mood.objects.create(user=self.user, mood_level=5)
         self.assertEqual(Mood.objects.count(), 3)
-        self.assertEqual(HappinessLevel.objects.count(), 2)
+        self.assertEqual(HappinessLevel.objects.count(), 3)
         mood_results = list(self.user.mood_results)
         self.assertEqual(len(mood_results), 2)
         self.assertEqual(list(mood_results[0].keys()), ['date', 'mood_happiness_level'])

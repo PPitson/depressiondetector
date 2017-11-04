@@ -37,5 +37,9 @@ class JSONMissingException(ErrorException):
     message = 'JSON_MISSING'
 
 
+class JSONListMissingException(ErrorException):
+    message = "JSON_LIST_MISSING"
+
+
 class InvalidFieldException(ErrorException):
     message = 'INVALID_FIELD'

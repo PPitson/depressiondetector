@@ -12,9 +12,15 @@ import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import pl.agh.depressiondetector.utils.FileUtils;
 
@@ -25,6 +31,8 @@ public class TextMessageService extends Service {
     private TextMessagesObserver textMessagesObserver;
 
     private ContentResolver contentResolver;
+
+    private String textMessageDate;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -71,28 +79,42 @@ public class TextMessageService extends Service {
                 if (!id.equals(lastTextMessageId)) {
                     lastTextMessageId = id;
                     String textMessage = cursor.getString(cursor.getColumnIndex("body"));
-                    // TO USE LATER (right now we don't need to save messages in the device's memory)
-//                    try {
-//                        saveTextMessage(textMessage);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-                    new PostMessageTask(getApplicationContext()).execute(textMessage);
+                    textMessageDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault()).format(new Date());
+                    try {
+                        saveTextMessage(textMessage);
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 cursor.close();
             }
         }
 
-        private void saveTextMessage(String textMessage) throws IOException {
+        private void saveTextMessage(String textMessage) throws IOException, JSONException {
             File outputDir = FileUtils.getTextMessagesDirectory();
             if (!FileUtils.createDirectory(outputDir))
                 Log.e(TAG, "Uploading text messages: cannot create a new directory.");
 
-            String fileName = FileUtils.getTextMessageFileName();
+            String fileName = FileUtils.getTextMessageFileName() + ".txt";
             outputFile = new File(outputDir, fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-            fileOutputStream.write(textMessage.getBytes());
+            boolean fileExists = outputFile.exists();
+
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile, true);
+            if (fileExists)
+                fileOutputStream.write(",".getBytes());
+            else
+                fileOutputStream.write("[".getBytes());
+            fileOutputStream.write(formatTextMessage(textMessage).getBytes());
             fileOutputStream.close();
+        }
+
+
+        private String formatTextMessage(String textMessage) throws JSONException {
+            JSONObject json = new JSONObject();
+            json.put("message", textMessage);
+            json.put("datetime", textMessageDate);
+
+            return json.toString();
         }
     }
 

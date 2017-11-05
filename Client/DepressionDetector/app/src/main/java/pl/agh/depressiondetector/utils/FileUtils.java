@@ -39,7 +39,7 @@ public final class FileUtils {
     }
 
     public static String getTextMessageFileName() {
-        return "text_message" + getDateString() + ".txt";
+        return "text_messages";
     }
 
     private static String getDateString() {

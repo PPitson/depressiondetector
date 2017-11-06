@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -21,6 +23,7 @@ import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.HttpClient;
 
 import static pl.agh.depressiondetector.connection.API.HOST;
+import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
 public final class NetworkUtils {
 
@@ -38,14 +41,22 @@ public final class NetworkUtils {
         }
     }
 
+    public static boolean postJSONArray(JSONArray jsonArray, Context context, String encodedPathSegments) {
+        RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonArray.toString());
+        return post(requestBody, context, encodedPathSegments);
+    }
+
     public static boolean postFile(File file, Context context, String encodedPathSegments, MediaType contentType) {
+        RequestBody requestBody = RequestBody.create(contentType, file);
+        return post(requestBody, context, encodedPathSegments);
+    }
+
+    private static boolean post(RequestBody requestBody, Context context, String encodedPathSegments) {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme("https")
                 .host(HOST)
                 .addEncodedPathSegments(encodedPathSegments)
                 .build();
-
-        RequestBody requestBody = RequestBody.create(contentType, file);
 
         Request request = new Request.Builder()
                 .url(url)

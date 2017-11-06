@@ -102,8 +102,6 @@ public class TextMessageService extends Service {
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile, true);
             if (fileExists)
                 fileOutputStream.write(",".getBytes());
-            else
-                fileOutputStream.write("[".getBytes());
             fileOutputStream.write(formatTextMessage(textMessage).getBytes());
             fileOutputStream.close();
         }

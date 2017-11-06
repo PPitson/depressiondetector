@@ -49,6 +49,7 @@ public class SmsUploader implements Uploader {
 
         String line = bufferedReader.readLine();
 
+        stringBuilder.append("[");
         stringBuilder.append(line);
         stringBuilder.append("]");
 

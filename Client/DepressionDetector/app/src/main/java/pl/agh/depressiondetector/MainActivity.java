@@ -1,47 +1,58 @@
 package pl.agh.depressiondetector;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import okhttp3.Credentials;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import pl.agh.depressiondetector.connection.HttpClient;
+import pl.agh.depressiondetector.analytics.AnalysedDataType;
 import pl.agh.depressiondetector.settings.ProfileActivity;
 import pl.agh.depressiondetector.settings.SettingsActivity;
-import pl.agh.depressiondetector.utils.ToastUtils;
-
-import static pl.agh.depressiondetector.connection.API.HOST;
-import static pl.agh.depressiondetector.connection.API.PATH_RESULTS;
+import pl.agh.depressiondetector.ui.fragments.OverviewFragment;
+import pl.agh.depressiondetector.ui.fragments.PhoneCallResultsFragment;
+import pl.agh.depressiondetector.ui.fragments.TextMessagesResultsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.textview_main_results)
-    TextView resultsView;
+    private static List<AnalysedDataType> TAB_TYPES;
+
+    @BindView(R.id.main_view_pager)
+    ViewPager viewPager;
+
+    @BindView(R.id.main_tab_layout)
+    TabLayout tabLayout;
+
+    private MainPagerAdapter mainPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TAB_TYPES = setupTabTypes(getApplicationContext());
+
         ButterKnife.bind(this);
+
+        mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mainPagerAdapter);
+
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -63,63 +74,73 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.button_main_getresults)
-    public void onGetResultsClick() {
-        // TODO Replace somewhere, add showing all results
-        new AsyncTask<Void, Void, String>() {
-
-            @Override
-            protected String doInBackground(Void... params) {
-                return getLatestResult();
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                Log.i(TAG, "Results are: " + result);
-                if (resultsView != null) {
-                    if (result.contains("happy")) {
-                        int i = result.indexOf("happy");
-                        resultsView.setText("You were " + result.substring(i + 9, i + 14) + " happy last time");
-                    } else
-                        ToastUtils.show(MainActivity.this, "Empty results!");
-                }
-            }
-        }.execute();
-    }
-
-    private String getLatestResult() {
-        String result = null;
-        try {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String login = preferences.getString(getString(R.string.pref_user_username), "");
-            String password = preferences.getString(getString(R.string.pref_user_password), "");
-
-            String credential = Credentials.basic(login, password);
-
-            HttpUrl apiUrl = new HttpUrl.Builder()
-                    .scheme("https")
-                    .host(HOST)
-                    .addEncodedPathSegments(PATH_RESULTS)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(apiUrl)
-                    .header("Authorization", credential)
-                    .get()
-                    .build();
-
-            Response response = HttpClient.getClient().newCall(request).execute();
-            ResponseBody body = response.body();
-            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
-            if (body != null) {
-                if (response.isSuccessful())
-                    result = body.string();
-                body.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    private class MainPagerAdapter extends FragmentPagerAdapter {
+        MainPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        return result;
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new OverviewFragment();
+                default:
+                    if (position > TAB_TYPES.size())
+                        return null;
+                    return getItemFromType(TAB_TYPES.get(position - 1));
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return TAB_TYPES.size() + 1;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position > TAB_TYPES.size())
+                return null;
+            switch (position) {
+                case 0:
+                    return getString(R.string.main_overview);
+                default:
+                    return getPageTitleFromType(TAB_TYPES.get(position - 1));
+            }
+        }
+    }
+
+    private List<AnalysedDataType> setupTabTypes(Context appContext) {
+        List<AnalysedDataType> tabTypes = new ArrayList<>();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+        for (AnalysedDataType type : AnalysedDataType.values()) {
+            if (preferences.getBoolean(type.preferenceName, true)) {
+                tabTypes.add(type);
+            }
+        }
+
+        return tabTypes;
+    }
+
+    private Fragment getItemFromType(AnalysedDataType type) {
+        switch (type) {
+            case PHONE_CALL:
+                return new PhoneCallResultsFragment();
+            case SMS:
+                return new TextMessagesResultsFragment();
+            default:
+                return null;
+        }
+    }
+
+    private CharSequence getPageTitleFromType(AnalysedDataType type) {
+        switch (type) {
+            case PHONE_CALL:
+                return getString(R.string.main_phone_calls_results);
+            case SMS:
+                return getString(R.string.main_text_messages_results);
+            default:
+                return null;
+        }
     }
 }

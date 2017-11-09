@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="pl.agh.depressiondetector.MainActivity">
+    android:gravity="center_horizontal"
+    android:padding="8dip">
 
-    <Button
-        android:id="@+id/button_main_getresults"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/main_tab_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/main_getresults"/>
+        app:tabMode="fixed"
+        app:tabGravity="fill" />
 
-    <TextView
-        android:id="@+id/textview_main_results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        tools:text="You were 90% happy last time"/>
+    <android.support.v4.view.ViewPager
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context = "pl.agh.depressiondetector.MainActivityvity" />
 
 </LinearLayout>

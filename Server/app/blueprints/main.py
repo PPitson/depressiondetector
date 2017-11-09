@@ -32,6 +32,13 @@ def get_mood_results_by_user():
     return make_response(jsonify(list(results)), 200)
 
 
+@main.route('/mean_results', methods=['GET'])
+@auth.login_required
+def get_mean_results():
+    results = g.current_user.mean_results
+    return make_response(jsonify(results), 200)
+
+
 @main.route('/sound_files', methods=['POST'])
 @auth.login_required
 def post_sound_file():

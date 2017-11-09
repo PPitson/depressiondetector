@@ -51,6 +51,10 @@ class User(MongoDocument):
     def mood_results(self):
         return HappinessLevel.get_results_by_data_source(user=self, data_source=Mood.data_source)
 
+    @property
+    def mean_results(self):
+        return HappinessLevel.get_results_by_data_source(user=self, data_source=Mean.data_source)
+
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -98,6 +102,10 @@ class DataSourceMongoDocument(MongoDocument):
         except mongo.DoesNotExist:
             happiness = HappinessLevel(user=self.user, date=start_date)
         setattr(happiness, f'{self.data_source}_happiness_level', average)
+
+        results = [getattr(happiness, f'{data_source}_happiness_level') for data_source in data_sources
+                   if getattr(happiness, f'{data_source}_happiness_level') is not None]
+        setattr(happiness, f'{Mean.data_source}_happiness_level', np.mean(results))
         happiness.save()
 
 
@@ -133,17 +141,25 @@ class Mood(DataSourceMongoDocument):
         return (self.mood_level - 1) / 4
 
 
+class Mean:
+    data_source = 'mean'
+
+
 class HappinessLevel(MongoDocument):
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     date = mongo.DateTimeField(default=datetime.utcnow().date())
     voice_happiness_level = mongo.FloatField()
     text_happiness_level = mongo.FloatField()
     mood_happiness_level = mongo.FloatField()
+    mean_happiness_level = mongo.FloatField()
 
     @staticmethod
     def get_results_by_data_source(user, data_source):
-        assert data_source in (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
-                               Mood.data_source)
+        assert data_source in data_sources + (Mean.data_source,)
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
                 for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]
+
+
+data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
+                Mood.data_source)

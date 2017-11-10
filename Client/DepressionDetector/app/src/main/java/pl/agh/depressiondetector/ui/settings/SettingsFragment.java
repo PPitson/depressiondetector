@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.settings;
+package pl.agh.depressiondetector.ui.settings;
 
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;

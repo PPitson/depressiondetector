@@ -20,15 +20,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
-import pl.agh.depressiondetector.settings.ProfileActivity;
-import pl.agh.depressiondetector.settings.SettingsActivity;
-import pl.agh.depressiondetector.ui.fragments.OverviewFragment;
-import pl.agh.depressiondetector.ui.fragments.PhoneCallResultsFragment;
-import pl.agh.depressiondetector.ui.fragments.TextMessagesResultsFragment;
+import pl.agh.depressiondetector.ui.settings.ProfileActivity;
+import pl.agh.depressiondetector.ui.settings.SettingsActivity;
+import pl.agh.depressiondetector.ui.tabs.overview.OverviewFragment;
+import pl.agh.depressiondetector.ui.tabs.phonecalls.PhoneCallResultsFragment;
+import pl.agh.depressiondetector.ui.tabs.smses.TextMessagesResultsFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
 
     private static List<AnalysedDataType> TAB_TYPES;
 

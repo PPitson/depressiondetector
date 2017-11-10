@@ -19,6 +19,7 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.HttpClient;
 
@@ -43,15 +44,15 @@ public final class NetworkUtils {
 
     public static boolean postJSONArray(JSONArray jsonArray, Context context, String encodedPathSegments) {
         RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonArray.toString());
-        return post(requestBody, context, encodedPathSegments);
+        return post("POST_JSON_ARRAY", requestBody, context, encodedPathSegments);
     }
 
     public static boolean postFile(File file, Context context, String encodedPathSegments, MediaType contentType) {
         RequestBody requestBody = RequestBody.create(contentType, file);
-        return post(requestBody, context, encodedPathSegments);
+        return post("POST_FILE", requestBody, context, encodedPathSegments);
     }
 
-    private static boolean post(RequestBody requestBody, Context context, String encodedPathSegments) {
+    private static boolean post(String TAG, RequestBody requestBody, Context context, String encodedPathSegments) {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme("https")
                 .host(HOST)
@@ -66,12 +67,42 @@ public final class NetworkUtils {
 
         try {
             Response response = HttpClient.getClient().newCall(request).execute();
-            Log.i("POST_FILE", "Server returned: " + response.message() + " with code " + response.code());
+            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
             return response.isSuccessful();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static String getResults(String TAG, Context context, String encodedPathSegments) {
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("https")
+                .host(HOST)
+                .addEncodedPathSegments(encodedPathSegments)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", getBasicCredentials(context))
+                .get()
+                .build();
+
+        String result = null;
+        try {
+            Response response = HttpClient.getClient().newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
+            if (responseBody != null) {
+                if (response.isSuccessful())
+                    result = responseBody.string();
+                responseBody.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private static String getBasicCredentials(Context context) {

@@ -20,17 +20,19 @@ import static pl.agh.depressiondetector.utils.NetworkUtils.postJSONArray;
 
 
 
-public class SmsUploader implements Uploader {
+public class TextMessageUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
         boolean success = false;
         File directory = getTextMessagesDirectory();
-        File file = new File(directory, getTextMessageFileName() + ".txt");
-        try {
-            if (postTxtFile(file, appContext))
-                success = file.delete();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
+        if (directory.exists()) {
+            File file = new File(directory, getTextMessageFileName() + ".txt");
+            try {
+                if (postTxtFile(file, appContext))
+                    success = file.delete();
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

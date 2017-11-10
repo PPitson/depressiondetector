@@ -18,12 +18,14 @@ public class PhoneCallsUploader implements Uploader {
     public boolean upload(Context appContext) {
         File directory = getPhoneCallsDirectory();
         boolean success = false;
-        for (File file : directory.listFiles())
-            if (postAMRFile(file, appContext))
-                success = file.delete();
-            else
-                success = false;
+        if (directory.exists()) {
+            for (File file : directory.listFiles())
+                if (postAMRFile(file, appContext))
+                    success = file.delete();
+                else
+                    success = false;
 
+        }
         return success;
     }
 

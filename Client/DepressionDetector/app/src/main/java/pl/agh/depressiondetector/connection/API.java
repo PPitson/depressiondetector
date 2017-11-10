@@ -8,7 +8,8 @@ public interface API {
     String PATH_DELETE = "user";
     String PATH_SOUND_FILES = "sound_files";
     String PATH_TEXT_MESSAGES = "text_files";
-    String PATH_RESULTS = "results";
+    String PATH_VOICE_RESULTS = "voice_results";
+    String PATH_TEXT_RESULTS = "text_results";
 
 
     String USERNAME = "username";

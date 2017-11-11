@@ -1,6 +1,6 @@
-import uuid
 import os
 import sys
+import uuid
 
 from app.models import EmotionExtractionResult
 from converter.amr2wav import convert
@@ -33,5 +33,4 @@ def analyze_file(file_bytes, datetime, user):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        result = EmotionExtractionResult(user=user, datetime=datetime, **emotions)
-        result.save()
+        return EmotionExtractionResult(user=user, datetime=datetime, **emotions)

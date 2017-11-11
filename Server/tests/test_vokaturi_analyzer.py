@@ -23,17 +23,15 @@ class VokaturiAnalyzerTestCase(CustomTestCase):
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value=EMOTIONS_DICT))
     @patch('vokaturi.analyzer.os.remove', Mock())
-    def test_saves_results_after_successful_analysis(self):
-        analyze_file(b'123', datetime.now(), self.user)
-        self.assertEqual(EmotionExtractionResult.objects.count(), 1)
-        emotion_result = EmotionExtractionResult.objects.first()
-        self.assertEqual(emotion_result.user, self.user)
+    def test_returns_results_after_successful_analysis(self):
+        result = analyze_file(b'123', datetime.now(), self.user)
+        self.assertIsInstance(result, EmotionExtractionResult)
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
     @patch('vokaturi.analyzer.os.remove', Mock())
-    def test_doesnt_save_results_after_unsuccessful_analysis(self):
-        analyze_file(b'123', datetime.now(), self.user)
-        self.assertEqual(EmotionExtractionResult.objects.count(), 0)
+    def test_returns_nothing_after_unsuccessful_analysis(self):
+        result = analyze_file(b'123', datetime.now(), self.user)
+        self.assertIsNone(result)
 
     @patch('vokaturi.analyzer.sys')
     def test_get_system_and_architecture(self, sys):

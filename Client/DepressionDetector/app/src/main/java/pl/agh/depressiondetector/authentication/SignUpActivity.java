@@ -14,9 +14,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,10 +28,10 @@ import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
+import static pl.agh.depressiondetector.utils.DateUtils.convertToClientDateFormat;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private final SimpleDateFormat clientDateFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
     private final Calendar calendar = Calendar.getInstance();
 
     private Validator validator;
@@ -94,7 +92,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void updateDateOfBirthView() {
-        dateOfBirthView.setText(clientDateFormat.format(calendar.getTime()));
+        dateOfBirthView.setText(convertToClientDateFormat(calendar.getTime()));
     }
 
     @OnClick(R.id.button_google_sign_up)
@@ -119,7 +117,7 @@ public class SignUpActivity extends AppCompatActivity {
         boolean valid = validator.validFieldNotEmpty(usernameLayout);
         valid &= validator.validFieldNotEmpty(passwordLayout);
         valid &= validator.validEmailField(emailLayout);
-        valid &= validator.validDateField(dateOfBirthLayout, clientDateFormat);
+        valid &= validator.validDateField(dateOfBirthLayout);
 
         return valid;
     }

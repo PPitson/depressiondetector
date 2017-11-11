@@ -1,7 +1,6 @@
 package pl.agh.depressiondetector.utils;
 
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,9 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public final class FileUtils {
 
@@ -35,15 +31,11 @@ public final class FileUtils {
     }
 
     public static String getPhoneCallFileName() {
-        return "phone_call" + getDateString();
+        return String.valueOf(System.currentTimeMillis());
     }
 
     public static String getTextMessageFileName() {
         return "text_messages";
-    }
-
-    private static String getDateString() {
-        return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault()).format(new Date());
     }
 
     public static boolean copyFile(File src, File dst) {
@@ -59,5 +51,12 @@ public final class FileUtils {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public static boolean deleteFiles(File ... files){
+        boolean success = false;
+        for(File file: files)
+            success = file.delete();
+        return success;
     }
 }

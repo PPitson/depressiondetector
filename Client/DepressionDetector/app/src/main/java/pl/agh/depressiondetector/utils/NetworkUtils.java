@@ -74,7 +74,7 @@ public final class NetworkUtils {
         }
     }
 
-    private static String getBasicCredentials(Context context) {
+    public static String getBasicCredentials(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String name = preferences.getString(context.getString(R.string.pref_user_username), "");
         String password = preferences.getString(context.getString(R.string.pref_user_password), "");

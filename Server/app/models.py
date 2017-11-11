@@ -10,6 +10,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 
+MEAN_HAPPINESS_LEVEL_FIELD_PREFIX = 'mean'
+
 
 class MongoDocument(db.Document):
     meta = {'allow_inheritance': True, 'abstract': True}
@@ -40,20 +42,19 @@ class User(MongoDocument):
 
     @property
     def voice_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self, data_source=EmotionExtractionResult.data_source)
+        return HappinessLevel.get_results(user=self, data_source=EmotionExtractionResult.data_source)
 
     @property
     def text_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self,
-                                                         data_source=EmotionFromTextExtractionResult.data_source)
+        return HappinessLevel.get_results(user=self, data_source=EmotionFromTextExtractionResult.data_source)
 
     @property
     def mood_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self, data_source=Mood.data_source)
+        return HappinessLevel.get_results(user=self, data_source=Mood.data_source)
 
     @property
     def mean_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self, data_source=Mean.data_source)
+        return HappinessLevel.get_results(user=self)
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -105,7 +106,7 @@ class DataSourceMongoDocument(MongoDocument):
 
         results = [getattr(happiness, f'{data_source}_happiness_level') for data_source in data_sources
                    if getattr(happiness, f'{data_source}_happiness_level') is not None]
-        setattr(happiness, f'{Mean.data_source}_happiness_level', np.mean(results))
+        setattr(happiness, f'{MEAN_HAPPINESS_LEVEL_FIELD_PREFIX}_happiness_level', np.mean(results))
         happiness.save()
 
 
@@ -141,10 +142,6 @@ class Mood(DataSourceMongoDocument):
         return (self.mood_level - 1) / 4
 
 
-class Mean:
-    data_source = 'mean'
-
-
 class HappinessLevel(MongoDocument):
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     date = mongo.DateTimeField(default=datetime.utcnow().date())
@@ -154,8 +151,8 @@ class HappinessLevel(MongoDocument):
     mean_happiness_level = mongo.FloatField()
 
     @staticmethod
-    def get_results_by_data_source(user, data_source):
-        assert data_source in data_sources + (Mean.data_source,)
+    def get_results(user, data_source=MEAN_HAPPINESS_LEVEL_FIELD_PREFIX):
+        assert data_source in data_sources + (MEAN_HAPPINESS_LEVEL_FIELD_PREFIX,)
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
                 for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]

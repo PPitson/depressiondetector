@@ -104,10 +104,7 @@ class DataSourceMongoDocument(MongoDocument):
             happiness = HappinessLevel(user=self.user, date=start_date)
         setattr(happiness, f'{self.data_source}_happiness_level', average)
 
-        results = [getattr(happiness, f'{data_source}_happiness_level') for data_source in data_sources
-                   if getattr(happiness, f'{data_source}_happiness_level') is not None]
-        setattr(happiness, f'{MEAN_HAPPINESS_LEVEL_FIELD_PREFIX}_happiness_level', np.mean(results))
-        happiness.save()
+        happiness.compute_mean()
 
 
 class EmotionExtractionResult(DataSourceMongoDocument):
@@ -156,6 +153,12 @@ class HappinessLevel(MongoDocument):
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
                 for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]
+
+    def compute_mean(self):
+        results = [getattr(self, f'{data_source}_happiness_level') for data_source in data_sources
+                   if getattr(self, f'{data_source}_happiness_level') is not None]
+        setattr(self, f'{MEAN_HAPPINESS_LEVEL_FIELD_PREFIX}_happiness_level', np.mean(results))
+        self.save()
 
 
 data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,

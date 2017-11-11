@@ -1,10 +1,10 @@
 import json
-
-from unittest.mock import patch
 from datetime import datetime, timedelta
+from io import BytesIO
+from unittest.mock import patch, call
 
-from tests.testcase import CustomTestCase
 from app.models import HappinessLevel, Mood
+from tests.testcase import CustomTestCase
 
 
 class VoiceEmotionResultsTestCase(CustomTestCase):
@@ -31,11 +31,25 @@ class VoiceEmotionResultsTestCase(CustomTestCase):
         self.assert401(response)
 
     @patch('app.blueprints.main.analyze_file_task')
-    def test_post_sound_file(self, task_mock):
-        data = b'123'
-        response = self.client.post('/sound_files', headers=self.get_headers(), data=data)
+    def test_post_sound_files(self, task_mock):
+        date1 = '2017-11-11 16:24:35'
+        date2 = '2017-11-11 18:27:38'
+        data = {
+            'data': json.dumps({
+                'file.amr': {'date': date1},
+                'another.amr': {'date': date2},
+            }),
+            'file1': (BytesIO(b'file bytes'), 'file.amr'),
+            'file2': (BytesIO(b'another file bytes'), 'another.amr')
+        }
+        response = self.client.post('/sound_files', headers=self.create_auth_header(),
+                                    content_type='multipart/form-data', data=data)
         self.assert200(response)
-        task_mock.delay.assert_called_with(data, self.user)
+        calls = [
+            call(b'file bytes', datetime(2017, 11, 11, 16, 24, 35), self.user),
+            call(b'another file bytes', datetime(2017, 11, 11, 18, 27, 38), self.user)
+        ]
+        task_mock.delay.assert_has_calls(calls, any_order=True)
         self.assertTrue(response.json['received'])
 
 

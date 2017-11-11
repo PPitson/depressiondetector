@@ -18,7 +18,7 @@ class MongoDocument(db.Document):
         return json.loads(super().to_json())
 
     def __repr__(self):
-        return self.to_mongo()
+        return repr(self.to_mongo())
 
 
 class User(MongoDocument):

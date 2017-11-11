@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 import dateutil.parser
@@ -41,14 +42,17 @@ def get_mean_results():
 
 @main.route('/sound_files', methods=['POST'])
 @auth.login_required
-def post_sound_file():
-    analyze_file_task.delay(request.get_data(), g.current_user)
+def post_sound_files():
+    files_metadata = json.loads(request.form['data'])
+    for file in request.files.values():
+        date_time = datetime.strptime(files_metadata[file.filename]['date'], '%Y-%m-%d %H:%M:%S')
+        analyze_file_task.delay(file.read(), date_time, g.current_user)
     return make_response(jsonify({'received': True}), 200)
 
 
 @main.route('/text_files', methods=['POST'])
 @auth.login_required
-def post_text_file():
+def post_text_files():
     request_json = get_json_list_or_raise_exception()
     for json in request_json:
         message = json['message']

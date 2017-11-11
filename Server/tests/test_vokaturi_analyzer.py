@@ -1,9 +1,10 @@
-from unittest.mock import patch, Mock, call, mock_open
 import os
+from datetime import datetime
+from unittest.mock import patch, Mock, call, mock_open
 
+from app.models import EmotionExtractionResult
 from tests.testcase import CustomTestCase
 from vokaturi.analyzer import analyze_file, get_system_and_architecture, create_lib_path
-from app.models import EmotionExtractionResult
 
 HEX = '1234567890ABCDEF'
 EMOTIONS_DICT = {'happy': 0.5, 'sad': 0.07, 'angry': 0.03, 'fear': 0.3, 'neutral': 0.1}
@@ -12,19 +13,18 @@ EMOTIONS_DICT = {'happy': 0.5, 'sad': 0.07, 'angry': 0.03, 'fear': 0.3, 'neutral
 @patch('vokaturi.analyzer.convert', Mock(return_value=''))
 @patch('vokaturi.analyzer.open', mock_open())
 class VokaturiAnalyzerTestCase(CustomTestCase):
-
     @patch('uuid.uuid4', Mock(return_value=Mock(hex=HEX)))
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
     @patch('vokaturi.analyzer.os.remove')
     def test_removes_files_after_analyzing(self, os_remove):
-        analyze_file(b'123', self.user)
+        analyze_file(b'123', datetime.now(), self.user)
         amr_filename, wav_filename = f'{HEX}.amr', f'{HEX}.wav'
         self.assertEqual(os_remove.mock_calls, [call(amr_filename), call(wav_filename)])
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value=EMOTIONS_DICT))
     @patch('vokaturi.analyzer.os.remove', Mock())
     def test_saves_results_after_successful_analysis(self):
-        analyze_file(b'123', self.user)
+        analyze_file(b'123', datetime.now(), self.user)
         self.assertEqual(EmotionExtractionResult.objects.count(), 1)
         emotion_result = EmotionExtractionResult.objects.first()
         self.assertEqual(emotion_result.user, self.user)
@@ -32,7 +32,7 @@ class VokaturiAnalyzerTestCase(CustomTestCase):
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
     @patch('vokaturi.analyzer.os.remove', Mock())
     def test_doesnt_save_results_after_unsuccessful_analysis(self):
-        analyze_file(b'123', self.user)
+        analyze_file(b'123', datetime.now(), self.user)
         self.assertEqual(EmotionExtractionResult.objects.count(), 0)
 
     @patch('vokaturi.analyzer.sys')

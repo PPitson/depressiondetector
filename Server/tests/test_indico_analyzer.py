@@ -13,14 +13,12 @@ class IndicoioAnalyzerTestCase(CustomTestCase):
 
     @patch('indico.analyzer.indicoio.emotion', Mock(return_value=EMOTIONS_DICT))
     @patch('indico.analyzer.translate', Mock())
-    def test_saves_results_after_successful_analysis(self):
-        analyze_text('123', self.datetime, self.user)
-        self.assertEqual(EmotionFromTextExtractionResult.objects.count(), 1)
-        emotion_result = EmotionFromTextExtractionResult.objects.first()
-        self.assertEqual(emotion_result.user, self.user)
+    def test_returns_results_after_successful_analysis(self):
+        result = analyze_text('123', self.datetime, self.user)
+        self.assertIsInstance(result, EmotionFromTextExtractionResult)
 
     @patch('indico.analyzer.indicoio.emotion', Mock(return_value={}))
     @patch('indico.analyzer.translate', Mock())
-    def test_doesnt_save_results_after_unsuccessful_analysis(self):
-        analyze_text('123', self.datetime, self.user)
-        self.assertEqual(EmotionFromTextExtractionResult.objects.count(), 0)
+    def test_returns_nothing_after_unsuccessful_analysis(self):
+        result = analyze_text('123', self.datetime, self.user)
+        self.assertIsNone(result)

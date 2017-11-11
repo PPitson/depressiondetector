@@ -18,7 +18,6 @@
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of birth</string>
-    <string name="keep_me_logged_in">Keep me logged in</string>
     <string name="man">Man</string>
     <string name="woman">Woman</string>
 

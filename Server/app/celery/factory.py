@@ -1,11 +1,10 @@
 def init_celery(app, celery):
     celery.conf.update(
         app.config,
-        CELERY_ACCEPT_CONTENT=['pickle'],
-        CELERY_TASK_SERIALIZER='pickle',
-        CELERY_RESULT_SERIALIZER='pickle',
-        CELERY_ROUTES={'save_result': {'queue': 'results_to_save'}},
-        CELERY_CREATE_MISSING_QUEUES=True
+        accept_content=['pickle'],
+        task_serializer='pickle',
+        result_serializer='pickle',
+        task_routes={'save_result': {'queue': 'results_to_save'}},
     )
     TaskBase = celery.Task
 

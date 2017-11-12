@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+
 def init_celery(app, celery):
     celery.conf.update(
         app.config,
@@ -5,6 +8,12 @@ def init_celery(app, celery):
         task_serializer='pickle',
         result_serializer='pickle',
         task_routes={'save_result': {'queue': 'results_to_save'}},
+        beat_schedule={
+            'wake-up-every-15-minutes': {
+                'task': 'wake_up',
+                'schedule': timedelta(minutes=15),
+            }
+        }
     )
     TaskBase = celery.Task
 

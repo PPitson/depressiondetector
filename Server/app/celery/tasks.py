@@ -1,3 +1,5 @@
+import requests
+
 from app import celery
 from indico.analyzer import analyze_text
 from vokaturi.analyzer import analyze_file
@@ -20,3 +22,8 @@ def analyze_text_task(msg, datetime, user):
 @celery.task(name='save_result')
 def save_result(document):
     document.save()
+
+
+@celery.task(name='wake_up')
+def wake_up():
+    requests.get('https://depressionserver.herokuapp.com')

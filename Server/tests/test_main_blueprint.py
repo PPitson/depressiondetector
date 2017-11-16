@@ -110,9 +110,9 @@ class MoodResultsTestCase(CustomTestCase):
 
     def test_saves_mood_objects(self):
         data = json.dumps([
-            {'date': '01-11-2017', 'mood': 2},
-            {'date': '02-11-2017', 'mood': 3},
-            {'date': '03-11-2017', 'mood': 3}
+            {'date': '2017-11-01', 'mood': 2},
+            {'date': '2017-11-02', 'mood': 3},
+            {'date': '2017-11-03', 'mood': 3}
         ])
         self.assertEqual(Mood.objects.count(), 0)
         response = self.client.post('/moods', headers=self.get_headers(), data=data)
@@ -126,7 +126,7 @@ class MoodResultsTestCase(CustomTestCase):
 
     def test_invalid_mood_level(self):
         data = json.dumps([
-            {'date': '03-11-2017', 'mood': 6}
+            {'date': '2017-11-03', 'mood': 6}
         ])
         response = self.client.post('/moods', headers=self.get_headers(), data=data)
         self.assert400(response)

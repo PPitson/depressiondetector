@@ -37,6 +37,16 @@
     <string name="delete_successful">Delete successful</string>
     <string name="delete_message">You will be now logged out. To finish deleting account follow the instructions in email.</string>
 
+    <!-- Mood -->
+    <string name="mood_notification_title">Hey, how was your day?</string>
+    <string name="mood_notification_text">Click to rate your mood</string>
+    <string name="today_mood_rate_question">How was your mood today?</string>
+    <string name="mood_awful">Awful</string>
+    <string name="mood_bad">Bad</string>
+    <string name="mood_so_so">So so</string>
+    <string name="mood_good">Good</string>
+    <string name="mood_rad">Rad</string>
+
     <!-- General -->
     <string name="ok">OK</string>
     <string name="or">Or</string>
@@ -48,12 +58,14 @@
 
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>
-    <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
-    <string name="preferences_analyse_text_messages">Analyse text messages</string>
+    <string name="preferences_analyse_mood">Mood</string>
+    <string name="preferences_analyse_phone_calls">Phone calls</string>
+    <string name="preferences_analyse_text_messages">Text messages</string>
 
     <string name="pref_user_username" translatable="false">pref_user_username</string>
     <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_user_email" translatable="false">pref_user_email</string>
+    <string name="pref_analyse_mood" translatable="false">pref_analyse_mood</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
     <string name="pref_analyse_text_messages" translatable="false">pref_analyse_text_messages</string>
 </resources>

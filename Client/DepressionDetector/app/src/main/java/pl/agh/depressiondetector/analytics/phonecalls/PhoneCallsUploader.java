@@ -21,7 +21,7 @@ import static pl.agh.depressiondetector.connection.API.HOST;
 import static pl.agh.depressiondetector.connection.API.PATH_SOUND_FILES;
 import static pl.agh.depressiondetector.connection.HttpClient.AMR_TYPE;
 import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
-import static pl.agh.depressiondetector.utils.DateUtils.convertToServerDateFormat;
+import static pl.agh.depressiondetector.utils.DateUtils.convertToServerDateTimeFormat;
 import static pl.agh.depressiondetector.utils.FileUtils.deleteFiles;
 import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallsDirectory;
 import static pl.agh.depressiondetector.utils.NetworkUtils.getBasicCredentials;
@@ -78,7 +78,7 @@ public class PhoneCallsUploader implements Uploader {
         for (File file : records) {
             String name = file.getName();
             JSONObject meta = new JSONObject();
-            String date = convertToServerDateFormat(Long.valueOf(name.split("\\.")[0]));
+            String date = convertToServerDateTimeFormat(Long.valueOf(name.split("\\.")[0]));
             meta.put("date", date);
             json.put(name, meta);
         }

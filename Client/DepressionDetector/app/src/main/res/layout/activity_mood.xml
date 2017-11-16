@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:paddingBottom="@dimen/default_padding"
+    android:paddingTop="@dimen/default_padding"
+    tools:context=".analytics.mood.MoodActivity">
+
+    <TextView
+        android:id="@+id/textView_mood_awful"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingEnd="@dimen/default_half_padding"
+        android:paddingStart="@dimen/default_half_padding"
+        android:clickable="true"
+        android:focusable="true"
+        android:textColor="@color/mood_awful"
+        android:gravity="center"
+        android:text="@string/mood_awful"
+        android:drawableTop="@drawable/ic_mood_awful" />
+
+    <TextView
+        android:id="@+id/textView_mood_bad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingEnd="@dimen/default_half_padding"
+        android:paddingStart="@dimen/default_half_padding"
+        android:textColor="@color/mood_bad"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/mood_bad"
+        android:drawableTop="@drawable/ic_mood_bad" />
+
+    <TextView
+        android:id="@+id/textView_mood_so_so"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingEnd="@dimen/default_half_padding"
+        android:paddingStart="@dimen/default_half_padding"
+        android:text="@string/mood_so_so"
+        android:textColor="@color/mood_so_so"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:drawableTop="@drawable/ic_mood_so_so" />
+
+    <TextView
+        android:id="@+id/textView_mood_good"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingEnd="@dimen/default_half_padding"
+        android:paddingStart="@dimen/default_half_padding"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/mood_good"
+        android:textColor="@color/mood_good"
+        android:gravity="center"
+        android:drawableTop="@drawable/ic_mood_good" />
+
+    <TextView
+        android:id="@+id/textView_mood_rad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingEnd="@dimen/default_half_padding"
+        android:textColor="@color/mood_rad"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="@dimen/default_half_padding"
+        android:text="@string/mood_rad"
+        android:drawableTop="@drawable/ic_mood_rad" />
+</LinearLayout>

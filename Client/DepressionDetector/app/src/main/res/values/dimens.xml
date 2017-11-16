@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_half_padding">6dp</dimen>
+    <dimen name="default_padding">12dp</dimen>
+    <dimen name="mood_icon_size">44dp</dimen>
+</resources>

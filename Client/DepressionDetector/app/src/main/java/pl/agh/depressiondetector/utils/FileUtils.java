@@ -1,6 +1,7 @@
 package pl.agh.depressiondetector.utils;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public final class FileUtils {
+
+    private static final String TAG = "FILEUTILS";
 
     private FileUtils() {
     }
@@ -22,12 +25,12 @@ public final class FileUtils {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/TextMessages");
     }
 
-    public static File getTemporaryDirectory() {
-        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Temporary");
+    public static File getMoodDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Mood");
     }
 
-    public static boolean createDirectory(File file) {
-        return file.exists() || file.mkdirs();
+    public static File getTemporaryDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Temporary");
     }
 
     public static String getPhoneCallFileName() {
@@ -36,6 +39,33 @@ public final class FileUtils {
 
     public static String getTextMessageFileName() {
         return "text_messages";
+    }
+
+    public static String getMoodFileName() {
+        return "mood";
+    }
+
+    public static File getMoodFile() {
+        File parent = getMoodDirectory();
+        createDirectory(parent);
+
+        File file = new File(parent, getMoodFileName());
+        createFile(file);
+
+        return file;
+    }
+
+    public static boolean createDirectory(File file) {
+        return file.exists() || file.mkdirs();
+    }
+
+    public static boolean createFile(File file) {
+        try {
+            return file.exists() || file.createNewFile();
+        } catch (IOException e) {
+            Log.i(TAG, e.toString());
+            return false;
+        }
     }
 
     public static boolean copyFile(File src, File dst) {
@@ -53,9 +83,9 @@ public final class FileUtils {
         }
     }
 
-    public static boolean deleteFiles(File ... files){
+    public static boolean deleteFiles(File... files) {
         boolean success = false;
-        for(File file: files)
+        for (File file : files)
             success = file.delete();
         return success;
     }

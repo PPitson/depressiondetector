@@ -16,7 +16,7 @@ import pl.agh.depressiondetector.scheduler.Uploader;
 import static pl.agh.depressiondetector.connection.API.PATH_TEXT_MESSAGES;
 import static pl.agh.depressiondetector.utils.FileUtils.getTextMessageFileName;
 import static pl.agh.depressiondetector.utils.FileUtils.getTextMessagesDirectory;
-import static pl.agh.depressiondetector.utils.NetworkUtils.postJSONArray;
+import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 
 
 
@@ -40,7 +40,7 @@ public class SmsUploader implements Uploader {
         String jsonArrayString = readFileInputStream(fileInputStream);
         fileInputStream.close();
         JSONArray jsonArray = new JSONArray(jsonArrayString);
-        return postJSONArray(jsonArray, context, PATH_TEXT_MESSAGES);
+        return postJSON(jsonArray, context, PATH_TEXT_MESSAGES);
     }
 
     private String readFileInputStream(FileInputStream fileInputStream) throws IOException {

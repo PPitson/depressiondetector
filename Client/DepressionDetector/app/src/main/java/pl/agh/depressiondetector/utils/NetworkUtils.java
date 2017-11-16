@@ -9,6 +9,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,8 @@ import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
 public final class NetworkUtils {
 
+    private static final String TAG = "NetworkUtils";
+
     private NetworkUtils() {
     }
 
@@ -41,7 +44,12 @@ public final class NetworkUtils {
         }
     }
 
-    public static boolean postJSONArray(JSONArray jsonArray, Context context, String encodedPathSegments) {
+    public static boolean postJSON(JSONObject jsonObject, Context context, String encodedPathSegments) {
+        RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonObject.toString());
+        return post(requestBody, context, encodedPathSegments);
+    }
+
+    public static boolean postJSON(JSONArray jsonArray, Context context, String encodedPathSegments) {
         RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonArray.toString());
         return post(requestBody, context, encodedPathSegments);
     }
@@ -66,7 +74,7 @@ public final class NetworkUtils {
 
         try {
             Response response = HttpClient.getClient().newCall(request).execute();
-            Log.i("POST_FILE", "Server returned: " + response.message() + " with code " + response.code());
+            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
             return response.isSuccessful();
         } catch (IOException e) {
             e.printStackTrace();

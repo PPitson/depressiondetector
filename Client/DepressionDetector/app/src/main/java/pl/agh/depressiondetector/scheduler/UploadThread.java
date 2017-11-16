@@ -4,11 +4,14 @@ import pl.agh.depressiondetector.analytics.AnalysedDataType;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 
 
 public class UploadThread extends Thread {
+
+    private static final String TAG = "UploadThread";
 
     private StateListener stateListener;
     private Context appContext;
@@ -21,6 +24,7 @@ public class UploadThread extends Thread {
 
     @Override
     public void run() {
+        Log.i(TAG, "Started uploading...");
         SharedPreferences preferences = getDefaultSharedPreferences(appContext);
         UploaderFactory factory = new UploaderFactory();
         for (AnalysedDataType type : AnalysedDataType.values())

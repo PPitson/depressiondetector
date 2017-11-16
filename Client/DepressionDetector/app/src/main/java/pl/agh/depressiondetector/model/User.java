@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import pl.agh.depressiondetector.utils.DateUtils;
+
 import static pl.agh.depressiondetector.connection.API.DATE_OF_BIRTH;
 import static pl.agh.depressiondetector.connection.API.EMAIL;
 import static pl.agh.depressiondetector.connection.API.PASSWORD;
@@ -30,7 +32,7 @@ public class User {
         if (sex != null)
             json.put(SEX, sex ? "M" : "F");
         if (dateOfBirth != null)
-            json.put(DATE_OF_BIRTH, convertToServerDateFormat(dateOfBirth));
+            json.put(DATE_OF_BIRTH, DateUtils.convertToServerDateTimeFormat(dateOfBirth));
 
         return json;
     }

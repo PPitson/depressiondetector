@@ -6,7 +6,7 @@
     <string name="title_activity_settings">@string/settings</string>
 
     <!-- Main Activity -->
-    <string name="main_getresults">Get results</string>
+    <string name="get_results">Get results</string>
 
     <!-- Authentication Activity -->
     <string name="sign_up">Sign up</string>

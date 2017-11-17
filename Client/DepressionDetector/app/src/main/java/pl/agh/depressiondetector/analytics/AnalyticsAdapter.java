@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import pl.agh.depressiondetector.analytics.mood.MoodBroadcastReceiver;
 import pl.agh.depressiondetector.analytics.phonecalls.PhoneCallService;
 import pl.agh.depressiondetector.analytics.smses.TextMessageService;
+import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static android.content.Context.ALARM_SERVICE;
 import static pl.agh.depressiondetector.analytics.mood.MoodBroadcastReceiver.MOOD_REQUEST_CODE;
@@ -70,7 +71,10 @@ public final class AnalyticsAdapter {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, MOOD_REQUEST_CODE, intent, 0);
 
         AlarmManager manager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, pendingIntent);
+        if (manager != null)
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, pendingIntent);
+        else
+            ToastUtils.show(context, "Could not start mood alarm");
     }
 
     private static void stopMoodAlarm(Context context) {
@@ -78,7 +82,10 @@ public final class AnalyticsAdapter {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, MOOD_REQUEST_CODE, intent, 0);
 
         AlarmManager manager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        manager.cancel(pendingIntent);
+        if (manager != null)
+            manager.cancel(pendingIntent);
+        else
+            ToastUtils.show(context, "Could not stop mood alarm");
     }
 
     private static void startService(Context context, Class<? extends Service> service) {

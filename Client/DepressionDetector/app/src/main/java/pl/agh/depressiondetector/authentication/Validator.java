@@ -3,8 +3,6 @@ package pl.agh.depressiondetector.authentication;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 

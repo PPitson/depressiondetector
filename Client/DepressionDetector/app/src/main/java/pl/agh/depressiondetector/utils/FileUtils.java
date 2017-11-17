@@ -12,7 +12,7 @@ import java.io.OutputStream;
 
 public final class FileUtils {
 
-    private static final String TAG = "FILEUTILS";
+    private static final String TAG = "FileUtils";
 
     private FileUtils() {
     }

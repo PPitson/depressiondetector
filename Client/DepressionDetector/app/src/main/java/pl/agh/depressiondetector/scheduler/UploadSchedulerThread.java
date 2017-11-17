@@ -10,7 +10,7 @@ import android.util.Log;
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 
 
-public class UploadSchedulerThread extends Thread {
+final class UploadSchedulerThread extends Thread {
 
     private static final String TAG = "UploadSchedulerThread";
 

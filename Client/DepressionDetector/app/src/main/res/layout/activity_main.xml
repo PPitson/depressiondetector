@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/main_getresults"/>
+        android:text="@string/get_results"/>
 
     <TextView
         android:id="@+id/textview_main_results"

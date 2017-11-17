@@ -20,7 +20,7 @@ public class MoodBroadcastReceiver extends BroadcastReceiver {
         showNotification(context);
     }
 
-    public static void showNotification(Context context) {
+    private static void showNotification(Context context) {
         long time = System.currentTimeMillis();
         Intent intent = new Intent(context, MoodActivity.class);
         intent.putExtra(EXTRA_TIME, time);

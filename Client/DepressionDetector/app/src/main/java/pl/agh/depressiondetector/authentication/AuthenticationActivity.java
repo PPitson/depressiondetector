@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.View;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 
@@ -21,8 +23,10 @@ public class AuthenticationActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.contains(getString(R.string.pref_user_username)) && preferences.contains(getString(R.string.pref_user_password)))
             startActivity(new Intent(this, MainActivity.class));
-        else
+        else {
             setContentView(R.layout.activity_authentication);
+            ButterKnife.bind(this);
+        }
     }
 
     @Override
@@ -37,10 +41,12 @@ public class AuthenticationActivity extends AppCompatActivity {
         }
     }
 
-    public void onSignUpClick(View view) {
+    @OnClick(R.id.button_sign_up)
+    public void onSignUpClick() {
         startActivityForResult(new Intent(this, SignUpActivity.class), EXIT_AUTHENTICATION_ACTIVITY);
     }
 
+    @OnClick(R.id.button_login)
     public void onLoginClick(View view) {
         startActivityForResult(new Intent(this, LoginActivity.class), EXIT_AUTHENTICATION_ACTIVITY);
     }

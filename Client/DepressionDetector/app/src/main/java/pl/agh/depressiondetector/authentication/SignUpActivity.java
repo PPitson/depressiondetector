@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.textInputEditText_date_of_birth)
-    public void onDateOfBirthClick(View view) {
+    public void onDateOfBirthClick() {
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -96,12 +96,12 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_google_sign_up)
-    public void onGoogleSignUpClick(View view) {
+    public void onGoogleSignUpClick() {
         ToastUtils.show(this, "Implement me");  // TODO
     }
 
     @OnClick(R.id.button_sign_up)
-    public void onSignUpClick(View view) {
+    public void onSignUpClick() {
         if (validateFields()) {
             User user = new User();
             user.name = usernameView.getText().toString().trim();

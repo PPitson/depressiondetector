@@ -12,7 +12,6 @@ import static pl.agh.depressiondetector.connection.API.EMAIL;
 import static pl.agh.depressiondetector.connection.API.PASSWORD;
 import static pl.agh.depressiondetector.connection.API.SEX;
 import static pl.agh.depressiondetector.connection.API.USERNAME;
-import static pl.agh.depressiondetector.utils.DateUtils.convertToServerDateFormat;
 
 public class User {
     public String name;

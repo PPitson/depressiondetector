@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_login)
-    public void onLoginClick(View view) {
+    public void onLoginClick() {
         if (validateFields()) {
             User user = new User();
             user.name = usernameView.getText().toString().trim();

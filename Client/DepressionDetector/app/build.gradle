@@ -41,6 +41,9 @@ dependencies {
     // Apache Commons
     compile 'commons-io:commons-io:2.4'
 
+    // Karumi for permissions
+    compile 'com.karumi:dexter:4.2.0'
+
     // Test
     androidTestCompile "com.android.support:support-annotations:$support_version"
     androidTestCompile("com.android.support.test.espresso:espresso-intents:$espressoVersion")

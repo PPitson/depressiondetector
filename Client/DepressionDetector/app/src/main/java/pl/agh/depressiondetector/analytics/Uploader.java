@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.scheduler;
+package pl.agh.depressiondetector.analytics;
 
 import android.content.Context;
 

@@ -1,6 +1,7 @@
 package pl.agh.depressiondetector.scheduler;
 
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
+import pl.agh.depressiondetector.analytics.UploaderFactory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,15 +10,15 @@ import android.util.Log;
 import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 
 
-public class UploadThread extends Thread {
+public class UploadSchedulerThread extends Thread {
 
-    private static final String TAG = "UploadThread";
+    private static final String TAG = "UploadSchedulerThread";
 
     private StateListener stateListener;
     private Context appContext;
     private boolean cancelled = false;
 
-    UploadThread(StateListener stateListener, Context context) {
+    UploadSchedulerThread(StateListener stateListener, Context context) {
         this.stateListener = stateListener;
         this.appContext = context.getApplicationContext();
     }

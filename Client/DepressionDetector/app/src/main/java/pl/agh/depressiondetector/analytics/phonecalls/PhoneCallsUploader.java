@@ -15,7 +15,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import pl.agh.depressiondetector.connection.HttpClient;
-import pl.agh.depressiondetector.scheduler.Uploader;
+import pl.agh.depressiondetector.analytics.Uploader;
 
 import static pl.agh.depressiondetector.connection.API.HOST;
 import static pl.agh.depressiondetector.connection.API.PATH_SOUND_FILES;

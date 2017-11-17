@@ -1,14 +1,13 @@
-package pl.agh.depressiondetector.scheduler;
+package pl.agh.depressiondetector.analytics;
 
-import pl.agh.depressiondetector.analytics.AnalysedDataType;
 import pl.agh.depressiondetector.analytics.mood.MoodUploader;
 import pl.agh.depressiondetector.analytics.phonecalls.PhoneCallsUploader;
 import pl.agh.depressiondetector.analytics.smses.SmsUploader;
 
 
-class UploaderFactory {
+public class UploaderFactory {
 
-    Uploader getUploader(AnalysedDataType type) {
+    public Uploader getUploader(AnalysedDataType type) {
         switch (type) {
             case MOOD:
                 return new MoodUploader();

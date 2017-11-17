@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import pl.agh.depressiondetector.scheduler.Uploader;
+import pl.agh.depressiondetector.analytics.Uploader;
 
 import static pl.agh.depressiondetector.connection.API.PATH_MOODS;
 import static pl.agh.depressiondetector.utils.FileUtils.deleteFiles;

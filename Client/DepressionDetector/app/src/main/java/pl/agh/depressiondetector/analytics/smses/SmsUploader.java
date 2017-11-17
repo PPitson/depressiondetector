@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import pl.agh.depressiondetector.scheduler.Uploader;
+import pl.agh.depressiondetector.analytics.Uploader;
 
 import static pl.agh.depressiondetector.connection.API.PATH_TEXT_MESSAGES;
 import static pl.agh.depressiondetector.utils.FileUtils.getTextMessageFileName;

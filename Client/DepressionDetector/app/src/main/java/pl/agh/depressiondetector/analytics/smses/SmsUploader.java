@@ -19,19 +19,23 @@ import static pl.agh.depressiondetector.utils.FileUtils.getTextMessagesDirectory
 import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 
 
-
 public class SmsUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
         boolean success = false;
         File directory = getTextMessagesDirectory();
         File file = new File(directory, getTextMessageFileName() + ".txt");
+
+        if (!file.exists())
+            return true;
+
         try {
             if (postTxtFile(file, appContext))
                 success = file.delete();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+
         return success;
     }
 

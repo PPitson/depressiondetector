@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
-import pl.agh.depressiondetector.analytics.AnalyticsManager;
+import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.utils.NetworkUtils;
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             switch (message) {
                 case LOGIN_USER_LOGGED_IN:
                     saveCredentials(user);
-                    AnalyticsManager.startAnalytics(LoginActivity.this);
+                    AnalyticsAdapter.startAnalytics(LoginActivity.this);
                     UploadScheduler.schedule(LoginActivity.this);
                     startActivity(new Intent(context, MainActivity.class));
                     finishWithParent();

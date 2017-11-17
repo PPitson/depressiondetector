@@ -8,12 +8,11 @@ import android.os.Bundle;
 
 import pl.agh.depressiondetector.R;
 
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.startListeningForSmses;
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.startMoodAlarm;
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.startRecordingPhoneCalls;
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.stopListeningForSmses;
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.stopMoodAlarm;
-import static pl.agh.depressiondetector.analytics.AnalyticsManager.stopRecordingPhoneCalls;
+import static pl.agh.depressiondetector.analytics.AnalysedDataType.MOOD;
+import static pl.agh.depressiondetector.analytics.AnalysedDataType.PHONE_CALL;
+import static pl.agh.depressiondetector.analytics.AnalysedDataType.SMS;
+import static pl.agh.depressiondetector.analytics.AnalyticsAdapter.startAnalytics;
+import static pl.agh.depressiondetector.analytics.AnalyticsAdapter.stopAnalytics;
 
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -29,7 +28,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 .commit();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -43,23 +41,23 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
         if (key.equals(getString(R.string.pref_analyse_mood))) {
             if (newValue)
-                startMoodAlarm(this);
+                startAnalytics(this, MOOD);
             else
-                stopMoodAlarm(this);
+                stopAnalytics(this, MOOD);
         }
 
         if (key.equals(getString(R.string.pref_analyse_phone_calls))) {
             if (newValue)
-                startRecordingPhoneCalls(this);
+                startAnalytics(this, PHONE_CALL);
             else
-                stopRecordingPhoneCalls(this);
+                stopAnalytics(this, PHONE_CALL);
         }
 
         if (key.equals(getString(R.string.pref_analyse_text_messages))) {
             if (newValue)
-                startListeningForSmses(this);
+                startAnalytics(this, SMS);
             else
-                stopListeningForSmses(this);
+                stopAnalytics(this, SMS);
         }
     }
 

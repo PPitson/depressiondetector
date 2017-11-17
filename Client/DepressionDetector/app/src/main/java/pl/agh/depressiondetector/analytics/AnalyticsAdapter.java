@@ -2,6 +2,7 @@ package pl.agh.depressiondetector.analytics;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateUtils;
@@ -16,17 +17,48 @@ import pl.agh.depressiondetector.analytics.smses.TextMessageService;
 import static android.content.Context.ALARM_SERVICE;
 import static pl.agh.depressiondetector.analytics.mood.MoodBroadcastReceiver.MOOD_REQUEST_CODE;
 
-public final class AnalyticsManager {
+public final class AnalyticsAdapter {
 
     public static void startAnalytics(Context context) {
         context = context.getApplicationContext();
-
-        startMoodAlarm(context);
-        startRecordingPhoneCalls(context);
-        //startListeningForSmses(context);
+        startAnalytics(context, AnalysedDataType.values());
     }
 
-    public static void startMoodAlarm(Context context) {
+    public static void startAnalytics(Context context, AnalysedDataType... types) {
+        context = context.getApplicationContext();
+        for (AnalysedDataType type : types) {
+            switch (type) {
+                case MOOD:
+                    startMoodAlarm(context);
+                    break;
+                case PHONE_CALL:
+                    startService(context, PhoneCallService.class);
+                    break;
+                case SMS:
+                    startService(context, TextMessageService.class);
+                    break;
+            }
+        }
+    }
+
+    public static void stopAnalytics(Context context, AnalysedDataType... types) {
+        context = context.getApplicationContext();
+        for (AnalysedDataType type : types) {
+            switch (type) {
+                case MOOD:
+                    stopMoodAlarm(context);
+                    break;
+                case PHONE_CALL:
+                    stopService(context, PhoneCallService.class);
+                    break;
+                case SMS:
+                    stopService(context, TextMessageService.class);
+                    break;
+            }
+        }
+    }
+
+    private static void startMoodAlarm(Context context) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 21);
@@ -41,7 +73,7 @@ public final class AnalyticsManager {
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, pendingIntent);
     }
 
-    public static void stopMoodAlarm(Context context){
+    private static void stopMoodAlarm(Context context) {
         Intent intent = new Intent(context, MoodBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, MOOD_REQUEST_CODE, intent, 0);
 
@@ -49,24 +81,13 @@ public final class AnalyticsManager {
         manager.cancel(pendingIntent);
     }
 
-    public static void startRecordingPhoneCalls(Context context) {
-        Intent phoneCall = new Intent(context, PhoneCallService.class);
-        context.startService(phoneCall);
+    private static void startService(Context context, Class<? extends Service> service) {
+        Intent intent = new Intent(context, service);
+        context.startService(intent);
     }
 
-    public static void stopRecordingPhoneCalls(Context context) {
-        Intent phoneCall = new Intent(context, PhoneCallService.class);
-        context.stopService(phoneCall);
-    }
-
-    // TODO Should not explode when there is no permission granted
-    public static void startListeningForSmses(Context context) {
-        Intent textMessage = new Intent(context, TextMessageService.class);
-        context.startService(textMessage);
-    }
-
-    public static void stopListeningForSmses(Context context) {
-        Intent textMessage = new Intent(context, TextMessageService.class);
-        context.stopService(textMessage);
+    private static void stopService(Context context, Class<? extends Service> service) {
+        Intent intent = new Intent(context, service);
+        context.stopService(intent);
     }
 }

@@ -20,6 +20,7 @@ import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.scheduler.UploadScheduler;
+import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
@@ -100,9 +101,7 @@ public class LoginActivity extends AppCompatActivity {
             switch (message) {
                 case LOGIN_USER_LOGGED_IN:
                     saveCredentials(user);
-                    AnalyticsAdapter.startAnalytics(LoginActivity.this);
-                    UploadScheduler.schedule(LoginActivity.this);
-                    startActivity(new Intent(context, MainActivity.class));
+                    startActivity(new Intent(context, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
                 case LOGIN_LOGIN_DOES_NOT_EXIST:

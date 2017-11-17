@@ -24,6 +24,7 @@ import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.scheduler.UploadScheduler;
+import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
@@ -155,9 +156,7 @@ public class SignUpActivity extends AppCompatActivity {
             switch (message) {
                 case SIGNUP_USER_REGISTERED:
                     saveCredentials(user);
-                    AnalyticsAdapter.startAnalytics(SignUpActivity.this);
-                    UploadScheduler.schedule(SignUpActivity.this);
-                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    startActivity(new Intent(SignUpActivity.this, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
                 case SIGNUP_LOGIN_ALREADY_USED:

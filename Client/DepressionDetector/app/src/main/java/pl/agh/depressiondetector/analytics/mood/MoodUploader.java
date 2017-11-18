@@ -21,21 +21,23 @@ import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 public class MoodUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
+        boolean success = false;
         try {
             // TODO Resolve possible race condition
             File file = getMoodFile();
             String content = IOUtils.toString(new FileInputStream(file), "UTF-8");
-            JSONArray json;
-            if (content.isEmpty())
-                json = new JSONArray();
-            else
-                json = new JSONArray(content);
-            postJSON(json, appContext, PATH_MOODS);
-            deleteFiles(file);
+
+            if (!content.isEmpty()) {
+                JSONArray json = new JSONArray(content);
+                success = postJSON(json, appContext, PATH_MOODS);
+                if (success)
+                    success = deleteFiles(file);
+            } else
+                success = true;
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return success;
     }
 }

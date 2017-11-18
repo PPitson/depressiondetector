@@ -81,46 +81,49 @@ public class FirstConfigurationActivity extends AppCompatActivity {
 
         if (!permissions.isEmpty()) {
             permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // TODO Write to internal storage and remove this
-
-            BaseMultiplePermissionsListener permissionsListener = new BaseMultiplePermissionsListener() {
-                @Override
-                public void onPermissionsChecked(MultiplePermissionsReport report) {
-                    if (report.areAllPermissionsGranted()) {
-                        startAnalyticsAndFinish();
-                    } else {
-                        List<PermissionDeniedResponse> deniedList = report.getDeniedPermissionResponses();
-                        for (PermissionDeniedResponse denied : deniedList) {
-                            String name = denied.getPermissionName();
-                            switch (name) {
-                                case Manifest.permission.READ_PHONE_STATE:
-                                case Manifest.permission.PROCESS_OUTGOING_CALLS:
-                                case Manifest.permission.RECORD_AUDIO:
-                                    switchPhoneCalls.setChecked(false);
-                                    break;
-
-                                case Manifest.permission.READ_SMS:
-                                    switchTextMessages.setChecked(false);
-                                    break;
-
-                                case Manifest.permission.WRITE_EXTERNAL_STORAGE:    // TODO Write to internal storage and remove this
-                                    switchPhoneCalls.setChecked(false);
-                                    switchTextMessages.setChecked(false);
-                                    break;
-                            }
-                        }
-                        ToastUtils.show(FirstConfigurationActivity.this, "You should reconsider your choice or grant us with the permissions");
-                    }
-                }
-            };
-
-            Dexter.withActivity(this)
-                    .withPermissions(permissions)
-                    .withListener(permissionsListener)
-                    .onSameThread()
-                    .check();
+            askForPermissionsIfNeeded(permissions);
         } else {
             startAnalyticsAndFinish();
         }
+    }
+
+    private void askForPermissionsIfNeeded(List<String> permissions){
+        BaseMultiplePermissionsListener permissionsListener = new BaseMultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if (report.areAllPermissionsGranted()) {
+                    startAnalyticsAndFinish();
+                } else {
+                    List<PermissionDeniedResponse> deniedList = report.getDeniedPermissionResponses();
+                    for (PermissionDeniedResponse denied : deniedList) {
+                        String name = denied.getPermissionName();
+                        switch (name) {
+                            case Manifest.permission.READ_PHONE_STATE:
+                            case Manifest.permission.PROCESS_OUTGOING_CALLS:
+                            case Manifest.permission.RECORD_AUDIO:
+                                switchPhoneCalls.setChecked(false);
+                                break;
+
+                            case Manifest.permission.READ_SMS:
+                                switchTextMessages.setChecked(false);
+                                break;
+
+                            case Manifest.permission.WRITE_EXTERNAL_STORAGE:    // TODO Write to internal storage and remove this
+                                switchPhoneCalls.setChecked(false);
+                                switchTextMessages.setChecked(false);
+                                break;
+                        }
+                    }
+                    ToastUtils.show(FirstConfigurationActivity.this, "You should reconsider your choice or grant us with the permissions");
+                }
+            }
+        };
+
+        Dexter.withActivity(this)
+                .withPermissions(permissions)
+                .withListener(permissionsListener)
+                .onSameThread()
+                .check();
     }
 
     private void startAnalyticsAndFinish() {

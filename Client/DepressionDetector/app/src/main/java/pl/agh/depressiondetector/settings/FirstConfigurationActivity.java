@@ -2,6 +2,7 @@ package pl.agh.depressiondetector.settings;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -25,11 +26,14 @@ import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 import static pl.agh.depressiondetector.analytics.AnalysedDataType.MOOD;
 import static pl.agh.depressiondetector.analytics.AnalysedDataType.PHONE_CALL;
 import static pl.agh.depressiondetector.analytics.AnalysedDataType.SMS;
 
 public class FirstConfigurationActivity extends AppCompatActivity {
+
+    private SharedPreferences preferences;
 
     @BindView(R.id.switch_firstConfiguration_mood)
     Switch switchMood;
@@ -48,23 +52,28 @@ public class FirstConfigurationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_configuration);
         ButterKnife.bind(this);
+        preferences = getDefaultSharedPreferences(this);
     }
 
     @OnClick({R.id.textView_firstConfiguration_mood, R.id.switch_firstConfiguration_mood})
     public void onMoodClick() {
-        switchMood.setChecked(switchMood.isChecked());
+        boolean newValue = switchMood.isChecked();
+        switchMood.setChecked(newValue);
+        preferences.edit().putBoolean(MOOD.preferenceName, newValue).apply();
     }
 
     @OnClick({R.id.textView_firstConfiguration_phoneCalls, R.id.switch_firstConfiguration_phoneCalls})
     public void onPhoneCallsClick() {
-        switchPhoneCalls.setChecked(switchPhoneCalls.isChecked());
-
+        boolean newValue = switchPhoneCalls.isChecked();
+        switchPhoneCalls.setChecked(newValue);
+        preferences.edit().putBoolean(PHONE_CALL.preferenceName, newValue).apply();
     }
 
     @OnClick({R.id.textView_firstConfiguration_textMessages, R.id.switch_firstConfiguration_textMessages})
     public void onTextMessagesClick() {
-        switchTextMessages.setChecked(switchTextMessages.isChecked());
-
+        boolean newValue = switchTextMessages.isChecked();
+        switchTextMessages.setChecked(newValue);
+        preferences.edit().putBoolean(SMS.preferenceName, newValue).apply();
     }
 
     @OnClick(R.id.button_firstConfiguration_goFurther)

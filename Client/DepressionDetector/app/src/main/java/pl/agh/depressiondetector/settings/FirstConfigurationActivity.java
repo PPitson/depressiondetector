@@ -79,15 +79,11 @@ public class FirstConfigurationActivity extends AppCompatActivity {
         if (switchTextMessages.isChecked())
             permissions.add(Manifest.permission.READ_SMS);
 
-        if (!permissions.isEmpty()) {
-            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // TODO Write to internal storage and remove this
-            askForPermissionsIfNeeded(permissions);
-        } else {
-            startAnalyticsAndFinish();
-        }
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // TODO Write to internal storage and remove this
+        askForPermissionsIfNeeded(permissions);
     }
 
-    private void askForPermissionsIfNeeded(List<String> permissions){
+    private void askForPermissionsIfNeeded(List<String> permissions) {
         BaseMultiplePermissionsListener permissionsListener = new BaseMultiplePermissionsListener() {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {

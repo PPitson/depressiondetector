@@ -23,4 +23,17 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
+
+    <style name="FirstConfigurationTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:drawablePadding">@dimen/default_three_quarters_padding</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/default_padding</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/text_size_4</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>

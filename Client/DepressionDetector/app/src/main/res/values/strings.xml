@@ -14,7 +14,6 @@
     <string name="login">Login</string>
 
     <!-- Sign Up and Login Activity -->
-    <string name="sign_up_with_google">Sign up with Google</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>

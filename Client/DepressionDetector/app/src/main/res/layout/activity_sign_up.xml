@@ -14,22 +14,6 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <Button
-            android:id="@+id/button_google_sign_up"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:text="@string/sign_up_with_google"
-            android:textColor="#FFF" />
-
-        <TextView
-            android:id="@+id/textView_or"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="35dp"
-            android:gravity="center"
-            android:text="@string/or" />
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayout_username"
             android:layout_width="match_parent"
@@ -111,7 +95,7 @@
             android:id="@+id/button_sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="50dp"
             android:backgroundTint="@color/colorPrimary"
             android:text="@string/sign_up"
             android:textColor="#FFF" />

@@ -10,7 +10,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 
@@ -19,11 +18,8 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
-import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
-import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
@@ -94,11 +90,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void updateDateOfBirthView() {
         dateOfBirthView.setText(convertToClientDateFormat(calendar.getTime()));
-    }
-
-    @OnClick(R.id.button_google_sign_up)
-    public void onGoogleSignUpClick() {
-        ToastUtils.show(this, "Implement me");  // TODO
     }
 
     @OnClick(R.id.button_sign_up)

@@ -74,7 +74,7 @@ public final class NetworkUtils {
 
         try {
             Response response = HttpClient.getClient().newCall(request).execute();
-            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
+            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code() + " for path " + encodedPathSegments);
             return response.isSuccessful();
         } catch (IOException e) {
             e.printStackTrace();

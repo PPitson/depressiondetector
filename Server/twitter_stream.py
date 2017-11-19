@@ -31,14 +31,6 @@ class MyStreamListener(tweepy.StreamListener):
             return
         tweet = Tweet(id=status.id, created_at=status.created_at, coordinates=coordinates, text=status.text)
         analyze_and_save_tweet.delay(tweet)
-        print(status.id, status.created_at, coordinates, status.text)
-
-    def on_limit(self, track):
-        print('TRACK', track)
-
-    def on_exception(self, exception):
-        print('EXCPETION', exception)
-        return True
 
     def on_error(self, status_code):
         if status_code == 420:

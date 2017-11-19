@@ -1,11 +1,22 @@
+from datetime import timedelta
+
+
 def init_celery(app, celery):
     celery.conf.update(
         app.config,
-        CELERY_ACCEPT_CONTENT=['pickle'],
-        CELERY_TASK_SERIALIZER='pickle',
-        CELERY_RESULT_SERIALIZER='pickle',
-        CELERY_ROUTES={'save_result': {'queue': 'results_to_save'}},
-        CELERY_CREATE_MISSING_QUEUES=True
+        accept_content=['pickle'],
+        task_serializer='pickle',
+        result_serializer='pickle',
+        task_routes={
+            'save_result': {'queue': 'results_to_save'},
+            'analyze_and_save_tweet': {'queue': 'twitter_stream'}
+        },
+        beat_schedule={
+            'wake-up-every-15-minutes': {
+                'task': 'wake_up',
+                'schedule': timedelta(minutes=15),
+            }
+        }
     )
     TaskBase = celery.Task
 

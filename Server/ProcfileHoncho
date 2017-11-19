@@ -1,0 +1,5 @@
+web: gunicorn run:app
+main_worker: celery worker -A runcelery.celery -n main_worker@%h
+results_saver_worker: celery worker -A runcelery.celery -c 1 -n saver_worker@%h -Q results_to_save
+beat: celery beat -A runcelery.celery
+twitter_stream: celery worker -A runcelery.celery -n twitter_stream@%h -c 30 -P eventlet -Q twitter_stream

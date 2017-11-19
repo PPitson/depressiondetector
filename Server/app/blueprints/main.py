@@ -66,7 +66,7 @@ def post_text_files():
 def post_moods():
     mood_results = get_json_list_or_raise_exception()
     for result in mood_results:
-        Mood.objects.create(user=g.current_user, datetime=datetime.strptime(result['date'], '%d-%m-%Y'),
+        Mood.objects.create(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
                             mood_level=result['mood'])
     return make_response(jsonify({'created': True}), 201)
 

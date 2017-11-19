@@ -161,5 +161,13 @@ class HappinessLevel(MongoDocument):
         self.save()
 
 
+class Tweet(MongoDocument):
+    id = mongo.LongField(primary_key=True)
+    created_at = mongo.DateTimeField()
+    coordinates = mongo.PointField()
+    text = mongo.StringField()
+    sentiment = mongo.FloatField(min_value=-1, max_value=1)
+
+
 data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
                 Mood.data_source)

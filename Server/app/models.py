@@ -81,12 +81,15 @@ class User(MongoDocument):
         return fields
 
     def to_json(self):
-        return {
+        result = {
             'username': self.username,
             'email': self.email,
-            'sex': self.sex,
-            'date_of_birth': str(self.date_of_birth.date())
         }
+        if self.sex:
+            result['sex'] = self.sex
+        if self.date_of_birth:
+            result['date_of_birth'] = str(self.date_of_birth.date())
+        return result
 
 
 class DataSourceMongoDocument(MongoDocument):

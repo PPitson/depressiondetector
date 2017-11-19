@@ -1,2 +1,2 @@
 web: honcho start -f ProcfileHoncho
-twitter_stream: celery worker -A runcelery.celery -n twitter_stream@%h -c 30 -P eventlet -Q twitter_stream
+worker: celery worker -A runcelery.celery -n twitter_stream@%h -c 30 -P eventlet -Q twitter_stream

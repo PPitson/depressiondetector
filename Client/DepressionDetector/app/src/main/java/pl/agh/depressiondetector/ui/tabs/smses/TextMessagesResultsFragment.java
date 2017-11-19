@@ -6,7 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.jjoe64.graphview.GraphView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,8 +19,8 @@ import pl.agh.depressiondetector.utils.ResultAcquirer;
 public class TextMessagesResultsFragment extends Fragment {
     private static final String TAG = "TextMessagesResFragment";
 
-    @BindView(R.id.text_messages_results_textview)
-    TextView textView;
+    @BindView(R.id.text_messages_results_graphview)
+    GraphView graphView;
 
     @Nullable
     @Override
@@ -31,6 +32,6 @@ public class TextMessagesResultsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
-        new ResultAcquirer(TAG, getContext(), new TextMessagesResultsInjector(textView), API.PATH_TEXT_RESULTS).execute();
+        new ResultAcquirer(TAG, getContext(), new TextMessagesResultsInjector(graphView), API.PATH_TEXT_RESULTS).execute();
     }
 }

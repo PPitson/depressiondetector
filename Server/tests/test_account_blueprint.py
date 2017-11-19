@@ -17,6 +17,7 @@ class GetUserInfoTestCase(CustomTestCase):
 
     def test_successful_get_user_info_request(self):
         self.user.date_of_birth = datetime(1995, 1, 23, 12, 34, 45)
+        self.user.sex = 'M'
         self.user.save()
         response = self.client.get(self.endpoint, headers=self.get_headers())
         self.assert200(response)

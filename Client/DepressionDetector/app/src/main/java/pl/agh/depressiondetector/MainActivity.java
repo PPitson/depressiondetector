@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
 import pl.agh.depressiondetector.ui.settings.ProfileActivity;
 import pl.agh.depressiondetector.ui.settings.SettingsActivity;
+import pl.agh.depressiondetector.ui.tabs.mood.MoodResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.overview.OverviewFragment;
 import pl.agh.depressiondetector.ui.tabs.phonecalls.PhoneCallResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.smses.TextMessagesResultsFragment;
@@ -144,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
                 return new PhoneCallResultsFragment();
             case SMS:
                 return new TextMessagesResultsFragment();
+            case MOOD:
+                return new MoodResultsFragment();
             default:
                 return null;
         }
@@ -155,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
                 return getString(R.string.main_phone_calls_results);
             case SMS:
                 return getString(R.string.main_text_messages_results);
+            case MOOD:
+                return getString(R.string.main_mood_results);
             default:
                 return null;
         }

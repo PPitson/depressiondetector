@@ -13,6 +13,7 @@
     <string name="main_overview">Overview</string>
     <string name="main_phone_calls_results">Phone Calls</string>
     <string name="main_text_messages_results">Text Messages</string>
+    <string name="main_mood_results">Mood</string>
 
     <!-- Authentication Activity -->
     <string name="sign_up">Sign up</string>

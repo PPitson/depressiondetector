@@ -7,7 +7,10 @@ def init_celery(app, celery):
         accept_content=['pickle'],
         task_serializer='pickle',
         result_serializer='pickle',
-        task_routes={'save_result': {'queue': 'results_to_save'}},
+        task_routes={
+            'save_result': {'queue': 'results_to_save'},
+            'analyze_and_save_tweet': {'queue': 'twitter_stream'}
+        },
         beat_schedule={
             'wake-up-every-15-minutes': {
                 'task': 'wake_up',

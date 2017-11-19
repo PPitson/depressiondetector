@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import pl.agh.depressiondetector.utils.DateUtils;
 import pl.agh.depressiondetector.utils.FileUtils;
 
 public class TextMessageService extends Service {
@@ -79,7 +80,7 @@ public class TextMessageService extends Service {
                 if (!id.equals(lastTextMessageId)) {
                     lastTextMessageId = id;
                     String textMessage = cursor.getString(cursor.getColumnIndex("body"));
-                    textMessageDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault()).format(new Date());
+                    textMessageDate = DateUtils.convertToServerDateTimeFormat(new Date());
                     try {
                         saveTextMessage(textMessage);
                     } catch (IOException | JSONException e) {

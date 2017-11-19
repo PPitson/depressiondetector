@@ -10,30 +10,25 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.model.User;
-import pl.agh.depressiondetector.scheduler.UploadScheduler;
+import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
-import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
+import static pl.agh.depressiondetector.utils.DateUtils.convertToClientDateFormat;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private final SimpleDateFormat clientDateFormat = new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.US);
     private final Calendar calendar = Calendar.getInstance();
 
     private Validator validator;
@@ -75,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.textInputEditText_date_of_birth)
-    public void onDateOfBirthClick(View view) {
+    public void onDateOfBirthClick() {
         DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -94,16 +89,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void updateDateOfBirthView() {
-        dateOfBirthView.setText(clientDateFormat.format(calendar.getTime()));
-    }
-
-    @OnClick(R.id.button_google_sign_up)
-    public void onGoogleSignUpClick(View view) {
-        ToastUtils.show(this, "Implement me");  // TODO
+        dateOfBirthView.setText(convertToClientDateFormat(calendar.getTime()));
     }
 
     @OnClick(R.id.button_sign_up)
-    public void onSignUpClick(View view) {
+    public void onSignUpClick() {
         if (validateFields()) {
             User user = new User();
             user.name = usernameView.getText().toString().trim();
@@ -119,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity {
         boolean valid = validator.validFieldNotEmpty(usernameLayout);
         valid &= validator.validFieldNotEmpty(passwordLayout);
         valid &= validator.validEmailField(emailLayout);
-        valid &= validator.validDateField(dateOfBirthLayout, clientDateFormat);
+        valid &= validator.validDateField(dateOfBirthLayout);
 
         return valid;
     }
@@ -157,9 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
             switch (message) {
                 case SIGNUP_USER_REGISTERED:
                     saveCredentials(user);
-                    ServicesManager.startServices(SignUpActivity.this);
-                    UploadScheduler.schedule(SignUpActivity.this);
-                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    startActivity(new Intent(SignUpActivity.this, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
                 case SIGNUP_LOGIN_ALREADY_USED:

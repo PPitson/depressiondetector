@@ -4,9 +4,10 @@
     <string name="title_activity_sign_up">@string/sign_up</string>
     <string name="title_activity_profile">@string/profile</string>
     <string name="title_activity_settings">@string/settings</string>
+    <string name="title_activity_first_configuration">What should we analyse?</string>
 
     <!-- Main Activity -->
-    <string name="main_getresults">Get results</string>
+    <string name="get_results">Get results</string>
 
     <!-- Main Activity Fragments -->
     <string name="main_overview">Overview</string>
@@ -18,12 +19,10 @@
     <string name="login">Login</string>
 
     <!-- Sign Up and Login Activity -->
-    <string name="sign_up_with_google">Sign up with Google</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of birth</string>
-    <string name="keep_me_logged_in">Keep me logged in</string>
     <string name="man">Man</string>
     <string name="woman">Woman</string>
 
@@ -43,6 +42,16 @@
     <string name="delete_successful">Delete successful</string>
     <string name="delete_message">You will be now logged out. To finish deleting account follow the instructions in email.</string>
 
+    <!-- Mood -->
+    <string name="mood_notification_title">Hey, how was your day?</string>
+    <string name="mood_notification_text">Click to rate your mood</string>
+    <string name="today_mood_rate_question">How was your mood today?</string>
+    <string name="mood_awful">Awful</string>
+    <string name="mood_bad">Bad</string>
+    <string name="mood_so_so">So so</string>
+    <string name="mood_good">Good</string>
+    <string name="mood_rad">Rad</string>
+
     <!-- General -->
     <string name="ok">OK</string>
     <string name="or">Or</string>
@@ -51,15 +60,18 @@
     <string name="settings">Settings</string>
     <string name="delete_account">Delete account</string>
     <string name="logout">Logout</string>
+    <string name="go_further">Go further</string>
 
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>
-    <string name="preferences_analyse_phone_calls">Analyse phone calls</string>
-    <string name="preferences_analyse_text_messages">Analyse text messages</string>
+    <string name="preferences_analyse_mood">Mood</string>
+    <string name="preferences_analyse_phone_calls">Phone calls</string>
+    <string name="preferences_analyse_text_messages">Text messages</string>
 
     <string name="pref_user_username" translatable="false">pref_user_username</string>
     <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_user_email" translatable="false">pref_user_email</string>
+    <string name="pref_analyse_mood" translatable="false">pref_analyse_mood</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
     <string name="pref_analyse_text_messages" translatable="false">pref_analyse_text_messages</string>
 </resources>

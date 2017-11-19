@@ -9,17 +9,17 @@ import android.content.Context;
 import android.text.format.DateUtils;
 
 
-public class UploadScheduler extends JobService implements UploadThread.StateListener {
+public class UploadScheduler extends JobService implements UploadSchedulerThread.StateListener {
 
     private static final int UPLOAD_JOB_ID = 42;
 
-    private UploadThread uploadThread;
+    private UploadSchedulerThread uploadThread;
     private JobParameters params;
 
     @Override
     public boolean onStartJob(JobParameters params) {
         this.params = params;
-        uploadThread = new UploadThread(this, this);
+        uploadThread = new UploadSchedulerThread(this, this);
         uploadThread.start();
         return true;
     }

@@ -18,6 +18,6 @@
         android:id="@+id/main_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context = "pl.agh.depressiondetector.MainActivityvity" />
+        tools:context = "pl.agh.depressiondetector.MainActivity" />
 
 </LinearLayout>

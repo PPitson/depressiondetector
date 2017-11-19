@@ -1,6 +1,6 @@
-import uuid
 import os
 import sys
+import uuid
 
 from app.models import EmotionExtractionResult
 from converter.amr2wav import convert
@@ -21,7 +21,7 @@ def create_lib_path(system, architecture):
     return os.path.join(lib_dir, lib_file)
 
 
-def analyze_file(file_bytes, user):
+def analyze_file(file_bytes, datetime, user):
     filename = uuid.uuid4().hex
     amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
     with open(amr_filename, 'wb') as file:
@@ -33,5 +33,4 @@ def analyze_file(file_bytes, user):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        result = EmotionExtractionResult(user=user, **emotions)
-        result.save()
+        return EmotionExtractionResult(user=user, datetime=datetime, **emotions)

@@ -9,11 +9,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public final class FileUtils {
+
+    private static final String TAG = "FileUtils";
 
     private FileUtils() {
     }
@@ -26,24 +25,47 @@ public final class FileUtils {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/TextMessages");
     }
 
+    public static File getMoodDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Mood");
+    }
+
     public static File getTemporaryDirectory() {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Temporary");
     }
 
-    public static boolean createDirectory(File file) {
-        return file.exists() || file.mkdirs();
-    }
-
     public static String getPhoneCallFileName() {
-        return "phone_call" + getDateString();
+        return String.valueOf(System.currentTimeMillis());
     }
 
     public static String getTextMessageFileName() {
         return "text_messages";
     }
 
-    private static String getDateString() {
-        return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.getDefault()).format(new Date());
+    public static String getMoodFileName() {
+        return "mood";
+    }
+
+    public static File getMoodFile() {
+        File parent = getMoodDirectory();
+        createDirectory(parent);
+
+        File file = new File(parent, getMoodFileName());
+        createFile(file);
+
+        return file;
+    }
+
+    public static boolean createDirectory(File file) {
+        return file.exists() || file.mkdirs();
+    }
+
+    public static boolean createFile(File file) {
+        try {
+            return file.exists() || file.createNewFile();
+        } catch (IOException e) {
+            Log.i(TAG, e.toString());
+            return false;
+        }
     }
 
     public static boolean copyFile(File src, File dst) {
@@ -59,5 +81,12 @@ public final class FileUtils {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public static boolean deleteFiles(File... files) {
+        boolean success = false;
+        for (File file : files)
+            success = file.delete();
+        return success;
     }
 }

@@ -9,6 +9,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,8 @@ import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 
 public final class NetworkUtils {
 
+    private static final String TAG = "NetworkUtils";
+
     private NetworkUtils() {
     }
 
@@ -42,9 +45,14 @@ public final class NetworkUtils {
         }
     }
 
-    public static boolean postJSONArray(JSONArray jsonArray, Context context, String encodedPathSegments) {
+    public static boolean postJSON(JSONObject jsonObject, Context context, String encodedPathSegments) {
+        RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonObject.toString());
+        return post("POST_JSON", requestBody, context, encodedPathSegments);
+    }
+
+    public static boolean postJSON(JSONArray jsonArray, Context context, String encodedPathSegments) {
         RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonArray.toString());
-        return post("POST_JSON_ARRAY", requestBody, context, encodedPathSegments);
+        return post("POST_JSON", requestBody, context, encodedPathSegments);
     }
 
     public static boolean postFile(File file, Context context, String encodedPathSegments, MediaType contentType) {
@@ -67,7 +75,7 @@ public final class NetworkUtils {
 
         try {
             Response response = HttpClient.getClient().newCall(request).execute();
-            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
+            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code() + " for path " + encodedPathSegments);
             return response.isSuccessful();
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,7 +113,7 @@ public final class NetworkUtils {
         return result;
     }
 
-    private static String getBasicCredentials(Context context) {
+    public static String getBasicCredentials(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String name = preferences.getString(context.getString(R.string.pref_user_username), "");
         String password = preferences.getString(context.getString(R.string.pref_user_password), "");

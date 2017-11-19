@@ -3,12 +3,12 @@ package pl.agh.depressiondetector.authentication;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 import pl.agh.depressiondetector.R;
+
+import static pl.agh.depressiondetector.utils.DateUtils.getDateFromClientDateFormat;
 
 class Validator {
 
@@ -52,20 +52,19 @@ class Validator {
         return false;
     }
 
-    boolean validDateField(TextInputLayout field, SimpleDateFormat dateFormat) {
+    boolean validDateField(TextInputLayout field) {
         String text = field.getEditText().getText().toString();
         if (validFieldNotEmpty(field, text)) {
-            try {
-                Date date = dateFormat.parse(text);
-                if (isOlderThanNow(date)) {
-                    field.setErrorEnabled(false);
-                    return true;
-                } else {
-                    field.setError(context.getString(R.string.error_date_from_past));
-                    return false;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
+
+            Date date = getDateFromClientDateFormat(text);
+            if (date == null)
+                return false;
+
+            if (isOlderThanNow(date)) {
+                field.setErrorEnabled(false);
+                return true;
+            } else {
+                field.setError(context.getString(R.string.error_date_from_past));
                 return false;
             }
         }

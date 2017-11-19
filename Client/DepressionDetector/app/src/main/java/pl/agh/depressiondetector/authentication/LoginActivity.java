@@ -11,17 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.View;
-import android.widget.CheckBox;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
+import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
 import pl.agh.depressiondetector.scheduler.UploadScheduler;
+import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
-import pl.agh.depressiondetector.utils.ServicesManager;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.*;
@@ -42,9 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.textInputEditText_password)
     TextInputEditText passwordView;
 
-    @BindView(R.id.checkbox_keep_logged_in)
-    CheckBox keepLoggedInView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_login)
-    public void onLoginClick(View view) {
+    public void onLoginClick() {
         if (validateFields()) {
             User user = new User();
             user.name = usernameView.getText().toString().trim();
@@ -103,11 +100,8 @@ public class LoginActivity extends AppCompatActivity {
             Context context = LoginActivity.this;
             switch (message) {
                 case LOGIN_USER_LOGGED_IN:
-                    if (keepLoggedInView.isChecked())
-                        saveCredentials(user);
-                    ServicesManager.startServices(LoginActivity.this);
-                    UploadScheduler.schedule(LoginActivity.this);
-                    startActivity(new Intent(context, MainActivity.class));
+                    saveCredentials(user);
+                    startActivity(new Intent(context, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
                 case LOGIN_LOGIN_DOES_NOT_EXIST:
@@ -137,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                 .apply();
     }
 
-    private void finishWithParent(){
+    private void finishWithParent() {
         setResult(RESULT_OK, null);
         finish();
     }

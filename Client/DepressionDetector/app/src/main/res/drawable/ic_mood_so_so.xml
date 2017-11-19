@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/mood_icon_size"
+    android:height="@dimen/mood_icon_size"
+    android:viewportHeight="106.059"
+    android:viewportWidth="106.059">
+    <path
+        android:fillColor="@color/mood_so_so"
+        android:pathData="M90.54,90.54c20.69,-20.68 20.68,-54.34 0,-75.02C69.86,-5.17 36.2,-5.17 15.51,15.51C-5.17,36.2 -5.17,69.86 15.52,90.55C36.2,111.23 69.86,111.23 90.54,90.54zM21.3,21.3C38.79,3.81 67.26,3.81 84.76,21.3c17.49,17.49 17.49,45.96 -0,63.46c-17.49,17.49 -45.96,17.5 -63.46,0C3.8,67.26 3.81,38.79 21.3,21.3z" />
+    <path
+        android:fillColor="@color/mood_so_so"
+        android:pathData="M28.65,41.82h13.37c1.74,0 3.15,-1.41 3.15,-3.15c0,-1.74 -1.41,-3.15 -3.15,-3.15H28.65c-1.74,0 -3.15,1.41 -3.15,3.15C25.5,40.41 26.91,41.82 28.65,41.82z" />
+    <path
+        android:fillColor="@color/mood_so_so"
+        android:pathData="M64.03,41.82h13.37c1.74,0 3.15,-1.41 3.15,-3.15c0,-1.74 -1.41,-3.15 -3.15,-3.15H64.03c-1.74,0 -3.15,1.41 -3.15,3.15C60.89,40.41 62.3,41.82 64.03,41.82z" />
+    <path
+        android:fillColor="@color/mood_so_so"
+        android:pathData="M30.42,71.03c0,1.92 1.56,3.48 3.48,3.48h38.26c1.92,0 3.48,-1.56 3.48,-3.48s-1.56,-3.48 -3.48,-3.48h-38.26C31.98,67.55 30.42,69.11 30.42,71.03z" />
+</vector>
+
+    <!-- Source: https://www.flaticon.com/free-icon/emoticon-square-face-with-closed-eyes-and-mouth-of-straight-lines_42890 -->

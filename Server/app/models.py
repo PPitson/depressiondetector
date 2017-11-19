@@ -10,6 +10,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 
+MEAN_HAPPINESS_LEVEL_FIELD_PREFIX = 'mean'
+
 
 class MongoDocument(db.Document):
     meta = {'allow_inheritance': True, 'abstract': True}
@@ -18,7 +20,7 @@ class MongoDocument(db.Document):
         return json.loads(super().to_json())
 
     def __repr__(self):
-        return self.to_mongo()
+        return repr(self.to_mongo())
 
 
 class User(MongoDocument):
@@ -40,16 +42,19 @@ class User(MongoDocument):
 
     @property
     def voice_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self, data_source=EmotionExtractionResult.data_source)
+        return HappinessLevel.get_results(user=self, data_source=EmotionExtractionResult.data_source)
 
     @property
     def text_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self,
-                                                         data_source=EmotionFromTextExtractionResult.data_source)
+        return HappinessLevel.get_results(user=self, data_source=EmotionFromTextExtractionResult.data_source)
 
     @property
     def mood_results(self):
-        return HappinessLevel.get_results_by_data_source(user=self, data_source=Mood.data_source)
+        return HappinessLevel.get_results(user=self, data_source=Mood.data_source)
+
+    @property
+    def mean_results(self):
+        return HappinessLevel.get_results(user=self)
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -98,7 +103,8 @@ class DataSourceMongoDocument(MongoDocument):
         except mongo.DoesNotExist:
             happiness = HappinessLevel(user=self.user, date=start_date)
         setattr(happiness, f'{self.data_source}_happiness_level', average)
-        happiness.save()
+
+        happiness.compute_mean()
 
 
 class EmotionExtractionResult(DataSourceMongoDocument):
@@ -139,11 +145,21 @@ class HappinessLevel(MongoDocument):
     voice_happiness_level = mongo.FloatField()
     text_happiness_level = mongo.FloatField()
     mood_happiness_level = mongo.FloatField()
+    mean_happiness_level = mongo.FloatField()
 
     @staticmethod
-    def get_results_by_data_source(user, data_source):
-        assert data_source in (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
-                               Mood.data_source)
+    def get_results(user, data_source=MEAN_HAPPINESS_LEVEL_FIELD_PREFIX):
+        assert data_source in data_sources + (MEAN_HAPPINESS_LEVEL_FIELD_PREFIX,)
         field_name = f'{data_source}_happiness_level'
         return [{'date': result.date.strftime('%d-%m-%Y'), field_name: getattr(result, field_name)}
                 for result in HappinessLevel.objects.filter(user=user).all() if getattr(result, field_name) is not None]
+
+    def compute_mean(self):
+        results = [getattr(self, f'{data_source}_happiness_level') for data_source in data_sources
+                   if getattr(self, f'{data_source}_happiness_level') is not None]
+        setattr(self, f'{MEAN_HAPPINESS_LEVEL_FIELD_PREFIX}_happiness_level', np.mean(results))
+        self.save()
+
+
+data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
+                Mood.data_source)

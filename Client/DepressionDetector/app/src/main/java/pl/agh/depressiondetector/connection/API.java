@@ -6,6 +6,7 @@ public interface API {
     String PATH_REGISTER = "auth/register";
     String PATH_LOGIN = "auth/login";
     String PATH_DELETE = "user";
+    String PATH_MOODS = "moods";
     String PATH_SOUND_FILES = "sound_files";
     String PATH_TEXT_MESSAGES = "text_files";
     String PATH_VOICE_RESULTS = "voice_results";
@@ -35,7 +36,4 @@ public interface API {
     String UNKNOWN_ERROR = "UNKNOWN_ERROR";
     String TIMEOUT_ERROR = "TIMEOUT_ERROR";
     String CONNECTION_ERROR = "CONNECTION_ERROR";
-
-    String CLIENT_DATE_FORMAT = "dd-MM-yyyy";
-    String SERVER_DATE_FORMAT = "yyyy-MM-dd";
 }

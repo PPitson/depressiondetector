@@ -11,13 +11,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import pl.agh.depressiondetector.scheduler.Uploader;
+import pl.agh.depressiondetector.analytics.Uploader;
 
 import static pl.agh.depressiondetector.connection.API.PATH_TEXT_MESSAGES;
 import static pl.agh.depressiondetector.utils.FileUtils.getTextMessageFileName;
 import static pl.agh.depressiondetector.utils.FileUtils.getTextMessagesDirectory;
-import static pl.agh.depressiondetector.utils.NetworkUtils.postJSONArray;
-
+import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 
 
 public class TextMessageUploader implements Uploader {
@@ -27,6 +26,8 @@ public class TextMessageUploader implements Uploader {
         File directory = getTextMessagesDirectory();
         if (directory.exists()) {
             File file = new File(directory, getTextMessageFileName() + ".txt");
+            if (!file.exists())
+                return true;
             try {
                 if (postTxtFile(file, appContext))
                     success = file.delete();
@@ -42,7 +43,7 @@ public class TextMessageUploader implements Uploader {
         String jsonArrayString = readFileInputStream(fileInputStream);
         fileInputStream.close();
         JSONArray jsonArray = new JSONArray(jsonArrayString);
-        return postJSONArray(jsonArray, context, PATH_TEXT_MESSAGES);
+        return postJSON(jsonArray, context, PATH_TEXT_MESSAGES);
     }
 
     private String readFileInputStream(FileInputStream fileInputStream) throws IOException {

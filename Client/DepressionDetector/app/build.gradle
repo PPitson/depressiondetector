@@ -41,8 +41,8 @@ dependencies {
     // Apache Commons
     compile 'commons-io:commons-io:2.4'
 
-    // GraphView
-    compile 'com.jjoe64:graphview:4.2.1'
+    // MPAndroidChart
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 
     // Karumi for permissions
     compile 'com.karumi:dexter:4.2.0'

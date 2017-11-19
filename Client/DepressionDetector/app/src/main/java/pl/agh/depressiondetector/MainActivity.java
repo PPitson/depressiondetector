@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
 import pl.agh.depressiondetector.ui.settings.ProfileActivity;
 import pl.agh.depressiondetector.ui.settings.SettingsActivity;
-import pl.agh.depressiondetector.ui.tabs.mood.MoodResultsFragment;
-import pl.agh.depressiondetector.ui.tabs.overview.OverviewFragment;
-import pl.agh.depressiondetector.ui.tabs.phonecalls.PhoneCallResultsFragment;
-import pl.agh.depressiondetector.ui.tabs.smses.TextMessagesResultsFragment;
+import pl.agh.depressiondetector.ui.tabs.MoodResultsFragment;
+import pl.agh.depressiondetector.ui.tabs.OverviewFragment;
+import pl.agh.depressiondetector.ui.tabs.PhoneCallResultsFragment;
+import pl.agh.depressiondetector.ui.tabs.TextMessagesResultsFragment;
 
 public class MainActivity extends AppCompatActivity {
 

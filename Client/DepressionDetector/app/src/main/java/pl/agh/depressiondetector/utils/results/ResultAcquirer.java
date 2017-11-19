@@ -1,19 +1,22 @@
-package pl.agh.depressiondetector.utils;
+package pl.agh.depressiondetector.utils.results;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import pl.agh.depressiondetector.ui.tabs.TabFragment;
+import pl.agh.depressiondetector.utils.NetworkUtils;
+
 public class ResultAcquirer extends AsyncTask<Void, Void, String> {
     private final String TAG;
     private final Context context;
-    private final ResultInjector resultInjector;
+    private final TabFragment tabFragment;
     private final String encodedPathSegments;
 
-    public ResultAcquirer(String TAG, Context context, ResultInjector resultInjector, String encodedPathSegments) {
+    public ResultAcquirer(String TAG, Context context, TabFragment tabFragment, String encodedPathSegments) {
         this.TAG = TAG;
         this.context = context;
-        this.resultInjector = resultInjector;
+        this.tabFragment = tabFragment;
         this.encodedPathSegments = encodedPathSegments;
     }
 
@@ -26,6 +29,6 @@ public class ResultAcquirer extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String s) {
         Log.i(TAG, "Results are: " + s);
         if (s != null)
-            resultInjector.injectResults(s);
+            tabFragment.displayResults(s);
     }
 }

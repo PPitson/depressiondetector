@@ -18,6 +18,7 @@ flask-mongoengine==0.9.3
 Flask-Testing==0.6.2
 Flask-WTF==0.14.2
 futures==3.1.1
+googlemaps==2.5.1
 googletrans==2.2.0
 greenlet==0.4.12
 gunicorn==19.7.1

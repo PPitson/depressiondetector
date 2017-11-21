@@ -4,9 +4,9 @@ import numpy as np
 import tweepy
 
 import twitter.config as conf
+from app.celery.tasks import analyze_and_save_tweet
 from app.models import Tweet
 from twitter import logger
-from twitter.celery_tasks import analyze_and_save_tweet
 
 
 def get_coordinates(status):

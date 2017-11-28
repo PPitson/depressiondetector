@@ -28,7 +28,7 @@ class User(MongoDocument):
     email = mongo.EmailField(required=True)
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
-    date_of_birth = mongo.DateTimeField()
+    date_of_birth: datetime = mongo.DateTimeField()
     contact_person_email = mongo.EmailField()
     contact_person_phone = mongo.StringField()
 
@@ -79,6 +79,17 @@ class User(MongoDocument):
         fields.remove('password_hash')
         fields.add('password')
         return fields
+
+    def to_json(self):
+        result = {
+            'username': self.username,
+            'email': self.email,
+        }
+        if self.sex:
+            result['sex'] = self.sex
+        if self.date_of_birth:
+            result['date_of_birth'] = str(self.date_of_birth.date())
+        return result
 
 
 class DataSourceMongoDocument(MongoDocument):

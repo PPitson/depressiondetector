@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from celery.schedules import crontab
+
 
 def init_celery(app, celery):
     celery.conf.update(
@@ -15,6 +17,10 @@ def init_celery(app, celery):
             'wake-up-every-15-minutes': {
                 'task': 'wake_up',
                 'schedule': timedelta(minutes=15),
+            },
+            'delete_obsolete_tweets': {
+                'task': 'delete_obsolete_tweets',
+                'schedule': crontab(minute=0, hour=0),
             }
         }
     )

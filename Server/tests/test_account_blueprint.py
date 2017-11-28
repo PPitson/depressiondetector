@@ -1,10 +1,31 @@
 import json
 import time
 from base64 import b64encode
+from datetime import datetime
 
 from app.models import User
 from tests.testcase import CustomTestCase
 from app import mail
+
+
+class GetUserInfoTestCase(CustomTestCase):
+    endpoint = '/user'
+
+    def test_unauthorized_get_user_info_request(self):
+        response = self.client.get(self.endpoint)
+        self.assert401(response)
+
+    def test_successful_get_user_info_request(self):
+        self.user.date_of_birth = datetime(1995, 1, 23, 12, 34, 45)
+        self.user.sex = 'M'
+        self.user.save()
+        response = self.client.get(self.endpoint, headers=self.get_headers())
+        self.assert200(response)
+        self.assertSetEqual(set(response.json.keys()), {'username', 'email', 'sex', 'date_of_birth'})
+        self.assertEqual(response.json['username'], self.user.username)
+        self.assertEqual(response.json['email'], self.user.email)
+        self.assertEqual(response.json['sex'], self.user.sex)
+        self.assertEqual(response.json['date_of_birth'], '1995-01-23')
 
 
 class UpdateAccountTestCase(CustomTestCase):

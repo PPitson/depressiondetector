@@ -1,17 +1,12 @@
-import os
+import time
 
 import numpy as np
 import tweepy
 
-import runcelery  # to initalize app and celery instances
+import twitter.config as conf
 from app.celery.tasks import analyze_and_save_tweet
 from app.models import Tweet
-
-ACCESS_TOKEN = os.environ['TWITTER_ACCESS_TOKEN']
-ACCESS_TOKEN_SECRET = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
-CONSUMER_KEY = os.environ['TWITTER_CONSUMER_KEY']
-CONSUMER_SECRET = os.environ['TWITTER_CONSUMER_SECRET']
-GEOBOX_WORLD = [-180, -90, 180, 90]
+from twitter import logger
 
 
 def get_coordinates(status):
@@ -34,12 +29,14 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_error(self, status_code):
         if status_code == 420:
+            logger.error('Rate limit error')
+            time.sleep(30)
             return False
 
 
 def get_twitter_api():
-    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    auth = tweepy.OAuthHandler(conf.CONSUMER_KEY, conf.CONSUMER_SECRET)
+    auth.set_access_token(conf.ACCESS_TOKEN, conf.ACCESS_TOKEN_SECRET)
     return tweepy.API(auth)
 
 
@@ -49,6 +46,15 @@ def create_stream():
     return tweepy.Stream(auth=api.auth, listener=stream_listener)
 
 
+def run():
+    while True:
+        stream = create_stream()
+        try:
+            stream.filter(locations=conf.GEOBOX_WORLD, languages=['en'])
+        except Exception as e:
+            logger.error(e.args[0])
+            time.sleep(60)
+
+
 if __name__ == '__main__':
-    stream = create_stream()
-    stream.filter(locations=GEOBOX_WORLD, languages=['en'])
+    run()

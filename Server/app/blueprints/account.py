@@ -9,6 +9,12 @@ import app.exceptions as exceptions
 account = Blueprint('account', __name__)
 
 
+@account.route('/user')
+@auth.login_required
+def get_user_info():
+    return jsonify(g.current_user.to_json()), 200
+
+
 @account.route('/user', methods=['PUT'])
 @auth.login_required
 def update_user():

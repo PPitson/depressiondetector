@@ -176,6 +176,7 @@ class Tweet(MongoDocument):
     id = mongo.LongField(primary_key=True)
     created_at = mongo.DateTimeField()
     coordinates = mongo.PointField()
+    geohash = mongo.StringField()
     text = mongo.StringField()
     sentiment = mongo.FloatField(min_value=-1, max_value=1)
 

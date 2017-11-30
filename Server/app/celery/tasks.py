@@ -1,12 +1,14 @@
 import os
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 import geohash
+import numpy as np
 import requests
 from textblob import TextBlob
 
 from app import celery
-from app.models import Tweet
+from app.models import Tweet, GeoSentiment
 from indico.analyzer import analyze_text
 from vokaturi.analyzer import analyze_file
 
@@ -50,3 +52,14 @@ def delete_obsolete_tweets():
     max_age = timedelta(days=int(os.environ.get('MAX_TWEETS_AGE', 7)))
     max_datetime = datetime.now().date() - max_age
     Tweet.objects(created_at__lte=max_datetime).delete()
+
+
+@celery.task(name='count_mean_sentiment')
+def count_mean_sentiment():
+    start_datetime = datetime.now().date() - timedelta(days=1)
+    sentiments = defaultdict(lambda: [])
+    for tweet in Tweet.objects(created_at__gte=start_datetime):
+        sentiments[tweet.geohash].append(tweet.sentiment)
+    for geohash, sentiment_list in sentiments.items():
+        mean_sentiment = np.mean(sentiment_list)
+        GeoSentiment(geohash=geohash, date=start_datetime, mean_sentiment=mean_sentiment).save()

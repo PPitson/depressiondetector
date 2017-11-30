@@ -181,5 +181,11 @@ class Tweet(MongoDocument):
     sentiment = mongo.FloatField(min_value=-1, max_value=1)
 
 
+class GeoSentiment(MongoDocument):
+    geohash = mongo.StringField()
+    mean_sentiment = mongo.FloatField(min_value=-1, max_value=1)
+    date = mongo.DateTimeField()
+
+
 data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
                 Mood.data_source)

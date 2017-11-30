@@ -21,6 +21,10 @@ def init_celery(app, celery):
             'delete_obsolete_tweets': {
                 'task': 'delete_obsolete_tweets',
                 'schedule': crontab(minute=0, hour=0),
+            },
+            'count_mean_sentiment': {
+                'task': 'count_mean_sentiment',
+                'schedule': crontab(minute=0, hour=0),
             }
         }
     )

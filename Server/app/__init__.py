@@ -2,6 +2,7 @@ import indicoio
 from celery import Celery
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_googlemaps import GoogleMaps
 from flask_mail import Mail
 from flask_mongoengine import MongoEngine
 
@@ -21,6 +22,8 @@ def create_app(config_name=DEVELOPMENT_CONFIG_NAME):
     register_extensions(app)
     register_blueprints(app)
     init_celery(app, celery)
+
+    GoogleMaps(app)
 
     set_indico_key(config[config_name])
 

@@ -182,6 +182,10 @@ class Tweet(MongoDocument):
 
 
 class GeoSentiment(MongoDocument):
+    meta = {
+        'indexes': ['date'],
+        'index_cls': False
+    }
     geohash = mongo.StringField()
     mean_sentiment = mongo.FloatField(min_value=-1, max_value=1)
     date = mongo.DateTimeField()

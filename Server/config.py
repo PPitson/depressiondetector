@@ -11,6 +11,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     INDICO_KEY = os.environ.get('INDICO_KEY')
     SMSAPI_TOKEN = os.environ.get('SMSAPI_TOKEN')
+    GOOGLEMAPS_KEY = os.environ.get('GOOGLEMAPS_KEY')
 
 
 class DevelopmentConfig(Config):

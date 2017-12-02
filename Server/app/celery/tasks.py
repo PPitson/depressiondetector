@@ -38,18 +38,17 @@ def wake_up():
 
 
 @celery.task(name='analyze_and_save_tweet')
-def analyze_and_save_tweet(tweet):
-    sentiment = TextBlob(tweet.text).sentiment.polarity
+def analyze_and_save_tweet(tweet, text):
+    sentiment = TextBlob(text).sentiment.polarity
     tweet.sentiment = sentiment
     lon, lat = tweet.coordinates['coordinates']
     tweet.geohash = geohash.encode(lat, lon, precision=3)
     tweet.save()
-    print(tweet.id, tweet.created_at, tweet.sentiment)
 
 
 @celery.task(name='delete_obsolete_tweets')
 def delete_obsolete_tweets():
-    max_age = timedelta(days=int(os.environ.get('MAX_TWEETS_AGE', 7)))
+    max_age = timedelta(days=int(os.environ.get('MAX_TWEETS_AGE', 5)))
     max_datetime = datetime.now().date() - max_age
     Tweet.objects(created_at__lte=max_datetime).delete()
 

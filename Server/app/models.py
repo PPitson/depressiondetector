@@ -173,11 +173,15 @@ class HappinessLevel(MongoDocument):
 
 
 class Tweet(MongoDocument):
+    meta = {
+        'indexes': ['created_at'],
+        'index_cls': False
+    }
+
     id = mongo.LongField(primary_key=True)
     created_at = mongo.DateTimeField()
     coordinates = mongo.PointField()
     geohash = mongo.StringField()
-    text = mongo.StringField()
     sentiment = mongo.FloatField(min_value=-1, max_value=1)
 
 
@@ -186,6 +190,7 @@ class GeoSentiment(MongoDocument):
         'indexes': ['date'],
         'index_cls': False
     }
+
     geohash = mongo.StringField()
     mean_sentiment = mongo.FloatField(min_value=-1, max_value=1)
     date = mongo.DateTimeField()

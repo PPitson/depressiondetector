@@ -14,9 +14,9 @@ def init_celery(app, celery):
             'analyze_and_save_tweet': {'queue': 'twitter_stream'}
         },
         beat_schedule={
-            'wake-up-every-15-minutes': {
+            'wake-up-every-30-minutes': {
                 'task': 'wake_up',
-                'schedule': timedelta(minutes=15),
+                'schedule': timedelta(minutes=30),
             },
             'delete_obsolete_tweets': {
                 'task': 'delete_obsolete_tweets',

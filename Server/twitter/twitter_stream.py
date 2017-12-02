@@ -23,7 +23,7 @@ def place_to_coordinates(place):
 class MyStreamListener(tweepy.StreamListener):
     last_timestamp = time.time()
     count = 0
-    max_tweets_per_minute = int(os.environ.get('TWEETS_PER_MINUTE', 10))  # -1 -> no limit
+    max_tweets_per_minute = int(os.environ.get('TWEETS_PER_MINUTE', -1))  # -1 -> no limit
 
     def on_status(self, status):
         if time.time() - self.last_timestamp > 60:

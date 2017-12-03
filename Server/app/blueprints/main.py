@@ -1,17 +1,15 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import dateutil.parser
-import geohash
 from flask import jsonify, make_response, request, Blueprint, render_template, g
-# from flask_googlemaps import Map
 from flask_googlemaps import Map
 
 from app.celery.tasks import analyze_file_task, analyze_text_task
 from app.commons import get_json_list_or_raise_exception
 from app.http_auth import auth
-from app.models import Mood, GeoSentiment
-from map_util import sent2r, sent2g, rgb2hex
+from app.models import Mood
+from map_util import get_dates_by_slider, prepare_sentiment_rects
 
 main = Blueprint('main', __name__)
 
@@ -75,30 +73,16 @@ def post_moods():
     return make_response(jsonify({'created': True}), 201)
 
 
-@main.route('/map', methods=['GET'])
+@main.route('/map', methods=['GET', 'POST'])
 @auth.login_required
 def get_map():
-    yesterday_date = datetime.now().date() - timedelta(days=1)
-    rects = []
-    for geo_sentiment in GeoSentiment.objects(date__gte=yesterday_date):
-        bounds = geohash.bbox(geo_sentiment.geohash)
-        sentiment = geo_sentiment.mean_sentiment
-        rects.append({
-            'fill_color': rgb2hex(sent2r(s=sentiment), sent2g(s=sentiment), 0),
-            'stroke_weight': 0,
-            'fill_opacity': 0.5,
-            'bounds': {
-                'north': bounds['n'],
-                'west': bounds['w'],
-                'south': bounds['s'],
-                'east': bounds['e']
-            }
-        })
-
+    min, max = 1, 5
+    slider = int(request.form['days']) if request.method == 'POST' else max
+    date_start, date_end = get_dates_by_slider(slider, min, max)
     map = Map(zoom=2, identifier='mymap', lat=0, lng=0,
               style='height:400px;width:100%;margin-top:10px;margin-bottom:10px;', streetview_control=False,
-              rectangles=rects)
-    return render_template('map.html', mymap=map)
+              rectangles=prepare_sentiment_rects(date_start, date_end))
+    return render_template('map.html', mymap=map, max=max, min=min, slider=slider)
 
 
 @main.route('/')

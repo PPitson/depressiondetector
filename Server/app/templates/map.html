@@ -3,6 +3,17 @@
 {% block page_content %}
 {{ mymap.js }}
 
-<center><h1>Show tweet's sentiment</h1></center>
+<center><h1>Show tweet's sentiment</h1>
+    <div id="slidecontainer">
+        <span>Date:</span> <span id="date" style="font-weight:bold;color:blue"></span>
+        <form method="POST">
+            <input type="range" min="{{ min }}" max="{{ max }}" value="{{ slider }}" class="slider" id="slider"
+                   name="days">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</center>
+
 {{ mymap.html }}
+<script type=text/javascript src="/static/js/slider.js"></script>
 {% endblock %}

@@ -22,7 +22,7 @@ public class ResultAcquirer extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        return NetworkUtils.getResults(TAG, context, encodedPathSegments);
+        return NetworkUtils.get(TAG, context, encodedPathSegments);
     }
 
     @Override

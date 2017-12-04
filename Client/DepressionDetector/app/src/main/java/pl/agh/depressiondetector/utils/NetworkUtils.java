@@ -83,7 +83,7 @@ public final class NetworkUtils {
         }
     }
 
-    public static String getResults(String TAG, Context context, String encodedPathSegments) {
+    public static String get(String TAG, Context context, String encodedPathSegments) {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme("https")
                 .host(HOST)

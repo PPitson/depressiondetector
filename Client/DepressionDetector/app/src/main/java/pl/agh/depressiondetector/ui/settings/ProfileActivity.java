@@ -12,11 +12,23 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.authentication.Authentication;
 import pl.agh.depressiondetector.authentication.AuthenticationActivity;
+import pl.agh.depressiondetector.connection.API;
 import pl.agh.depressiondetector.model.User;
+import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static pl.agh.depressiondetector.connection.API.CONNECTION_ERROR;
@@ -26,6 +38,20 @@ import static pl.agh.depressiondetector.connection.API.TIMEOUT_ERROR;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = "ProfileActivity";
+
+    @BindView(R.id.username_text_view)
+    TextView usernameTextView;
+
+    @BindView(R.id.email_text_view)
+    TextView emailTextView;
+
+    @BindView(R.id.sex_text_view)
+    TextView sexTextView;
+
+    @BindView(R.id.date_of_birth_text_view)
+    TextView dateOfBirthTextView;
+
     private User user;
     private SharedPreferences preferences;
 
@@ -34,9 +60,18 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        ButterKnife.bind(this);
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         user = getUserFromPreferences();
+
+        Map<String, TextView> textViews = new HashMap<>();
+        textViews.put("username", usernameTextView);
+        textViews.put("email", emailTextView);
+        textViews.put("sex", sexTextView);
+        textViews.put("date_of_birth", dateOfBirthTextView);
+        new GetUserInfoTask(TAG, this, API.PATH_USER, textViews).execute();
     }
 
     private User getUserFromPreferences() {
@@ -79,6 +114,44 @@ public class ProfileActivity extends AppCompatActivity {
     private void restartApplication() {
         finishAffinity();
         startActivity(new Intent(this, AuthenticationActivity.class));
+    }
+
+    private class GetUserInfoTask extends AsyncTask<Void, Void, String> {
+
+        private final String TAG;
+        private final Context context;
+        private final String encodedPathSegments;
+
+        private final Map<String, TextView> textViews;
+
+        GetUserInfoTask(String TAG, Context context, String encodedPathSegments, Map<String, TextView> textViews) {
+            this.TAG = TAG;
+            this.context = context;
+            this.encodedPathSegments = encodedPathSegments;
+            this.textViews = textViews;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return NetworkUtils.get(TAG, context, encodedPathSegments);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+                JSONObject json = new JSONObject(s);
+                Iterator jsonKeys = json.keys();
+
+                while (jsonKeys.hasNext()) {
+                    String key = (String) jsonKeys.next();
+                    if (textViews.containsKey(key)) {
+                        textViews.get(key).setText(json.getString(key));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class DeleteTask extends AsyncTask<Void, User, String> {

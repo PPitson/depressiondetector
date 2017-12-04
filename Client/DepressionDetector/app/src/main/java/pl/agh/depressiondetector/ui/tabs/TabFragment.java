@@ -52,8 +52,7 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.main_chart_types, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
-
-        resultInjector = getResultInjector((String) spinner.getSelectedItem(), lineChart);
+        spinner.setOnItemSelectedListener(this);
 
         String encodedPathSegments = getEncodedPathSegments();
         if (encodedPathSegments != null) {
@@ -80,7 +79,8 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         resultInjector = getResultInjector((String) adapterView.getItemAtPosition(i), lineChart);
-        resultInjector.injectResults(results);
+        if (results != null)
+            resultInjector.injectResults(results);
     }
 
     abstract String getEncodedPathSegments();

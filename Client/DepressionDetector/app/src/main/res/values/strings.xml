@@ -54,6 +54,10 @@
     <!-- ProfileActivity -->
     <string name="delete_successful">Delete successful</string>
     <string name="delete_message">You will be now logged out. To finish deleting account follow the instructions in email.</string>
+    <string name="username">username</string>
+    <string name="email">e-mail</string>
+    <string name="sex">sex</string>
+    <string name="date_of_birth">date of birth</string>
 
     <!-- Mood -->
     <string name="mood_notification_title">Hey, how was your day?</string>

@@ -21,7 +21,7 @@ import static pl.agh.depressiondetector.connection.API.CONNECTION_ERROR;
 import static pl.agh.depressiondetector.connection.API.HOST;
 import static pl.agh.depressiondetector.connection.API.MESSAGE_AUTHENTICATE;
 import static pl.agh.depressiondetector.connection.API.MESSAGE_DELETE;
-import static pl.agh.depressiondetector.connection.API.PATH_DELETE;
+import static pl.agh.depressiondetector.connection.API.PATH_USER;
 import static pl.agh.depressiondetector.connection.API.PATH_LOGIN;
 import static pl.agh.depressiondetector.connection.API.PATH_REGISTER;
 import static pl.agh.depressiondetector.connection.API.SENT_EMAIL;
@@ -84,7 +84,7 @@ public class Authentication {
     public static String delete(User user) {
         String message = UNKNOWN_ERROR;
         try {
-            HttpUrl url = buildHttpsUrl(PATH_DELETE);
+            HttpUrl url = buildHttpsUrl(PATH_USER);
 
             JSONObject json = user.toJSON();
 

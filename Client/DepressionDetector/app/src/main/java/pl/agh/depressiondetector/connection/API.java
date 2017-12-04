@@ -11,6 +11,8 @@ public interface API {
     String PATH_TEXT_MESSAGES = "text_files";
     String PATH_VOICE_RESULTS = "voice_results";
     String PATH_TEXT_RESULTS = "text_results";
+    String PATH_MODD_RESULTS = "mood_results";
+    String PATH_MEAN_RESULTS = "mean_results";
 
 
     String USERNAME = "username";

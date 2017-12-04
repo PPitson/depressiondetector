@@ -1,2 +1,3 @@
 twitter_stream_listener: python run_twitter_stream.py
 tweets_worker: celery worker -A runcelery.celery -n tweets_worker@%h -c 12 -Q twitter_stream
+flower: flower -A runcelery.celery --port=5555

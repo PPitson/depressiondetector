@@ -14,4 +14,5 @@ public class LastYearResultsInjector extends ResultInjector {
     void setDateBoundary(Calendar calendar) {
         calendar.add(Calendar.YEAR, -1);
     }
+
 }

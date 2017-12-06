@@ -15,4 +15,9 @@ public class LastWeekResultInjector extends ResultInjector {
         int dayOfTheWeek = calendar.getFirstDayOfWeek() - calendar.get(Calendar.DAY_OF_WEEK);
         calendar.add(Calendar.DATE, dayOfTheWeek - 7);
     }
+
+    @Override
+    String getFormat() {
+        return "EE";
+    }
 }

@@ -14,4 +14,9 @@ public class LastMonthResultsInjector extends ResultInjector {
     void setDateBoundary(Calendar calendar) {
         calendar.add(Calendar.MONTH, -1);
     }
+
+    @Override
+    String getFormat() {
+        return "dd.MM";
+    }
 }

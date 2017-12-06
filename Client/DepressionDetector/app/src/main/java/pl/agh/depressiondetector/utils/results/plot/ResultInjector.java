@@ -22,7 +22,7 @@ public abstract class ResultInjector {
 
     private static final String LABEL = "Happiness";
 
-    static final String DATE_JSON_FIELD = "date";
+    private static final String DATE_JSON_FIELD = "date";
 
     private LineChart lineChart;
     private String resultsJSONField;
@@ -40,10 +40,10 @@ public abstract class ResultInjector {
                     List<Entry> entries = new ArrayList<>();
                     JSONObject json;
 
+                    AxisValueFormatter axisValueFormatter = new AxisValueFormatter(getFormat());
                     Entry entry;
-                    AxisValueFormatter axisValueFormatter = new AxisValueFormatter();
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        json = jsonArray.getJSONObject(i);
+                        json = jsonArray.getJSONObject(jsonArray.length() - 1 - i);
                         entry = new Entry(i, (float) json.getDouble(resultsJSONField));
                         axisValueFormatter.addDate(json.getString(DATE_JSON_FIELD));
                         entries.add(entry);
@@ -60,6 +60,7 @@ public abstract class ResultInjector {
                     lineChart.setDescription(null);
                     lineChart.setData(lineData);
                     lineChart.getXAxis().setValueFormatter(axisValueFormatter);
+                    lineChart.getXAxis().setGranularity(1f);
                     lineChart.invalidate();
                 }
             } catch (JSONException e) {
@@ -85,4 +86,7 @@ public abstract class ResultInjector {
     }
 
     abstract void setDateBoundary(Calendar calendar);
+    String getFormat() {
+        return "dd.MM.YY";
+    }
 }

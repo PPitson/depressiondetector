@@ -1,8 +1,6 @@
 import os
-from datetime import datetime, timedelta
 
 import requests
-from textblob import TextBlob
 
 from app import celery
 from app.models import Tweet
@@ -34,16 +32,27 @@ def wake_up():
     requests.get('https://depressionserver.herokuapp.com')
 
 
-@celery.task(name='analyze_and_save_tweet')
-def analyze_and_save_tweet(tweet):
-    sentiment = TextBlob(tweet.text).sentiment.polarity
-    tweet.sentiment = sentiment
-    tweet.save()
-    print(tweet.id, tweet.created_at, tweet.sentiment)
+@celery.task(name='get_tweet_markers')
+def get_tweet_markers(start_datetime, end_datetime, tweets):
+    markers = []
+    for tweet in Tweet.objects.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)[0:tweets]:
+        coord = tweet.coordinates['coordinates']
+        markers.append({
+            'icon': get_icon_by_sentiment(tweet.sentiment),
+            'lat': coord[1],
+            'lng': coord[0],
+            'infobox': tweet.text
+        })
+    return markers
 
 
-@celery.task(name='delete_obsolete_tweets')
-def delete_obsolete_tweets():
-    max_age = timedelta(days=int(os.environ.get('MAX_TWEETS_AGE', 7)))
-    max_datetime = datetime.now() - max_age
-    Tweet.objects(datetime__lte=max_datetime).delete()
+def get_icon_by_sentiment(sentiment):
+    base_dir = os.path.join('static', 'images')
+    color = 'red'
+    if sentiment > 0.5:
+        color = 'green'
+    elif sentiment > 0:
+        color = 'yellow'
+    elif sentiment > -0.5:
+        color = 'purple'
+    return os.path.join(base_dir, color + '.png')

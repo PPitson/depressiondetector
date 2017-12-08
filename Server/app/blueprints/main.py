@@ -1,11 +1,13 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import dateutil.parser
 from flask import jsonify, make_response, request, Blueprint, render_template, g
+from flask_googlemaps import Map
 
-from app.celery.tasks import analyze_file_task, analyze_text_task
+from app.celery.tasks import analyze_file_task, analyze_text_task, get_tweet_markers
 from app.commons import get_json_list_or_raise_exception
+from app.forms import MapDataForm
 from app.http_auth import auth
 from app.models import Mood
 
@@ -69,6 +71,20 @@ def post_moods():
         Mood.objects.create(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
                             mood_level=result['mood'])
     return make_response(jsonify({'created': True}), 201)
+
+
+@main.route('/map', methods=['GET', 'POST'])
+@auth.login_required
+def post_map_date():
+    form = MapDataForm()
+    map = Map(zoom=2, identifier='mymap', lat=0, lng=0,
+              style='height:400px;width:100%;margin-top:10px;margin-bottom:10px;', streetview_control=False)
+    markers = []
+    if form.validate_on_submit():
+        start_date = form.date.data.replace(minute=0, second=0, microsecond=0)
+        markers = get_tweet_markers(start_date, start_date + timedelta(hours=1), form.max_tweets.data)
+    map.markers = markers
+    return render_template('map.html', form=form, mymap=map)
 
 
 @main.route('/')

@@ -28,7 +28,7 @@ class User(MongoDocument):
     email = mongo.EmailField(required=True)
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
-    date_of_birth = mongo.DateTimeField()
+    date_of_birth: datetime = mongo.DateTimeField()
     contact_person_email = mongo.EmailField()
     contact_person_phone = mongo.StringField()
 
@@ -79,6 +79,17 @@ class User(MongoDocument):
         fields.remove('password_hash')
         fields.add('password')
         return fields
+
+    def to_json(self):
+        result = {
+            'username': self.username,
+            'email': self.email,
+        }
+        if self.sex:
+            result['sex'] = self.sex
+        if self.date_of_birth:
+            result['date_of_birth'] = str(self.date_of_birth.date())
+        return result
 
 
 class DataSourceMongoDocument(MongoDocument):
@@ -162,11 +173,27 @@ class HappinessLevel(MongoDocument):
 
 
 class Tweet(MongoDocument):
-    _id = mongo.IntField()
-    created_at = mongo.DateTimeField(default=datetime.utcnow)
-    coordinates = mongo.GeoJsonBaseField()
-    text = mongo.StringField()
-    sentiment = mongo.FloatField(min_value=-1., max_value=1.)
+    meta = {
+        'indexes': ['created_at'],
+        'index_cls': False
+    }
+
+    id = mongo.LongField(primary_key=True)
+    created_at = mongo.DateTimeField()
+    coordinates = mongo.PointField()
+    geohash = mongo.StringField()
+    sentiment = mongo.FloatField(min_value=-1, max_value=1)
+
+
+class GeoSentiment(MongoDocument):
+    meta = {
+        'indexes': ['date'],
+        'index_cls': False
+    }
+
+    geohash = mongo.StringField()
+    mean_sentiment = mongo.FloatField(min_value=-1, max_value=1)
+    date = mongo.DateTimeField()
 
 
 data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,

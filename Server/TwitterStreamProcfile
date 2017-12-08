@@ -1,3 +1,3 @@
 twitter_stream_listener: python run_twitter_stream.py
-tweets_worker: celery worker -A runcelery.celery -n tweets_worker@%h -c 15 -Q twitter_stream
-tweets_deleter: celery worker -A runcelery.celery -B -n tweets_deleter@%h -c 1
+tweets_worker: celery worker -A runcelery.celery -n tweets_worker@%h -c 4 -Q celery,twitter_stream
+beat: celery beat -A runcelery.celery

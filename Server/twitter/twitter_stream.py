@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -20,12 +21,24 @@ def place_to_coordinates(place):
 
 
 class MyStreamListener(tweepy.StreamListener):
+    last_timestamp = time.time()
+    count = 0
+    max_tweets_per_minute = int(os.environ.get('TWEETS_PER_MINUTE', -1))  # -1 -> no limit
+
     def on_status(self, status):
+        if time.time() - self.last_timestamp > 60:
+            logger.info(f'Tweets in last minute: {self.count}')
+            self.last_timestamp = time.time()
+            self.count = 0
+        elif self.count == self.max_tweets_per_minute:
+            return
+
         coordinates = get_coordinates(status)
         if len(status.text) < 100:
             return
-        tweet = Tweet(id=status.id, created_at=status.created_at, coordinates=coordinates, text=status.text)
-        analyze_and_save_tweet.delay(tweet)
+        tweet = Tweet(id=status.id, created_at=status.created_at, coordinates=coordinates)
+        analyze_and_save_tweet.delay(tweet, status.text)
+        self.count += 1
 
     def on_error(self, status_code):
         if status_code == 420:

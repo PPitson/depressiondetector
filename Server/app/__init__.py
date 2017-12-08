@@ -23,6 +23,8 @@ def create_app(config_name=DEVELOPMENT_CONFIG_NAME):
     register_blueprints(app)
     init_celery(app, celery)
 
+    GoogleMaps(app)
+
     set_indico_key(config[config_name])
     GoogleMaps(app)
 

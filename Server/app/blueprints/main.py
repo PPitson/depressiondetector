@@ -1,15 +1,15 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import dateutil.parser
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 from flask_googlemaps import Map
 
-from app.celery.tasks import analyze_file_task, analyze_text_task, get_tweet_markers
+from app.celery.tasks import analyze_file_task, analyze_text_task
 from app.commons import get_json_list_or_raise_exception
-from app.forms import MapDataForm
 from app.http_auth import auth
 from app.models import Mood
+from map_util import get_dates_by_slider, prepare_sentiment_rects
 
 main = Blueprint('main', __name__)
 
@@ -75,16 +75,14 @@ def post_moods():
 
 @main.route('/map', methods=['GET', 'POST'])
 @auth.login_required
-def post_map_date():
-    form = MapDataForm()
+def get_map():
+    min, max = 1, 5
+    slider = int(request.form['days']) if request.method == 'POST' else max
+    date_start, date_end = get_dates_by_slider(slider, min, max)
     map = Map(zoom=2, identifier='mymap', lat=0, lng=0,
-              style='height:400px;width:100%;margin-top:10px;margin-bottom:10px;', streetview_control=False)
-    markers = []
-    if form.validate_on_submit():
-        start_date = form.date.data.replace(minute=0, second=0, microsecond=0)
-        markers = get_tweet_markers(start_date, start_date + timedelta(hours=1), form.max_tweets.data)
-    map.markers = markers
-    return render_template('map.html', form=form, mymap=map)
+              style='height:400px;width:100%;margin-top:10px;margin-bottom:10px;', streetview_control=False,
+              rectangles=prepare_sentiment_rects(date_start, date_end))
+    return render_template('map.html', mymap=map, max=max, min=min, slider=slider)
 
 
 @main.route('/')

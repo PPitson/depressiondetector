@@ -53,6 +53,13 @@ def delete_obsolete_tweets():
     Tweet.objects(created_at__lte=max_datetime).delete()
 
 
+@celery.task(name='delete_obsolete_geosentiment')
+def delete_obsolete_geosentiment():
+    max_age = timedelta(days=int(os.environ.get('MAX_GEOSENTIMENT_AGE', 30)))
+    max_datetime = datetime.now().date() - max_age
+    GeoSentiment.objects(date__lte=max_datetime).delete()
+
+
 @celery.task(name='count_mean_sentiment')
 def count_mean_sentiment():
     start_datetime = datetime.now().date() - timedelta(days=1)

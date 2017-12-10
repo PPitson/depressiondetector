@@ -17,6 +17,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -133,19 +134,26 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            return NetworkUtils.get(TAG, context, encodedPathSegments);
+            try {
+                return NetworkUtils.get(TAG, context, encodedPathSegments);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
             try {
-                JSONObject json = new JSONObject(s);
-                Iterator jsonKeys = json.keys();
+                if (s != null) {
+                    JSONObject json = new JSONObject(s);
+                    Iterator jsonKeys = json.keys();
 
-                while (jsonKeys.hasNext()) {
-                    String key = (String) jsonKeys.next();
-                    if (textViews.containsKey(key)) {
-                        textViews.get(key).setText(json.getString(key));
+                    while (jsonKeys.hasNext()) {
+                        String key = (String) jsonKeys.next();
+                        if (textViews.containsKey(key)) {
+                            textViews.get(key).setText(json.getString(key));
+                        }
                     }
                 }
             } catch (JSONException e) {

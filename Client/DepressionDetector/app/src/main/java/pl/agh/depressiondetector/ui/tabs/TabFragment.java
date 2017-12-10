@@ -3,6 +3,7 @@ package pl.agh.depressiondetector.ui.tabs;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ import pl.agh.depressiondetector.utils.results.plot.LastYearResultsInjector;
 import pl.agh.depressiondetector.utils.results.plot.ResultInjector;
 
 
-public abstract class TabFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public abstract class TabFragment extends Fragment
+        implements AdapterView.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     String TAG;
 
     @BindView(R.id.results_lineChart)
@@ -37,6 +39,9 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
 
     @BindView(R.id.results_spinner)
     Spinner spinner;
+
+    @BindView(R.id.swipe_update_results)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     ResultInjector resultInjector;
     List<Result> results;
@@ -62,21 +67,19 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);
 
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         resultInjector = new LastWeekResultInjector(lineChart);
 
-        String encodedPathSegments = getEncodedPathSegments();
         if (results == null) {
-            if (NetworkUtils.isNetworkAvailable(getContext()) && encodedPathSegments != null) {
-                new ResultAcquirer(TAG, getContext(), this, encodedPathSegments, resultJSONField, resultType).execute();
-            } else {
-                DatabaseUtils.getResults(AppDatabase.getAppDatabase(getContext()), this, resultType);
-            }
+            updateResults();
         }
     }
 
     public void displayResults(List<Result> results) {
         this.results = results;
         resultInjector.injectResults(results);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     ResultInjector getResultInjector(String type, LineChart lineChart) {
@@ -95,6 +98,20 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
         resultInjector = getResultInjector((String) adapterView.getItemAtPosition(i), lineChart);
         if (results != null)
             resultInjector.injectResults(results);
+    }
+
+    @Override
+    public void onRefresh() {
+        updateResults();
+    }
+
+    private void updateResults() {
+        String encodedPathSegments = getEncodedPathSegments();
+        if (NetworkUtils.isNetworkAvailable(getContext()) && encodedPathSegments != null) {
+            new ResultAcquirer(TAG, getContext(), this, encodedPathSegments, resultJSONField, resultType).execute();
+        } else {
+            DatabaseUtils.getResults(AppDatabase.getAppDatabase(getContext()), this, resultType);
+        }
     }
 
     abstract String getEncodedPathSegments();

@@ -10,25 +10,32 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.authentication.Authentication;
 import pl.agh.depressiondetector.authentication.AuthenticationActivity;
 import pl.agh.depressiondetector.connection.API;
 import pl.agh.depressiondetector.model.User;
+import pl.agh.depressiondetector.utils.DateUtils;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
@@ -85,24 +92,15 @@ public class ProfileActivity extends AppCompatActivity {
         return user;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu, menu);
-        return true;
+    @OnClick(R.id.delete_button)
+    public void onDeleteClick() {
+        new DeleteTask(this, user).execute();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_profile_delete:
-                new DeleteTask(this, user).execute();
-                break;
-            case R.id.item_profile_logout:
-                removeCredentialPreferences();
-                restartApplication();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    @OnClick(R.id.logout_button)
+    public void onLogoutClick() {
+        removeCredentialPreferences();
+        restartApplication();
     }
 
     private void removeCredentialPreferences() {
@@ -152,7 +150,14 @@ public class ProfileActivity extends AppCompatActivity {
                     while (jsonKeys.hasNext()) {
                         String key = (String) jsonKeys.next();
                         if (textViews.containsKey(key)) {
-                            textViews.get(key).setText(json.getString(key));
+                            String value = json.getString(key);
+                            if (key.equals("sex"))
+                                value = value.equals("M") ? "male" : "female";
+                            else if (key.equals("date_of_birth")) {
+                                Date date = DateUtils.getDateFromClientDateFormat(value);
+                                value = new SimpleDateFormat("dd MMMM YYYY", Locale.getDefault()).format(date);
+                            }
+                            textViews.get(key).setText(value);
                         }
                     }
                 }

@@ -25,7 +25,7 @@ class GetUserInfoTestCase(CustomTestCase):
         self.assertEqual(response.json['username'], self.user.username)
         self.assertEqual(response.json['email'], self.user.email)
         self.assertEqual(response.json['sex'], self.user.sex)
-        self.assertEqual(response.json['date_of_birth'], '1995-01-23')
+        self.assertEqual(response.json['date_of_birth'], '23-01-1995')
 
 
 class UpdateAccountTestCase(CustomTestCase):

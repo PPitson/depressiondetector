@@ -27,6 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <android.support.v7.widget.AppCompatSpinner
+                    android:layout_margin="8dp"
                     android:id="@+id/results_spinner"
                     android:textAlignment="center"
                     android:layout_width="wrap_content"

@@ -81,7 +81,7 @@ public abstract class TabFragment extends Fragment {
 
         lineChart.setOnChartGestureListener(new OnLineChartGestureListener());
 
-        resultInjector = new LastWeekResultInjector(lineChart);
+        resultInjector = new LastWeekResultInjector(lineChart, getContext());
 
         if (results == null) {
             swipeRefreshLayout.setRefreshing(true);
@@ -97,13 +97,13 @@ public abstract class TabFragment extends Fragment {
 
     ResultInjector getResultInjector(String type, LineChart lineChart) {
         if (type.equals(getString(R.string.main_chart_last_week)))
-            return new LastWeekResultInjector(lineChart);
+            return new LastWeekResultInjector(lineChart, getContext());
         if (type.equals(getString(R.string.main_chart_last_month)))
-            return new LastMonthResultsInjector(lineChart);
+            return new LastMonthResultsInjector(lineChart, getContext());
         if (type.equals(getString(R.string.main_chart_last_year)))
-            return new LastYearResultsInjector(lineChart);
+            return new LastYearResultsInjector(lineChart, getContext());
         else
-            return new AllResultsInjector(lineChart);
+            return new AllResultsInjector(lineChart, getContext());
     }
 
     private void updateResults() {

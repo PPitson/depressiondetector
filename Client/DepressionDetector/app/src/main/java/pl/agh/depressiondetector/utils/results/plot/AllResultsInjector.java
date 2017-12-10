@@ -1,5 +1,7 @@
 package pl.agh.depressiondetector.utils.results.plot;
 
+import android.content.Context;
+
 import com.github.mikephil.charting.charts.LineChart;
 
 import java.util.Calendar;
@@ -9,8 +11,8 @@ import pl.agh.depressiondetector.database.entity.Result;
 
 public class AllResultsInjector extends ResultInjector {
 
-    public AllResultsInjector(LineChart lineChart) {
-        super(lineChart);
+    public AllResultsInjector(LineChart lineChart, Context context) {
+        super(lineChart, context);
     }
 
     @Override

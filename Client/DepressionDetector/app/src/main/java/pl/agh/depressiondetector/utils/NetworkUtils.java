@@ -83,7 +83,7 @@ public final class NetworkUtils {
         }
     }
 
-    public static String get(String TAG, Context context, String encodedPathSegments) {
+    public static String get(String TAG, Context context, String encodedPathSegments) throws IOException {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme("https")
                 .host(HOST)
@@ -97,17 +97,13 @@ public final class NetworkUtils {
                 .build();
 
         String result = null;
-        try {
-            Response response = HttpClient.getClient().newCall(request).execute();
-            ResponseBody responseBody = response.body();
-            Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
-            if (responseBody != null) {
-                if (response.isSuccessful())
-                    result = responseBody.string();
-                responseBody.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        Response response = HttpClient.getClient().newCall(request).execute();
+        ResponseBody responseBody = response.body();
+        Log.i(TAG, "Server returned: " + response.message() + " with code " + response.code());
+        if (responseBody != null) {
+            if (response.isSuccessful())
+                result = responseBody.string();
+            responseBody.close();
         }
 
         return result;

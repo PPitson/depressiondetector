@@ -12,9 +12,15 @@ import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.agh.depressiondetector.R;
+import pl.agh.depressiondetector.database.AppDatabase;
+import pl.agh.depressiondetector.database.entity.Result;
+import pl.agh.depressiondetector.utils.DatabaseUtils;
+import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.results.ResultAcquirer;
 import pl.agh.depressiondetector.utils.results.plot.AllResultsInjector;
 import pl.agh.depressiondetector.utils.results.plot.LastMonthResultsInjector;
@@ -33,8 +39,9 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
     Spinner spinner;
 
     ResultInjector resultInjector;
-    String results;
+    List<Result> results;
     String resultJSONField;
+    String resultType;
 
     @Nullable
     @Override
@@ -48,32 +55,39 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
 
         TAG = getTAG();
         resultJSONField = getResultJSONField();
+        resultType = getResultType();
 
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.main_chart_types, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);
 
+        resultInjector = new LastWeekResultInjector(lineChart);
+
         String encodedPathSegments = getEncodedPathSegments();
-        if (encodedPathSegments != null) {
-            new ResultAcquirer(TAG, getContext(), this, encodedPathSegments).execute();
+        if (results == null) {
+            if (NetworkUtils.isNetworkAvailable(getContext()) && encodedPathSegments != null) {
+                new ResultAcquirer(TAG, getContext(), this, encodedPathSegments, resultJSONField, resultType).execute();
+            } else {
+                DatabaseUtils.getResults(AppDatabase.getAppDatabase(getContext()), this, resultType);
+            }
         }
     }
 
-    public void displayResults(String results) {
+    public void displayResults(List<Result> results) {
         this.results = results;
         resultInjector.injectResults(results);
     }
 
     ResultInjector getResultInjector(String type, LineChart lineChart) {
         if (type.equals(getString(R.string.main_chart_last_week)))
-            return new LastWeekResultInjector(lineChart, resultJSONField);
+            return new LastWeekResultInjector(lineChart);
         if (type.equals(getString(R.string.main_chart_last_month)))
-            return new LastMonthResultsInjector(lineChart, resultJSONField);
+            return new LastMonthResultsInjector(lineChart);
         if (type.equals(getString(R.string.main_chart_last_year)))
-            return new LastYearResultsInjector(lineChart, resultJSONField);
+            return new LastYearResultsInjector(lineChart);
         else
-            return new AllResultsInjector(lineChart, resultJSONField);
+            return new AllResultsInjector(lineChart);
     }
 
     @Override
@@ -86,6 +100,8 @@ public abstract class TabFragment extends Fragment implements AdapterView.OnItem
     abstract String getEncodedPathSegments();
 
     abstract String getResultJSONField();
+
+    abstract String getResultType();
 
     abstract String getTAG();
 }

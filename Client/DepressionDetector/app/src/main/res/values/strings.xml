@@ -15,6 +15,8 @@
     <string name="main_text_messages_results">Text Messages</string>
     <string name="main_mood_results">Mood</string>
 
+    <string name="offline_mode">OFFLINE MODE</string>
+
     <!-- Main Activity Fragments Chart Types -->
     <string name="main_chart_last_week">Last Week</string>
     <string name="main_chart_last_month">Last Month</string>

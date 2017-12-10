@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#1B5E20</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="white">#FFFFFF</color>
+    <color name="light_grey">#EDEDED</color>
+
     <color name="mood_awful">#6D7A7E</color>
     <color name="mood_bad">#4871A2</color>
     <color name="mood_so_so">#86459B</color>

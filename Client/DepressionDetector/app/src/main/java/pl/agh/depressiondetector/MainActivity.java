@@ -12,8 +12,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +23,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
+import pl.agh.depressiondetector.components.MainViewPager;
 import pl.agh.depressiondetector.database.AppDatabase;
 import pl.agh.depressiondetector.ui.settings.ProfileActivity;
 import pl.agh.depressiondetector.ui.settings.SettingsActivity;
 import pl.agh.depressiondetector.ui.tabs.MoodResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.OverviewFragment;
 import pl.agh.depressiondetector.ui.tabs.PhoneCallResultsFragment;
+import pl.agh.depressiondetector.ui.tabs.TabFragment;
 import pl.agh.depressiondetector.ui.tabs.TextMessagesResultsFragment;
 import pl.agh.depressiondetector.utils.DatabaseUtils;
 
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static List<AnalysedDataType> TAB_TYPES;
 
     @BindView(R.id.main_view_pager)
-    ViewPager viewPager;
+    MainViewPager viewPager;
 
     @BindView(R.id.main_tab_layout)
     TabLayout tabLayout;
@@ -105,7 +109,9 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new OverviewFragment();
+                    OverviewFragment overviewFragment = new OverviewFragment();
+                    overviewFragment.setViewPager(viewPager);
+                    return overviewFragment;
                 default:
                     if (position > TAB_TYPES.size())
                         return null;
@@ -145,16 +151,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Fragment getItemFromType(AnalysedDataType type) {
+        TabFragment tabFragment;
         switch (type) {
             case PHONE_CALL:
-                return new PhoneCallResultsFragment();
+                tabFragment = new PhoneCallResultsFragment();
+                break;
             case SMS:
-                return new TextMessagesResultsFragment();
+                tabFragment = new TextMessagesResultsFragment();
+                break;
             case MOOD:
-                return new MoodResultsFragment();
+                tabFragment = new MoodResultsFragment();
+                break;
             default:
                 return null;
         }
+        tabFragment.setViewPager(viewPager);
+        return tabFragment;
     }
 
     private CharSequence getPageTitleFromType(AnalysedDataType type) {

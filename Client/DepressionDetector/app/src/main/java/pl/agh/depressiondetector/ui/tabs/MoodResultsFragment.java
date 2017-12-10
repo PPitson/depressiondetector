@@ -26,8 +26,4 @@ public class MoodResultsFragment extends TabFragment {
         return "MoodResultsFragment";
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

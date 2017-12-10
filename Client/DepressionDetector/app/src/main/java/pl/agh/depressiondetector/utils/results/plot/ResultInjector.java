@@ -1,5 +1,6 @@
 package pl.agh.depressiondetector.utils.results.plot;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -63,6 +64,9 @@ public abstract class ResultInjector {
                 lineChart.setData(lineData);
                 lineChart.getXAxis().setValueFormatter(axisValueFormatter);
                 lineChart.getXAxis().setGranularity(1f);
+                lineChart.getAxisLeft().setAxisMaximum(1f);
+                lineChart.getAxisRight().setEnabled(false);
+                lineChart.animateXY(1000, 1000);
             } else {
                 lineChart.setData(null);
             }

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +39,23 @@ public class ResultAcquirer extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        return NetworkUtils.get(TAG, context, encodedPathSegments);
+        try {
+            return NetworkUtils.get(TAG, context, encodedPathSegments);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     protected void onPostExecute(String s) {
         Log.i(TAG, "Results are: " + s);
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(context);
         if (s != null)
-            DatabaseUtils.insertResults(AppDatabase.getAppDatabase(context), tabFragment, s, resultsType, resultJSONField, DATE_JSON_FIELD);
+            DatabaseUtils.insertResults(appDatabase, tabFragment, s, resultsType, resultJSONField, DATE_JSON_FIELD);
+        else {
+            tabFragment.setOfflineModeText();
+            DatabaseUtils.getResults(appDatabase, tabFragment, resultsType);
+        }
     }
 }

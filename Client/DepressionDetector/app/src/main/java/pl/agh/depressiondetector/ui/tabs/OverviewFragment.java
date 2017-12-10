@@ -26,8 +26,4 @@ public class OverviewFragment extends TabFragment {
         return "OverviewFragment";
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

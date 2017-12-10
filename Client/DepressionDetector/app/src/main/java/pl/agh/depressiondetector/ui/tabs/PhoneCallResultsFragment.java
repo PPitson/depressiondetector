@@ -25,8 +25,4 @@ public class PhoneCallResultsFragment extends TabFragment {
         return "PhoneCallResFragment";
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

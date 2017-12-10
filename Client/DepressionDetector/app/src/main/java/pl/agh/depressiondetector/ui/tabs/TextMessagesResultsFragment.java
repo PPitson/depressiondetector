@@ -25,8 +25,4 @@ public class TextMessagesResultsFragment extends TabFragment {
         return "TextMessagesResFragment";
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

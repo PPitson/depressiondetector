@@ -3,6 +3,7 @@ package pl.agh.depressiondetector;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,12 +21,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.agh.depressiondetector.analytics.AnalysedDataType;
+import pl.agh.depressiondetector.database.AppDatabase;
 import pl.agh.depressiondetector.ui.settings.ProfileActivity;
 import pl.agh.depressiondetector.ui.settings.SettingsActivity;
 import pl.agh.depressiondetector.ui.tabs.MoodResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.OverviewFragment;
 import pl.agh.depressiondetector.ui.tabs.PhoneCallResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.TextMessagesResultsFragment;
+import pl.agh.depressiondetector.utils.DatabaseUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DatabaseUtils.setup(AppDatabase.getAppDatabase(getApplicationContext()));
 
         TAB_TYPES = setupTabTypes(getApplicationContext());
 

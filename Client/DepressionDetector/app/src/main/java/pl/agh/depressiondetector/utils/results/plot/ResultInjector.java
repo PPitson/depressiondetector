@@ -5,15 +5,14 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import pl.agh.depressiondetector.database.entity.Result;
 import pl.agh.depressiondetector.utils.DateUtils;
 
 public abstract class ResultInjector {
@@ -22,67 +21,70 @@ public abstract class ResultInjector {
 
     private static final String LABEL = "Happiness";
 
-    private static final String DATE_JSON_FIELD = "date";
 
     private LineChart lineChart;
-    private String resultsJSONField;
 
-    ResultInjector(LineChart lineChart, String resultsJSONField) {
+    ResultInjector(LineChart lineChart) {
         this.lineChart = lineChart;
-        this.resultsJSONField = resultsJSONField;
     }
 
-    public void injectResults(String results) {
+    public void injectResults(List<Result> results) {
+        List<Result> filteredResults = getFilteredResults(results);
         if (lineChart != null) {
-            try {
-                JSONArray jsonArray = getJSONArray(results);
-                if (jsonArray.length() > 0) {
-                    List<Entry> entries = new ArrayList<>();
-                    JSONObject json;
-
-                    AxisValueFormatter axisValueFormatter = new AxisValueFormatter(getFormat());
-                    Entry entry;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        json = jsonArray.getJSONObject(jsonArray.length() - 1 - i);
-                        entry = new Entry(i, (float) json.getDouble(resultsJSONField));
-                        axisValueFormatter.addDate(json.getString(DATE_JSON_FIELD));
-                        entries.add(entry);
+            if (filteredResults != null && filteredResults.size() > 0) {
+                Collections.sort(filteredResults, new Comparator<Result>() {
+                    @Override
+                    public int compare(Result r1, Result r2) {
+                        if (DateUtils.getDateFromClientDateFormat(r1.date).before(DateUtils.getDateFromClientDateFormat(r2.date)))
+                            return -1;
+                        else
+                            return 1;
                     }
+                });
+                List<Entry> entries = new ArrayList<>();
 
-                    LineDataSet dataSet = new LineDataSet(entries, LABEL);
-                    dataSet.setCircleRadius(CIRCLE_RADIUS);
-                    dataSet.setDrawCircleHole(false);
-                    dataSet.setDrawFilled(true);
-                    dataSet.setValueTextSize(TEXT_SIZE);
-
-                    LineData lineData = new LineData(dataSet);
-
-                    lineChart.setDescription(null);
-                    lineChart.setData(lineData);
-                    lineChart.getXAxis().setValueFormatter(axisValueFormatter);
-                    lineChart.getXAxis().setGranularity(1f);
-                    lineChart.invalidate();
+                AxisValueFormatter axisValueFormatter = new AxisValueFormatter(getFormat());
+                Entry entry;
+                for (Result result : filteredResults) {
+                    entry = new Entry(filteredResults.indexOf(result), result.happinessLevel, result.date);
+                    axisValueFormatter.addDate(result.date);
+                    entries.add(entry);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+                LineDataSet dataSet = new LineDataSet(entries, LABEL);
+                dataSet.setCircleRadius(CIRCLE_RADIUS);
+                dataSet.setDrawCircleHole(false);
+                dataSet.setDrawFilled(true);
+                dataSet.setValueTextSize(TEXT_SIZE);
+
+                LineData lineData = new LineData(dataSet);
+
+                lineChart.setDescription(null);
+                lineChart.setData(lineData);
+                lineChart.getXAxis().setValueFormatter(axisValueFormatter);
+                lineChart.getXAxis().setGranularity(1f);
+            } else {
+                lineChart.setData(null);
             }
+            lineChart.invalidate();
         }
     }
 
-    JSONArray getJSONArray(String results) throws JSONException {
-        JSONArray jsonArray = new JSONArray(results);
-        List<JSONObject> filtered = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String date = jsonObject.getString(DATE_JSON_FIELD);
+    List<Result> getFilteredResults(List<Result> results) {
+        if (results == null)
+            return null;
+
+        List<Result> filtered = new ArrayList<>();
+        for (Result result : results) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             setDateBoundary(calendar);
-            if (DateUtils.getDateFromClientDateFormat(date).after(calendar.getTime())) {
-                filtered.add(jsonObject);
+            if (DateUtils.getDateFromClientDateFormat(result.date).after(calendar.getTime())) {
+                filtered.add(result);
             }
         }
-        return new JSONArray(filtered);
+
+        return filtered;
     }
 
     abstract void setDateBoundary(Calendar calendar);

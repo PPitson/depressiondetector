@@ -6,8 +6,8 @@ import java.util.Calendar;
 
 public class LastWeekResultInjector extends ResultInjector {
 
-    public LastWeekResultInjector(LineChart lineChart, String resultsJSONField) {
-        super(lineChart, resultsJSONField);
+    public LastWeekResultInjector(LineChart lineChart) {
+        super(lineChart);
     }
 
     @Override

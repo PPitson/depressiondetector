@@ -16,6 +16,11 @@ public class PhoneCallResultsFragment extends TabFragment {
     }
 
     @Override
+    String getResultType() {
+        return "voice";
+    }
+
+    @Override
     String getTAG() {
         return "PhoneCallResFragment";
     }

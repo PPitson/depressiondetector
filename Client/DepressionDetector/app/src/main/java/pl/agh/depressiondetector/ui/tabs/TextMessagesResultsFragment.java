@@ -16,6 +16,11 @@ public class TextMessagesResultsFragment extends TabFragment {
     }
 
     @Override
+    String getResultType() {
+        return "text";
+    }
+
+    @Override
     String getTAG() {
         return "TextMessagesResFragment";
     }

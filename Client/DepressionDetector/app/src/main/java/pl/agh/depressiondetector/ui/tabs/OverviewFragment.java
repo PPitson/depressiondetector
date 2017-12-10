@@ -17,6 +17,11 @@ public class OverviewFragment extends TabFragment {
     }
 
     @Override
+    String getResultType() {
+        return "overview";
+    }
+
+    @Override
     String getTAG() {
         return "OverviewFragment";
     }

@@ -17,6 +17,11 @@ public class MoodResultsFragment extends TabFragment {
     }
 
     @Override
+    String getResultType() {
+        return "mood";
+    }
+
+    @Override
     String getTAG() {
         return "MoodResultsFragment";
     }

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">DepressionDetector</string>
+    <string name="title_activity_authentication">Get started</string>
     <string name="title_activity_login">@string/login</string>
     <string name="title_activity_sign_up">@string/sign_up</string>
     <string name="title_activity_profile">@string/profile</string>

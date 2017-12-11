@@ -105,6 +105,6 @@ public abstract class ResultInjector {
 
     abstract void setDateBoundary(Calendar calendar);
     String getFormat() {
-        return "dd.MM.YY";
+        return "dd.MM.yy";
     }
 }

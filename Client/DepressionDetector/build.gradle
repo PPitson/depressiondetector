@@ -1,7 +1,8 @@
 buildscript {
-    ext.support_version = '25.4.0'
+    ext.support_version = '26.1.0'
     ext.butter_knife_version = '8.5.1'
     ext.espressoVersion = '2.2.2'
+    ext.roomVersion = '1.0.0'
 
     repositories {
         jcenter()

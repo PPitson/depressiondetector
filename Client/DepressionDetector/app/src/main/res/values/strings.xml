@@ -3,6 +3,7 @@
     <string name="title_activity_authentication">Get started</string>
     <string name="title_activity_login">@string/login</string>
     <string name="title_activity_sign_up">@string/sign_up</string>
+    <string name="title_activity_main">Statistics</string>
     <string name="title_activity_profile">@string/profile</string>
     <string name="title_activity_settings">@string/settings</string>
     <string name="title_activity_first_configuration">What should we analyse?</string>

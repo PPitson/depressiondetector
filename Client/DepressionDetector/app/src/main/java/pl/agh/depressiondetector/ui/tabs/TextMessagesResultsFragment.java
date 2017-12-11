@@ -1,7 +1,5 @@
 package pl.agh.depressiondetector.ui.tabs;
 
-import android.widget.AdapterView;
-
 import pl.agh.depressiondetector.connection.API;
 
 public class TextMessagesResultsFragment extends TabFragment {
@@ -24,5 +22,4 @@ public class TextMessagesResultsFragment extends TabFragment {
     String getTAG() {
         return "TextMessagesResFragment";
     }
-
 }

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
+import butterknife.Unbinder;
 import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.database.AppDatabase;
 import pl.agh.depressiondetector.database.entity.Result;
@@ -52,6 +52,7 @@ public abstract class TabFragment extends Fragment {
     @BindView(R.id.offline_text_view)
     TextView offlineTextView;
 
+    private Unbinder unbinder;
     ViewPager viewPager;
 
     ResultInjector resultInjector;
@@ -62,13 +63,19 @@ public abstract class TabFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_results, container, false);
+        View view = inflater.inflate(R.layout.fragment_results, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ButterKnife.bind(this, view);
-
         TAG = getTAG();
         resultJSONField = getResultJSONField();
         resultType = getResultType();

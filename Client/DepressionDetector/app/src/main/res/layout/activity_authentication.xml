@@ -6,6 +6,14 @@
     android:orientation="vertical"
     tools:context="pl.agh.depressiondetector.authentication.AuthenticationActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/authentication_background"
+        tools:ignore="ContentDescription" />
+
     <Button
         android:id="@+id/button_sign_up"
         android:layout_width="match_parent"
@@ -17,7 +25,6 @@
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/sign_up"
         android:textColor="#FFF" />
-
 
     <Button
         android:id="@+id/button_login"

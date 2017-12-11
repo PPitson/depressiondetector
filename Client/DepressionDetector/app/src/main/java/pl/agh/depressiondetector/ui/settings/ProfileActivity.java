@@ -155,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 value = value.equals("M") ? "male" : "female";
                             else if (key.equals("date_of_birth")) {
                                 Date date = DateUtils.getDateFromClientDateFormat(value);
-                                value = new SimpleDateFormat("dd MMMM YYYY", Locale.getDefault()).format(date);
+                                value = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(date);
                             }
                             textViews.get(key).setText(value);
                         }

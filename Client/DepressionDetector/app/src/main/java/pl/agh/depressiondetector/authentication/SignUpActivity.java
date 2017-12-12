@@ -84,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
         };
 
         new DatePickerDialog(this,
+                R.style.DatePickerDialogTheme,
                 onDateSetListener,
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -180,7 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
                 .apply();
     }
 
-    private void finishWithParent(){
+    private void finishWithParent() {
         setResult(RESULT_OK, null);
         finish();
     }

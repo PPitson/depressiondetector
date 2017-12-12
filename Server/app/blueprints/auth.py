@@ -36,18 +36,19 @@ def register_user():
 @auth.route('/login', methods=['POST'])
 def login():
     request_json = get_json_or_raise_exception()
-    username = request_json['username']
+    email = request_json['email']
     password = request_json['password']
 
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(email=email)
     except mongo.DoesNotExist:
-        raise exceptions.InvalidUsernameException
+        raise exceptions.InvalidEmailException
 
     if not user.verify_password(password):
         raise exceptions.InvalidPasswordException
 
-    return jsonify({'message': 'LOGIN_USER_LOGGED_IN'}), 200
+    result = {'message': 'LOGIN_USER_LOGGED_IN', 'user_data': user.to_json()}
+    return jsonify(result), 200
 
 
 @auth.route('/reset_password', methods=['POST'])

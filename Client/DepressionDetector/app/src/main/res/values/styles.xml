@@ -14,9 +14,13 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="MoodActivityTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+    <style name="MoodActivityTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowMinWidthMinor">95%</item>
         <item name="android:windowMinWidthMajor">65%</item>
+    </style>
+
+    <style name="DatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="ColorButton" parent="Widget.AppCompat.Button.Colored">

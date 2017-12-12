@@ -9,13 +9,13 @@
     tools:context="pl.agh.depressiondetector.authentication.LoginActivity">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInputLayout_username"
+        android:id="@+id/textInputLayout_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_username">
+        android:hint="@string/hint_email">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputEditText_username"
+            android:id="@+id/textInputEditText_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1" />
@@ -25,7 +25,7 @@
         android:id="@+id/textInputLayout_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textInputLayout_username"
+        android:layout_below="@+id/textInputLayout_email"
         android:hint="@string/hint_password"
         app:passwordToggleEnabled="true">
 

@@ -121,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
             new SingUpTask(user).execute();
     }
 
-    private class SingUpTask extends AsyncTask<Void, Void, String> {
+    private class SingUpTask extends AsyncTask<Void, Void, RequestResult> {
 
         private User user;
         private ProgressDialog dialog;
@@ -137,14 +137,14 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected RequestResult doInBackground(Void... params) {
             return Authentication.register(user);
         }
 
         @Override
-        protected void onPostExecute(String message) {
+        protected void onPostExecute(RequestResult requestResult) {
             dialog.cancel();
-            switch (message) {
+            switch (requestResult.message) {
                 case SIGNUP_USER_REGISTERED:
                     saveCredentials(user);
                     startActivity(new Intent(SignUpActivity.this, FirstConfigurationActivity.class));
@@ -175,6 +175,8 @@ public class SignUpActivity extends AppCompatActivity {
                 .putString(getString(R.string.pref_user_username), user.name)
                 .putString(getString(R.string.pref_user_password), user.password)
                 .putString(getString(R.string.pref_user_email), user.email)
+                .putBoolean(getString(R.string.pref_user_sex), user.sex)
+                .putString(getString(R.string.pref_user_date_of_birth), convertToClientDateFormat(user.dateOfBirth))
                 .apply();
     }
 

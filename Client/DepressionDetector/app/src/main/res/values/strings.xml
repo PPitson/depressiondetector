@@ -54,6 +54,7 @@
     <string name="error_timeout">Check your internet connection and try again</string>
     <string name="error_connection">Connection error</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_internal">Internal error</string>
 
     <!-- ProfileActivity -->
     <string name="delete_successful">Delete successful</string>
@@ -88,6 +89,8 @@
     <string name="pref_user_username" translatable="false">pref_user_username</string>
     <string name="pref_user_password" translatable="false">pref_user_password</string>
     <string name="pref_user_email" translatable="false">pref_user_email</string>
+    <string name="pref_user_sex" translatable="false">pref_user_sex</string>
+    <string name="pref_user_date_of_birth" translatable="false">pref_user_date_of_birth</string>
     <string name="pref_analyse_mood" translatable="false">pref_analyse_mood</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
     <string name="pref_analyse_text_messages" translatable="false">pref_analyse_text_messages</string>

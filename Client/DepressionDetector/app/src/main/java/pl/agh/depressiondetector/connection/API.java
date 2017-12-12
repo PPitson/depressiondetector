@@ -21,8 +21,11 @@ public interface API {
     String SEX = "sex";
     String DATE_OF_BIRTH = "date_of_birth";
 
+    String SEX_MALE = "M";
+    String SEX_FEMALE = "F";
 
     String MESSAGE_AUTHENTICATE = "message";
+    String MESSAGE_USER_DATA = "user_data";
     String MESSAGE_DELETE = "sent_email";
 
     String SIGNUP_USER_REGISTERED = "SIGNUP_USER_REGISTERED";

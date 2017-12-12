@@ -12,6 +12,11 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.View;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,13 +33,14 @@ import static pl.agh.depressiondetector.connection.API.*;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private User user;
     private Validator validator;
 
-    @BindView(R.id.textInputLayout_username)
-    TextInputLayout usernameLayout;
+    @BindView(R.id.textInputLayout_email)
+    TextInputLayout emailLayout;
 
-    @BindView(R.id.textInputEditText_username)
-    TextInputEditText usernameView;
+    @BindView(R.id.textInputEditText_email)
+    TextInputEditText emailView;
 
     @BindView(R.id.textInputLayout_password)
     TextInputLayout passwordLayout;
@@ -47,41 +53,36 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        user = new User();
         validator = new Validator(this);
     }
 
     @OnClick(R.id.button_login)
     public void onLoginClick() {
         if (validateFields()) {
-            User user = new User();
-            user.name = usernameView.getText().toString().trim();
+            user.email = emailView.getText().toString().trim();
             user.password = passwordView.getText().toString().trim();
-            singInUser(user);
+            singInUser();
         }
     }
 
     private boolean validateFields() {
-        boolean valid = validator.validFieldNotEmpty(usernameLayout);
+        boolean valid = validator.validEmailField(emailLayout);
         valid &= validator.validFieldNotEmpty(passwordLayout);
 
         return valid;
     }
 
-    private void singInUser(User user) {
+    private void singInUser() {
         if (!NetworkUtils.isNetworkAvailable(this))
             ToastUtils.show(this, getString(R.string.error_network));
         else
-            new LoginTask(user).execute();
+            new LoginTask().execute();
     }
 
-    private class LoginTask extends AsyncTask<Void, User, String> {
+    private class LoginTask extends AsyncTask<Void, Void, RequestResult> {
 
-        private User user;
         private ProgressDialog dialog;
-
-        LoginTask(User user) {
-            this.user = user;
-        }
 
         @Override
         protected void onPreExecute() {
@@ -90,17 +91,17 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected RequestResult doInBackground(Void... params) {
             return Authentication.login(user);
         }
 
         @Override
-        protected void onPostExecute(String message) {
+        protected void onPostExecute(RequestResult requestResult) {
             dialog.cancel();
             Context context = LoginActivity.this;
-            switch (message) {
+            switch (requestResult.message) {
                 case LOGIN_USER_LOGGED_IN:
-                    saveCredentials(user);
+                    saveCredentials(requestResult.json);
                     startActivity(new Intent(context, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
@@ -123,12 +124,23 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveCredentials(User user) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.edit()
-                .putString(getString(R.string.pref_user_username), user.name)
-                .putString(getString(R.string.pref_user_password), user.password)
-                .apply();
+    private void saveCredentials(JSONObject jsonUser) {
+        try {
+            String name = jsonUser.getString(USERNAME);
+            boolean sex = jsonUser.getString(SEX).equals(SEX_MALE);
+            String dateOfBirth = jsonUser.getString(DATE_OF_BIRTH);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            preferences.edit()
+                    .putString(getString(R.string.pref_user_username), name)
+                    .putString(getString(R.string.pref_user_email), user.email)
+                    .putString(getString(R.string.pref_user_password), user.password)
+                    .putBoolean(getString(R.string.pref_user_sex), sex)
+                    .putString(getString(R.string.pref_user_date_of_birth), dateOfBirth)
+                    .apply();
+        } catch (JSONException e) {
+            ToastUtils.show(this, getString(R.string.error_internal));
+        }
     }
 
     private void finishWithParent() {

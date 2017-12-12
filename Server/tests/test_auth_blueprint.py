@@ -80,19 +80,19 @@ class LoginTestCase(AuthTestCase):
     endpoint = AuthTestCase.endpoint + '/login'
 
     def test_successful_login(self):
-        data = {'username': self.user.username, 'password': self.password}
+        data = {'email': self.user.email, 'password': self.password}
         response = self.send_post_request(data)
         self.check_response(response, 200, 'LOGIN_USER_LOGGED_IN')
 
     def test_incorrect_password(self):
-        data = {'username': self.user.username, 'password': 'incorrect_password'}
+        data = {'email': self.user.email, 'password': 'incorrect_password'}
         response = self.send_post_request(data)
         self.check_response(response, 401, 'LOGIN_PASSWORD_INVALID')
 
-    def test_invalid_username(self):
-        data = {'username': 'nonexisting_bob', 'password': self.password}
+    def test_invalid_email(self):
+        data = {'email': 'nonexisting_bob', 'password': self.password}
         response = self.send_post_request(data)
-        self.check_response(response, 400, 'LOGIN_LOGIN_DOES_NOT_EXIST')
+        self.check_response(response, 400, 'LOGIN_EMAIL_DOES_NOT_EXIST')
 
     def test_data_missing(self):
         self.send_empty_request()

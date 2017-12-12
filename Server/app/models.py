@@ -88,7 +88,7 @@ class User(MongoDocument):
         if self.sex:
             result['sex'] = self.sex
         if self.date_of_birth:
-            result['date_of_birth'] = str(self.date_of_birth.date())
+            result['date_of_birth'] = self.date_of_birth.date().strftime('%d-%m-%Y')
         return result
 
 

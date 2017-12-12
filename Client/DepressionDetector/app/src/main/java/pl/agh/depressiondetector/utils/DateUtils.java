@@ -9,6 +9,7 @@ import java.util.Locale;
 public class DateUtils {
 
     private static final String CLIENT_DATE_FORMAT = "dd-MM-yyyy";
+    private static final String CLIENT_FRIENDLY_DATE_FORMAT = "dd MMMM yyyy";
     private static final String SERVER_DATE_FORMAT = "yyyy-MM-dd";
     private static final String SERVER_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -30,6 +31,10 @@ public class DateUtils {
 
     public static String convertToClientDateFormat(Date date) {
         return new SimpleDateFormat(CLIENT_DATE_FORMAT, Locale.getDefault()).format(date);
+    }
+
+    public static String convertToHumanFriendlyFormat(Date date) {
+        return new SimpleDateFormat(CLIENT_FRIENDLY_DATE_FORMAT, Locale.getDefault()).format(date);
     }
 
     public static Date getDateFromClientDateFormat(String date) {

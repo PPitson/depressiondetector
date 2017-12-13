@@ -26,7 +26,6 @@ def create_app(config_name=DEVELOPMENT_CONFIG_NAME):
     GoogleMaps(app)
 
     set_indico_key(config[config_name])
-    GoogleMaps(app)
 
     return app
 

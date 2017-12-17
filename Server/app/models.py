@@ -107,7 +107,7 @@ class DataSourceMongoDocument(MongoDocument):
         start_date = self.datetime.date()
         end_date = start_date + timedelta(days=1)
         happiness_levels = [emotions_result.compute_happiness_level() for emotions_result
-                            in self.__class__.objects(datetime__gte=start_date, datetime__lt=end_date)]
+                            in self.__class__.objects(user=self.user, datetime__gte=start_date, datetime__lt=end_date)]
         average = np.mean(happiness_levels)
         try:
             happiness = HappinessLevel.objects.get(user=self.user, date__gte=start_date, date__lt=end_date)

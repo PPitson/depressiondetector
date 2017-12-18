@@ -5,7 +5,7 @@ import dateutil.parser
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 from flask_googlemaps import Map
 
-from app.celery.tasks import analyze_file_task, analyze_text_task
+from app.celery.tasks import analyze_file_task, analyze_text_task, save_result
 from app.commons import get_json_list_or_raise_exception
 from app.http_auth import auth
 from app.models import Mood
@@ -68,9 +68,11 @@ def post_text_files():
 def post_moods():
     mood_results = get_json_list_or_raise_exception()
     for result in mood_results:
-        Mood.objects.create(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
-                            mood_level=result['mood'])
-    return make_response(jsonify({'created': True}), 201)
+        mood = Mood(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
+                    mood_level=result['mood'])
+        mood.validate()
+        save_result.delay(mood)
+    return make_response(jsonify({'received': True}), 200)
 
 
 @main.route('/map', methods=['GET', 'POST'])

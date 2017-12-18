@@ -108,7 +108,8 @@ class MoodResultsTestCase(CustomTestCase):
         response = self.client.post('/moods', headers=self.get_headers(), data=json.dumps({'a': 1}))
         self.check_response(response, 400, 'JSON_LIST_MISSING')
 
-    def test_saves_mood_objects(self):
+    @patch('app.blueprints.main.save_result')
+    def test_post_moods(self, save_result_mock):
         data = json.dumps([
             {'date': '2017-11-01', 'mood': 2},
             {'date': '2017-11-02', 'mood': 3},
@@ -116,13 +117,10 @@ class MoodResultsTestCase(CustomTestCase):
         ])
         self.assertEqual(Mood.objects.count(), 0)
         response = self.client.post('/moods', headers=self.get_headers(), data=data)
-        self.assertStatus(response, 201)
-        self.assertTrue(response.json['created'])
-        self.assertEqual(Mood.objects.count(), 3)
-        mood = Mood.objects.first()
-        self.assertEqual(mood.user, self.user)
-        self.assertEqual(mood.datetime, datetime(2017, 11, 1))
-        self.assertEqual(mood.mood_level, 2)
+        self.assertStatus(response, 200)
+        self.assertTrue(response.json['received'])
+
+        self.assertEqual(save_result_mock.delay.call_count, 3)
 
     def test_invalid_mood_level(self):
         data = json.dumps([

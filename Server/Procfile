@@ -1,2 +1,2 @@
-web: honcho start -f ProcfileHoncho
-twitter: honcho start -f TwitterStreamProcfile
+web: gunicorn --config gunicorn_config.py run:app
+celery: honcho start -f ProcfileCelery

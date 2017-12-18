@@ -46,13 +46,6 @@ def analyze_and_save_tweet(tweet, text):
     tweet.save()
 
 
-@celery.task(name='delete_obsolete_tweets')
-def delete_obsolete_tweets():
-    max_age = timedelta(days=int(os.environ.get('MAX_TWEETS_AGE', 5)))
-    max_datetime = datetime.now().date() - max_age
-    Tweet.objects(created_at__lte=max_datetime).delete()
-
-
 @celery.task(name='delete_obsolete_geosentiment')
 def delete_obsolete_geosentiment():
     max_age = timedelta(days=int(os.environ.get('MAX_GEOSENTIMENT_AGE', 30)))
@@ -62,10 +55,18 @@ def delete_obsolete_geosentiment():
 
 @celery.task(name='count_mean_sentiment')
 def count_mean_sentiment():
-    start_datetime = datetime.now().date() - timedelta(days=1)
+    today = datetime.now().date()
+    start_datetime = today - timedelta(days=1)
     sentiments = defaultdict(lambda: [])
-    for tweet in Tweet.objects(created_at__gte=start_datetime):
+    for tweet in Tweet.objects(created_at__gte=start_datetime, created_at__lt=today):
         sentiments[tweet.geohash].append(tweet.sentiment)
-    for geohash, sentiment_list in sentiments.items():
+    for ghash, sentiment_list in sentiments.items():
         mean_sentiment = np.mean(sentiment_list)
-        GeoSentiment(geohash=geohash, date=start_datetime, mean_sentiment=mean_sentiment).save()
+        GeoSentiment(geohash=ghash, date=start_datetime, mean_sentiment=mean_sentiment).save()
+    delete_obsolete_tweets.delay()
+
+
+@celery.task(name='delete_obsolete_tweets')
+def delete_obsolete_tweets():
+    max_datetime = datetime.now().date()
+    Tweet.objects(created_at__lt=max_datetime).delete()

@@ -35,12 +35,12 @@ class RegisterTestCase(AuthTestCase):
     def test_username_exists(self):
         data = {'username': self.user.username, 'email': 'bob@bob.com', 'password': 'alice'}
         response = self.send_post_request(data)
-        self.check_response(response, 400, 'SIGNUP_LOGIN_ALREADY_USED')
+        self.check_response(response, 400, 'LOGIN_ALREADY_USED')
 
     def test_email_exists(self):
         data = {'username': 'mary', 'email': self.user.email, 'password': 'alice'}
         response = self.send_post_request(data)
-        self.check_response(response, 400, 'SIGNUP_EMAIL_ALREADY_USED')
+        self.check_response(response, 400, 'EMAIL_ALREADY_USED')
 
     def test_username_missing(self):
         data = {'email': 'bob@bob.com', 'password': 'alice'}
@@ -92,7 +92,7 @@ class LoginTestCase(AuthTestCase):
     def test_invalid_email(self):
         data = {'email': 'nonexisting_bob', 'password': self.password}
         response = self.send_post_request(data)
-        self.check_response(response, 400, 'LOGIN_EMAIL_DOES_NOT_EXIST')
+        self.check_response(response, 400, 'EMAIL_DOES_NOT_EXIST')
 
     def test_data_missing(self):
         self.send_empty_request()
@@ -122,7 +122,7 @@ class ResetPasswordTestCase(AuthTestCase):
     def test_invalid_email(self):
         data = {'email': 'nonexisting@email.com'}
         response = self.send_post_request(data)
-        self.check_response(response, 400, 'LOGIN_EMAIL_DOES_NOT_EXIST')
+        self.check_response(response, 400, 'EMAIL_DOES_NOT_EXIST')
 
     def test_reset_password_page_get_request(self):
         response = self.client.get(AuthTestCase.endpoint + '/reset_password/some_token')

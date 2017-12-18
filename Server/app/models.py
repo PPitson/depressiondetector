@@ -29,6 +29,7 @@ class User(MongoDocument):
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
     date_of_birth: datetime = mongo.DateTimeField()
+    is_admin = mongo.BooleanField(default=False)
     contact_person_email = mongo.EmailField()
     contact_person_phone = mongo.StringField()
 
@@ -107,7 +108,7 @@ class DataSourceMongoDocument(MongoDocument):
         start_date = self.datetime.date()
         end_date = start_date + timedelta(days=1)
         happiness_levels = [emotions_result.compute_happiness_level() for emotions_result
-                            in self.__class__.objects(datetime__gte=start_date, datetime__lt=end_date)]
+                            in self.__class__.objects(user=self.user, datetime__gte=start_date, datetime__lt=end_date)]
         average = np.mean(happiness_levels)
         try:
             happiness = HappinessLevel.objects.get(user=self.user, date__gte=start_date, date__lt=end_date)

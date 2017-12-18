@@ -18,10 +18,6 @@ def init_celery(app, celery):
                 'task': 'wake_up',
                 'schedule': timedelta(minutes=30),
             },
-            'delete_obsolete_tweets': {
-                'task': 'delete_obsolete_tweets',
-                'schedule': crontab(minute=0, hour=0),
-            },
             'delete_obsolete_geosentiment': {
                 'task': 'delete_obsolete_geosentiment',
                 'schedule': crontab(minute=0, hour=0),

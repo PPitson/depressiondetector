@@ -5,11 +5,12 @@ import dateutil.parser
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 from flask_googlemaps import Map
 
-from app.celery.tasks import analyze_file_task, analyze_text_task
+from app.celery.tasks import analyze_file_task, analyze_text_task, save_result
 from app.commons import get_json_list_or_raise_exception
-from app.http_auth import auth
+from app.http_auth import auth, admins_only
 from app.models import Mood
 from map_util import get_dates_by_slider, prepare_sentiment_rects
+from app.exceptions import JSONMissingException
 
 main = Blueprint('main', __name__)
 
@@ -45,6 +46,8 @@ def get_mean_results():
 @main.route('/sound_files', methods=['POST'])
 @auth.login_required
 def post_sound_files():
+    if request.form['data'] == '':
+        raise JSONMissingException
     files_metadata = json.loads(request.form['data'])
     for file in request.files.values():
         date_time = datetime.strptime(files_metadata[file.filename]['date'], '%Y-%m-%d %H:%M:%S')
@@ -68,13 +71,16 @@ def post_text_files():
 def post_moods():
     mood_results = get_json_list_or_raise_exception()
     for result in mood_results:
-        Mood.objects.create(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
-                            mood_level=result['mood'])
-    return make_response(jsonify({'created': True}), 201)
+        mood = Mood(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
+                    mood_level=result['mood_level'])
+        mood.validate()
+        save_result.delay(mood)
+    return make_response(jsonify({'received': True}), 200)
 
 
 @main.route('/map', methods=['GET', 'POST'])
 @auth.login_required
+@admins_only
 def get_map():
     min, max = 1, 5
     slider = int(request.form['days']) if request.method == 'POST' else max

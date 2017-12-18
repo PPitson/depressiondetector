@@ -1,3 +1,5 @@
+import json
+
 from flask import jsonify, Blueprint
 from mongoengine import ValidationError
 
@@ -7,7 +9,7 @@ errors = Blueprint('errors', __name__)
 
 
 @errors.app_errorhandler(404)
-def not_found(error):
+def not_found(_):
     return jsonify({'message': 'NOT_FOUND'}), 404
 
 
@@ -36,5 +38,12 @@ def handle_wrong_datetime(error):
 def handle_validation_error(error):
     field_name, message = list(error.to_dict().items())[0]
     response = jsonify({'message': message, 'field': field_name})
+    response.status_code = 400
+    return response
+
+
+@errors.app_errorhandler(json.JSONDecodeError)
+def handle_invalid_json(_):
+    response = jsonify({'message': 'INVALID_JSON'})
     response.status_code = 400
     return response

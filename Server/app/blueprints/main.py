@@ -10,6 +10,7 @@ from app.commons import get_json_list_or_raise_exception
 from app.http_auth import auth, admins_only
 from app.models import Mood
 from map_util import get_dates_by_slider, prepare_sentiment_rects
+from app.exceptions import JSONMissingException
 
 main = Blueprint('main', __name__)
 
@@ -45,6 +46,8 @@ def get_mean_results():
 @main.route('/sound_files', methods=['POST'])
 @auth.login_required
 def post_sound_files():
+    if request.form['data'] == '':
+        raise JSONMissingException
     files_metadata = json.loads(request.form['data'])
     for file in request.files.values():
         date_time = datetime.strptime(files_metadata[file.filename]['date'], '%Y-%m-%d %H:%M:%S')

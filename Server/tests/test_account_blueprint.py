@@ -63,7 +63,7 @@ class UpdateAccountTestCase(CustomTestCase):
         another_user = User.objects.create(username='amelia', email='la@la.com', password_hash='secr')
         data = {'email': another_user.email}
         response = self.send_put_request(data)
-        self.check_response(response, 400, 'SIGNUP_EMAIL_ALREADY_USED')
+        self.check_response(response, 400, 'EMAIL_ALREADY_USED')
 
     def test_same_email_doesnt_produce_error(self):
         data = {'email': self.user.email}
@@ -74,7 +74,7 @@ class UpdateAccountTestCase(CustomTestCase):
         another_user = User.objects.create(username='amelia', email='la@la.com', password_hash='secr')
         data = {'username': another_user.username}
         response = self.send_put_request(data)
-        self.check_response(response, 400, 'SIGNUP_LOGIN_ALREADY_USED')
+        self.check_response(response, 400, 'LOGIN_ALREADY_USED')
 
     def test_same_username_doesnt_produce_error(self):
         data = {'username': self.user.username}

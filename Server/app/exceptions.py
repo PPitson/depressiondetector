@@ -13,19 +13,19 @@ class ErrorException(Exception):
 
 
 class UserExistsException(ErrorException):
-    message = 'SIGNUP_LOGIN_ALREADY_USED'
+    message = 'LOGIN_ALREADY_USED'
 
 
 class EmailTakenException(ErrorException):
-    message = 'SIGNUP_EMAIL_ALREADY_USED'
+    message = 'EMAIL_ALREADY_USED'
 
 
 class InvalidUsernameException(ErrorException):
-    message = 'LOGIN_LOGIN_DOES_NOT_EXIST'
+    message = 'LOGIN_DOES_NOT_EXIST'
 
 
 class InvalidEmailException(ErrorException):
-    message = 'LOGIN_EMAIL_DOES_NOT_EXIST'
+    message = 'EMAIL_DOES_NOT_EXIST'
 
 
 class InvalidPasswordException(ErrorException):

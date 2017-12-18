@@ -17,3 +17,13 @@ def verify_password(username, password):
         return False
     g.current_user = user
     return user.verify_password(password)
+
+
+def admins_only(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        if not g.current_user.is_admin:
+            raise exceptions.InsufficientPrivilegesException
+        return func(*args, **kwargs)
+
+    return inner

@@ -29,6 +29,7 @@ class User(MongoDocument):
     password_hash = mongo.StringField(required=True)
     sex = mongo.StringField(choices=('M', 'F'))
     date_of_birth: datetime = mongo.DateTimeField()
+    is_admin = mongo.BooleanField(default=False)
     contact_person_email = mongo.EmailField()
     contact_person_phone = mongo.StringField()
 

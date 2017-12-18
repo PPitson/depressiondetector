@@ -7,7 +7,7 @@ from flask_googlemaps import Map
 
 from app.celery.tasks import analyze_file_task, analyze_text_task, save_result
 from app.commons import get_json_list_or_raise_exception
-from app.http_auth import auth
+from app.http_auth import auth, admins_only
 from app.models import Mood
 from map_util import get_dates_by_slider, prepare_sentiment_rects
 
@@ -77,6 +77,7 @@ def post_moods():
 
 @main.route('/map', methods=['GET', 'POST'])
 @auth.login_required
+@admins_only
 def get_map():
     min, max = 1, 5
     slider = int(request.form['days']) if request.method == 'POST' else max

@@ -43,3 +43,8 @@ class JSONListMissingException(ErrorException):
 
 class InvalidFieldException(ErrorException):
     message = 'INVALID_FIELD'
+
+
+class InsufficientPrivilegesException(ErrorException):
+    message = 'INSUFFICIENT_PRIVILEGES'
+    status_code = 403

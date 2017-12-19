@@ -66,14 +66,15 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginClick() {
         switch (state) {
             case LOGIN:
-                if (validateFields()) {
+                if (validateEmail() && validatePassword()) {
                     user.email = emailView.getText().toString().trim();
                     user.password = passwordView.getText().toString().trim();
                     singInUser();
                 }
                 break;
             case CHANGE_PASSWORD:
-                // TODO
+                if (validateEmail())
+                    new ChangePasswordTask().execute(emailView.getText().toString().trim());
                 break;
         }
     }
@@ -97,11 +98,12 @@ public class LoginActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
-    private boolean validateFields() {
-        boolean valid = validator.validEmailField(emailLayout);
-        valid &= validator.validFieldNotEmpty(passwordLayout);
+    private boolean validateEmail() {
+        return validator.validEmailField(emailLayout);
+    }
 
-        return valid;
+    private boolean validatePassword() {
+        return validator.validFieldNotEmpty(passwordLayout);
     }
 
     private void singInUser() {
@@ -171,6 +173,33 @@ public class LoginActivity extends AppCompatActivity {
                     .apply();
         } catch (JSONException e) {
             ToastUtils.show(this, getString(R.string.error_internal));
+        }
+    }
+
+    private class ChangePasswordTask extends AsyncTask<String, Void, RequestResult> {
+
+        @Override
+        protected RequestResult doInBackground(String... email) {
+            return Authentication.changePassword(email[0]);
+        }
+
+        @Override
+        protected void onPostExecute(RequestResult requestResult) {
+            Context context = LoginActivity.this;
+            switch (requestResult.message) {
+                case PASSWORD_EMAIL_SENT:
+                    ToastUtils.show(context, getString(R.string.email_password_sent));
+                    break;
+                case TIMEOUT_ERROR:
+                    ToastUtils.show(context, getString(R.string.error_timeout));
+                    break;
+                case CONNECTION_ERROR:
+                    ToastUtils.show(context, getString(R.string.error_connection));
+                    break;
+                default:
+                    ToastUtils.show(context, getString(R.string.error_unknown));
+                    break;
+            }
         }
     }
 

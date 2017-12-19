@@ -5,6 +5,7 @@ public interface API {
 
     String PATH_REGISTER = "auth/register";
     String PATH_LOGIN = "auth/login";
+    String PATH_RESET_PASSWORD = "/auth/reset_password";
     String PATH_USER = "user";
     String PATH_MOODS = "moods";
     String PATH_SOUND_FILES = "sound_files";
@@ -35,6 +36,8 @@ public interface API {
     String LOGIN_USER_LOGGED_IN = "LOGIN_USER_LOGGED_IN";
     String LOGIN_EMAIL_DOES_NOT_EXIST = "EMAIL_DOES_NOT_EXIST";
     String LOGIN_PASSWORD_INVALID = "LOGIN_PASSWORD_INVALID";
+
+    String PASSWORD_EMAIL_SENT = "PASSWORD_EMAIL_SENT";
 
     String SENT_EMAIL = "SENT_EMAIL";
 

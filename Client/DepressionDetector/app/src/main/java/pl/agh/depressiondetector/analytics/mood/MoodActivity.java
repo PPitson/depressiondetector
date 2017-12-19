@@ -91,7 +91,7 @@ public class MoodActivity extends AppCompatActivity {
 
             JSONObject today = new JSONObject();
             today.put("date", convertToServerDateFormat(date));
-            today.put("mood", mood);
+            today.put("mood_level", mood);
             json.put(today);
 
             writeStringToFile(file, json.toString());

@@ -10,21 +10,15 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pl.agh.depressiondetector.MainActivity;
 import pl.agh.depressiondetector.R;
-import pl.agh.depressiondetector.analytics.AnalyticsAdapter;
 import pl.agh.depressiondetector.model.User;
-import pl.agh.depressiondetector.scheduler.UploadScheduler;
 import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
@@ -105,8 +99,8 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(new Intent(context, FirstConfigurationActivity.class));
                     finishWithParent();
                     break;
-                case LOGIN_LOGIN_DOES_NOT_EXIST:
-                    ToastUtils.show(context, getString(R.string.error_login_does_not_exist));
+                case LOGIN_EMAIL_DOES_NOT_EXIST:
+                    ToastUtils.show(context, getString(R.string.error_email_does_not_exist));
                     break;
                 case LOGIN_PASSWORD_INVALID:
                     ToastUtils.show(context, getString(R.string.error_password_invalid));

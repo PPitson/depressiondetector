@@ -10,6 +10,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,10 +25,13 @@ import pl.agh.depressiondetector.settings.FirstConfigurationActivity;
 import pl.agh.depressiondetector.utils.NetworkUtils;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
+import static pl.agh.depressiondetector.authentication.LoginActivity.State.CHANGE_PASSWORD;
+import static pl.agh.depressiondetector.authentication.LoginActivity.State.LOGIN;
 import static pl.agh.depressiondetector.connection.API.*;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private State state = LOGIN;
     private User user;
     private Validator validator;
 
@@ -42,6 +47,12 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.textInputEditText_password)
     TextInputEditText passwordView;
 
+    @BindView(R.id.button_login)
+    Button buttonLogin;
+
+    @BindView(R.id.button_change_password)
+    Button buttonChangePassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +64,37 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_login)
     public void onLoginClick() {
-        if (validateFields()) {
-            user.email = emailView.getText().toString().trim();
-            user.password = passwordView.getText().toString().trim();
-            singInUser();
+        switch (state) {
+            case LOGIN:
+                if (validateFields()) {
+                    user.email = emailView.getText().toString().trim();
+                    user.password = passwordView.getText().toString().trim();
+                    singInUser();
+                }
+                break;
+            case CHANGE_PASSWORD:
+                // TODO
+                break;
         }
+    }
+
+    @OnClick(R.id.button_change_password)
+    public void onChangePasswordClick() {
+        state = CHANGE_PASSWORD;
+        passwordLayout.setVisibility(View.GONE);
+        buttonChangePassword.setVisibility(View.GONE);
+        buttonLogin.setText(R.string.change_password);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (state == CHANGE_PASSWORD) {
+            state = LOGIN;
+            passwordLayout.setVisibility(View.VISIBLE);
+            buttonChangePassword.setVisibility(View.VISIBLE);
+            buttonLogin.setText(R.string.login);
+        } else
+            super.onBackPressed();
     }
 
     private boolean validateFields() {
@@ -140,5 +177,10 @@ public class LoginActivity extends AppCompatActivity {
     private void finishWithParent() {
         setResult(RESULT_OK, null);
         finish();
+    }
+
+    enum State {
+        LOGIN,
+        CHANGE_PASSWORD
     }
 }

@@ -40,6 +40,7 @@
     <string name="hint_password">Password</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of birth</string>
+    <string name="change_password">Change password</string>
     <string name="man">Man</string>
     <string name="woman">Woman</string>
 

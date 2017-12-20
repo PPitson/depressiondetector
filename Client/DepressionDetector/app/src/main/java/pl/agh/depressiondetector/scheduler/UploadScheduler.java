@@ -42,6 +42,9 @@ public class UploadScheduler extends JobService implements UploadSchedulerThread
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPeriodic(DateUtils.HOUR_IN_MILLIS * 12);
 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+                builder.setRequiresBatteryNotLow(true);
+
             return scheduler.schedule(builder.build()) == JobScheduler.RESULT_SUCCESS;
         }
 

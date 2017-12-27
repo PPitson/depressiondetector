@@ -90,11 +90,11 @@ public class TextMessageService extends Service {
         }
 
         private void saveTextMessage(String textMessage) throws IOException, JSONException {
-            File outputDir = FileUtils.getTextMessagesDirectory();
+            File outputDir = FileUtils.getTextDirectory();
             if (!FileUtils.createDirectory(outputDir))
                 Log.e(TAG, "Uploading text messages: cannot create a new directory.");
 
-            String fileName = FileUtils.getTextMessageFileName() + ".txt";
+            String fileName = FileUtils.getTextFileName() + ".txt";
             outputFile = new File(outputDir, fileName);
             boolean fileExists = outputFile.exists();
 

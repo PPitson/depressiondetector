@@ -23,7 +23,7 @@ import static pl.agh.depressiondetector.connection.HttpClient.AMR_TYPE;
 import static pl.agh.depressiondetector.connection.HttpClient.JSON_TYPE;
 import static pl.agh.depressiondetector.utils.DateUtils.convertToServerDateTimeFormat;
 import static pl.agh.depressiondetector.utils.FileUtils.deleteFiles;
-import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallsDirectory;
+import static pl.agh.depressiondetector.utils.FileUtils.getVoiceDirectory;
 import static pl.agh.depressiondetector.utils.NetworkUtils.getBasicCredentials;
 
 
@@ -32,7 +32,7 @@ public class VoiceUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
         boolean success = false;
-        File directory = getPhoneCallsDirectory();
+        File directory = getVoiceDirectory();
         File[] records = directory.listFiles();
         if (records != null && records.length > 0) {
             success = postRecordFiles(appContext, records);

@@ -17,12 +17,12 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static File getPhoneCallsDirectory() {
-        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/PhoneCalls");
+    public static File getVoiceDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Voice");
     }
 
-    public static File getTextMessagesDirectory() {
-        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/TextMessages");
+    public static File getTextDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Text");
     }
 
     public static File getMoodDirectory() {
@@ -33,11 +33,11 @@ public final class FileUtils {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Temporary");
     }
 
-    public static String getPhoneCallFileName() {
+    public static String getVoiceFileName() {
         return String.valueOf(System.currentTimeMillis());
     }
 
-    public static String getTextMessageFileName() {
+    public static String getTextFileName() {
         return "text_messages";
     }
 

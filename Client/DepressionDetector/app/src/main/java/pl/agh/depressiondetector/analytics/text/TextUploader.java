@@ -14,8 +14,8 @@ import java.io.InputStreamReader;
 import pl.agh.depressiondetector.analytics.Uploader;
 
 import static pl.agh.depressiondetector.connection.API.PATH_TEXT_MESSAGES;
-import static pl.agh.depressiondetector.utils.FileUtils.getTextMessageFileName;
-import static pl.agh.depressiondetector.utils.FileUtils.getTextMessagesDirectory;
+import static pl.agh.depressiondetector.utils.FileUtils.getTextFileName;
+import static pl.agh.depressiondetector.utils.FileUtils.getTextDirectory;
 import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 
 
@@ -23,9 +23,9 @@ public class TextUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
         boolean success = false;
-        File directory = getTextMessagesDirectory();
+        File directory = getTextDirectory();
         if (directory.exists()) {
-            File file = new File(directory, getTextMessageFileName() + ".txt");
+            File file = new File(directory, getTextFileName() + ".txt");
             if (!file.exists())
                 return true;
             try {

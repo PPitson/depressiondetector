@@ -23,8 +23,10 @@ public class AuthenticationActivity extends AppCompatActivity {
         setTitle(R.string.title_activity_authentication);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.contains(getString(R.string.pref_user_username)) && preferences.contains(getString(R.string.pref_user_password)))
+        if (preferences.contains(getString(R.string.pref_user_username)) && preferences.contains(getString(R.string.pref_user_password))) {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
         else {
             setContentView(R.layout.activity_authentication);
             ButterKnife.bind(this);

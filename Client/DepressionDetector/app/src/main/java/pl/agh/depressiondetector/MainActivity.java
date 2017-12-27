@@ -3,19 +3,15 @@ package pl.agh.depressiondetector;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +23,8 @@ import pl.agh.depressiondetector.components.MainViewPager;
 import pl.agh.depressiondetector.database.AppDatabase;
 import pl.agh.depressiondetector.ui.settings.ProfileActivity;
 import pl.agh.depressiondetector.ui.settings.SettingsActivity;
+import pl.agh.depressiondetector.ui.tabs.DashboardFragment;
 import pl.agh.depressiondetector.ui.tabs.MoodResultsFragment;
-import pl.agh.depressiondetector.ui.tabs.OverviewFragment;
 import pl.agh.depressiondetector.ui.tabs.PhoneCallResultsFragment;
 import pl.agh.depressiondetector.ui.tabs.TabFragment;
 import pl.agh.depressiondetector.ui.tabs.TextMessagesResultsFragment;
@@ -109,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    OverviewFragment overviewFragment = new OverviewFragment();
-                    overviewFragment.setViewPager(viewPager);
-                    return overviewFragment;
+                    DashboardFragment dashboardFragment = new DashboardFragment();
+                    dashboardFragment.setViewPager(viewPager);
+                    return dashboardFragment;
                 default:
                     if (position > TAB_TYPES.size())
                         return null;
@@ -130,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             switch (position) {
                 case 0:
-                    return getString(R.string.main_overview);
+                    return getString(R.string.main_dashboard);
                 default:
                     return getPageTitleFromType(TAB_TYPES.get(position - 1));
             }

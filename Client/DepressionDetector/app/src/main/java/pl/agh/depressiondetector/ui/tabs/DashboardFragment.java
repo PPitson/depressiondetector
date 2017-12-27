@@ -2,7 +2,7 @@ package pl.agh.depressiondetector.ui.tabs;
 
 import pl.agh.depressiondetector.connection.API;
 
-public class OverviewFragment extends TabFragment {
+public class DashboardFragment extends TabFragment {
 
     @Override
     String getEncodedPathSegments() {
@@ -21,6 +21,6 @@ public class OverviewFragment extends TabFragment {
 
     @Override
     String getTAG() {
-        return "OverviewFragment";
+        return "DashboardFragment";
     }
 }

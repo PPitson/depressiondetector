@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.phonecalls;
+package pl.agh.depressiondetector.analytics.voice;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;

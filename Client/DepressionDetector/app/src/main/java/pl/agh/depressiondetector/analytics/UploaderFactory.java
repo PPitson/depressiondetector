@@ -1,8 +1,8 @@
 package pl.agh.depressiondetector.analytics;
 
 import pl.agh.depressiondetector.analytics.mood.MoodUploader;
-import pl.agh.depressiondetector.analytics.phonecalls.PhoneCallsUploader;
-import pl.agh.depressiondetector.analytics.smses.TextMessageUploader;
+import pl.agh.depressiondetector.analytics.voice.VoiceUploader;
+import pl.agh.depressiondetector.analytics.text.TextUploader;
 
 
 public class UploaderFactory {
@@ -12,9 +12,9 @@ public class UploaderFactory {
             case MOOD:
                 return new MoodUploader();
             case PHONE_CALL:
-                return new PhoneCallsUploader();
+                return new VoiceUploader();
             case SMS:
-                return new TextMessageUploader();
+                return new TextUploader();
             default:
                 throw new IllegalArgumentException();
         }

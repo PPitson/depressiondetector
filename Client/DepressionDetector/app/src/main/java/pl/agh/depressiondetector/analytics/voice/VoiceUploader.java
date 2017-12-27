@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.phonecalls;
+package pl.agh.depressiondetector.analytics.voice;
 
 import android.content.Context;
 import android.util.Log;
@@ -27,7 +27,7 @@ import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallsDirectory;
 import static pl.agh.depressiondetector.utils.NetworkUtils.getBasicCredentials;
 
 
-public class PhoneCallsUploader implements Uploader {
+public class VoiceUploader implements Uploader {
 
     @Override
     public boolean upload(Context appContext) {

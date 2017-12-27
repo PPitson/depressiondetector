@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.smses;
+package pl.agh.depressiondetector.analytics.text;
 
 import android.content.Context;
 
@@ -19,7 +19,7 @@ import static pl.agh.depressiondetector.utils.FileUtils.getTextMessagesDirectory
 import static pl.agh.depressiondetector.utils.NetworkUtils.postJSON;
 
 
-public class TextMessageUploader implements Uploader {
+public class TextUploader implements Uploader {
     @Override
     public boolean upload(Context appContext) {
         boolean success = false;

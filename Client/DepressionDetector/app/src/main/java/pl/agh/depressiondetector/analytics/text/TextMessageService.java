@@ -1,4 +1,4 @@
-package pl.agh.depressiondetector.analytics.smses;
+package pl.agh.depressiondetector.analytics.text;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -18,9 +18,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import pl.agh.depressiondetector.utils.DateUtils;
 import pl.agh.depressiondetector.utils.FileUtils;

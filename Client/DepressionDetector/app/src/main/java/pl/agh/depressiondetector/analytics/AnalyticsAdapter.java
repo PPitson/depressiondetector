@@ -11,8 +11,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import pl.agh.depressiondetector.analytics.mood.MoodBroadcastReceiver;
-import pl.agh.depressiondetector.analytics.phonecalls.PhoneCallService;
-import pl.agh.depressiondetector.analytics.smses.TextMessageService;
+import pl.agh.depressiondetector.analytics.voice.PhoneCallService;
+import pl.agh.depressiondetector.analytics.text.TextMessageService;
 import pl.agh.depressiondetector.utils.ToastUtils;
 
 import static android.content.Context.ALARM_SERVICE;

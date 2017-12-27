@@ -33,6 +33,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/voice_diary" />
                     <Button
+                        android:id="@+id/record_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -58,6 +59,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/text_diary" />
                     <Button
+                        android:id="@+id/write_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"

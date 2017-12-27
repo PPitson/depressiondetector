@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/swipe_update_results"
-    android:padding="10dp"
     android:background="@color/light_grey">
 
     <ScrollView
@@ -13,6 +12,7 @@
             android:id="@+id/results_spinner_grid"
             android:columnCount="2"
             android:rowCount="2"
+            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView

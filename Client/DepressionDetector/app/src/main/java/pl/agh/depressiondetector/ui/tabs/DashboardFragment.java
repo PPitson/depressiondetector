@@ -1,8 +1,19 @@
 package pl.agh.depressiondetector.ui.tabs;
 
+import pl.agh.depressiondetector.R;
 import pl.agh.depressiondetector.connection.API;
 
 public class DashboardFragment extends TabFragment {
+
+    @Override
+    int getResource() {
+        return R.layout.fragment_dashboard;
+    }
+
+    @Override
+    int getSwipeRefreshLayoutId() {
+        return R.id.swipe_update_results_dashboard;
+    }
 
     @Override
     String getEncodedPathSegments() {

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipe_update_results_dashboard"
+    android:background="@color/light_grey">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridLayout
+            android:id="@+id/results_spinner_grid"
+            android:columnCount="2"
+            android:rowCount="4"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.CardView
+                android:layout_columnSpan="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:columnCount="2"
+                    android:rowCount="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voice_diary" />
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/record_button"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@color/white" />
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_columnSpan="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:columnCount="2"
+                    android:rowCount="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_diary" />
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="@string/write_button"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@color/white" />
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/offline_text_view"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.CardView
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_margin="8dp"
+                    android:id="@+id/results_spinner"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_columnSpan="2"
+                android:layout_width="match_parent"
+                android:layout_height="350dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp">
+                    <TextView
+                        android:id="@+id/overview_chart_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="@string/overview_chart"
+                        android:layout_marginBottom="8dp" />
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/results_lineChart"
+                        android:layout_below="@id/overview_chart_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </GridLayout>
+    </ScrollView>
+
+</android.support.v4.widget.SwipeRefreshLayout>

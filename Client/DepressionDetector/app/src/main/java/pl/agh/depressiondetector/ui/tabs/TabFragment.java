@@ -46,7 +46,6 @@ public abstract class TabFragment extends Fragment {
     @BindView(R.id.results_spinner)
     Spinner spinner;
 
-    @BindView(R.id.swipe_update_results)
     SwipeRefreshLayout swipeRefreshLayout;
 
     @BindView(R.id.offline_text_view)
@@ -63,7 +62,7 @@ public abstract class TabFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_results, container, false);
+        View view = inflater.inflate(getResource(), container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -84,6 +83,7 @@ public abstract class TabFragment extends Fragment {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
 
+        swipeRefreshLayout = ButterKnife.findById(view, getSwipeRefreshLayoutId());
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener());
 
         lineChart.setOnChartGestureListener(new OnLineChartGestureListener());
@@ -129,6 +129,14 @@ public abstract class TabFragment extends Fragment {
         resultInjector = getResultInjector((String) adapterView.getItemAtPosition(i), lineChart);
         if (results != null)
             resultInjector.injectResults(results);
+    }
+
+    int getResource() {
+        return R.layout.fragment_results;
+    }
+
+    int getSwipeRefreshLayoutId() {
+        return R.id.swipe_update_results;
     }
 
     public void setOfflineModeText() {

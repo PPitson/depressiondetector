@@ -40,6 +40,14 @@
         <item>@string/main_chart_all</item>
     </string-array>
 
+    <!-- Voice Diary Activity -->
+    <string name="voice_diary_activity_title">Voice Diary</string>
+    <string name="info_recording">Recording…</string>
+
+    <string name="cancel_button">Cancel</string>
+    <string name="pause_button">Pause</string>
+    <string name="resume_button">Resume</string>
+    <string name="save_button">Save</string>
     <!-- Authentication Activity -->
     <string name="sign_up">Sign up</string>
     <string name="login">Login</string>

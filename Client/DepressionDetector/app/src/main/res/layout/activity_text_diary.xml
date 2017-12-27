@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:columnCount="2"
+    android:rowCount="2"
+    android:padding="16dp"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_columnSpan="2"
+        android:layout_height="280dp"
+        android:layout_width="300dp">
+    <EditText
+        android:id="@+id/diary_edit_text"
+        android:inputType="text|textMultiLine"
+        android:background="@android:color/transparent"
+        android:layout_gravity="top"
+        android:textSize="@dimen/text_size_1"
+        android:hint="@string/hint_text_diary"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+    </ScrollView>
+    <Button
+        android:id="@+id/cancel_text_diary"
+        android:drawableTop="@drawable/ic_cancel_red"
+        android:text="@string/cancel_button"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/save_text_diary"
+        android:drawableTop="@drawable/ic_save_green"
+        android:text="@string/save_button"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</GridLayout>

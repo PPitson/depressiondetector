@@ -66,6 +66,11 @@
             android:label="@string/voice_diary_activity_title"
             android:parentActivityName=".MainActivity"
             android:theme="@style/VoiceDiaryActivityTheme" />
+        <activity
+            android:name=".analytics.text.TextDiaryActivity"
+            android:label="@string/text_diary_activity_title"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/TextDiaryActivityTheme" />
     </application>
 
 </manifest>

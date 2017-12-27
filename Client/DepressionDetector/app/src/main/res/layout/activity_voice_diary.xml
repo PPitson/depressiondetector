@@ -24,14 +24,14 @@
         android:text="@string/cancel_button"
         android:textSize="12sp"
         android:textAllCaps="false"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/pause_resume_recording"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:drawableTop="@drawable/ic_pause_circle_filled_grey"
         android:text="@string/pause_button"
         android:textSize="12sp"
@@ -46,7 +46,7 @@
         android:text="@string/save_button"
         android:textSize="12sp"
         android:textAllCaps="false"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </GridLayout>

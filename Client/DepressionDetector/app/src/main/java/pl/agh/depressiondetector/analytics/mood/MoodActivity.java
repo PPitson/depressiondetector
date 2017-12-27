@@ -43,7 +43,7 @@ public class MoodActivity extends AppCompatActivity {
         if (time != -1)
             date = new Date(time);
         else {
-            ToastUtils.show(this, "Unexpected error occurred");
+            ToastUtils.show(this, getString(R.string.unexpected_error));
             finish();
         }
     }

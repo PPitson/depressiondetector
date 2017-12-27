@@ -18,9 +18,7 @@ import java.io.IOException;
 import pl.agh.depressiondetector.utils.FileUtils;
 
 import static pl.agh.depressiondetector.utils.FileUtils.copyFile;
-import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallFileName;
-import static pl.agh.depressiondetector.utils.FileUtils.getPhoneCallsDirectory;
-import static pl.agh.depressiondetector.utils.FileUtils.getTemporaryDirectory;
+import static pl.agh.depressiondetector.utils.FileUtils.getVoiceDirectory;
 
 public class PhoneCallService extends Service {
 
@@ -46,8 +44,7 @@ public class PhoneCallService extends Service {
 
     private class CallReceiver extends BroadcastReceiver {
 
-        private MediaRecorder mediaRecorder = null;
-        private File outputFile;
+        private Recorder recorder;
 
         private Boolean wasRinging = false;
         private Boolean isRecording = false;
@@ -69,12 +66,9 @@ public class PhoneCallService extends Service {
                                 wasRinging = false;
                                 if (isRecording) {
                                     isRecording = false;
-                                    if (mediaRecorder != null) {
-                                        mediaRecorder.stop();
-                                        File phoneCallsDir = getPhoneCallsDirectory();
-                                        FileUtils.createDirectory(phoneCallsDir);
-                                        copyFile(outputFile, new File(phoneCallsDir, outputFile.getName()));
-                                        outputFile.delete();
+                                    if (recorder != null) {
+                                        recorder.saveOutputFile();
+                                        recorder.deleteOutputFile();
                                     }
                                 }
                             }
@@ -92,17 +86,8 @@ public class PhoneCallService extends Service {
         }
 
         private void recordPhoneCall() throws IOException {
-            File outputDir = getTemporaryDirectory();
-            FileUtils.createDirectory(outputDir);
-
-            outputFile = new File(outputDir, getPhoneCallFileName() + ".amr");
-            mediaRecorder = new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
-            mediaRecorder.prepare();
-            mediaRecorder.start();
+            recorder = new Recorder(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+            recorder.startRecording();
             isRecording = true;
         }
     }

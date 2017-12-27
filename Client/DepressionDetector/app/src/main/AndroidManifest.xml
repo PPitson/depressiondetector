@@ -55,12 +55,17 @@
             android:name=".scheduler.UploadScheduler"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name=".analytics.phonecalls.PhoneCallService" />
-        <service android:name=".analytics.smses.TextMessageService" />
+        <service android:name=".analytics.voice.PhoneCallService" />
+        <service android:name=".analytics.text.TextMessageService" />
 
         <activity
             android:name=".settings.FirstConfigurationActivity"
             android:label="@string/title_activity_first_configuration" />
+        <activity
+            android:name=".analytics.voice.VoiceDiaryActivity"
+            android:label="@string/voice_diary_activity_title"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/VoiceDiaryActivityTheme" />
     </application>
 
 </manifest>

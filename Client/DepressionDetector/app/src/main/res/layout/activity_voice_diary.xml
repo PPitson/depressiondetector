@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
+    android:padding="16dp"
+    android:columnCount="3"
+    android:rowCount="2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".analytics.voice.VoiceDiaryActivity">
+
+    <TextView
+        android:layout_columnSpan="3"
+        android:drawableTop="@drawable/ic_mic_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="@string/info_recording"/>
+
+    <Button
+        android:id="@+id/cancel_recording"
+        android:drawableTop="@drawable/ic_cancel_red"
+        android:text="@string/cancel_button"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:background="?attr/selectableItemBackground"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/pause_resume_recording"
+        android:background="?attr/selectableItemBackground"
+        android:drawableTop="@drawable/ic_pause_circle_filled_grey"
+        android:text="@string/pause_button"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/save_recording"
+        android:drawableTop="@drawable/ic_save_green"
+        android:text="@string/save_button"
+        android:textSize="12sp"
+        android:textAllCaps="false"
+        android:background="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</GridLayout>

@@ -48,6 +48,12 @@
     <string name="pause_button">Pause</string>
     <string name="resume_button">Resume</string>
     <string name="save_button">Save</string>
+
+    <string name="recording_cancelled">Recording has been canceled</string>
+    <string name="recording_paused">Paused</string>
+    <string name="recording_resumed">Resumed</string>
+    <string name="recording_saved">Recording has been saved</string>
+
     <!-- Authentication Activity -->
     <string name="sign_up">Sign up</string>
     <string name="login">Login</string>
@@ -99,6 +105,8 @@
     <string name="logout">Logout</string>
     <string name="go_further">Go further</string>
 
+    <string name="unexpected_error">Unexpected error occurred</string>
+
     <!-- Preferences -->
     <string name="preferences_analysis">Analysis</string>
     <string name="preferences_analyse_mood">Mood</string>
@@ -113,4 +121,5 @@
     <string name="pref_analyse_mood" translatable="false">pref_analyse_mood</string>
     <string name="pref_analyse_phone_calls" translatable="false">pref_analyse_phone_calls</string>
     <string name="pref_analyse_text_messages" translatable="false">pref_analyse_text_messages</string>
+
 </resources>

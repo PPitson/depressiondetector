@@ -44,15 +44,20 @@
     <string name="voice_diary_activity_title">Voice Diary</string>
     <string name="info_recording">Recording…</string>
 
-    <string name="cancel_button">Cancel</string>
     <string name="pause_button">Pause</string>
     <string name="resume_button">Resume</string>
-    <string name="save_button">Save</string>
 
     <string name="recording_cancelled">Recording has been canceled</string>
     <string name="recording_paused">Paused</string>
     <string name="recording_resumed">Resumed</string>
     <string name="recording_saved">Recording has been saved</string>
+
+    <!-- Text Diary Activity -->
+    <string name="text_diary_activity_title">Text Diary</string>
+    <string name="hint_text_diary">Write here…</string>
+
+    <string name="writing_cancelled">Writing a new diary entry has been canceled</string>
+    <string name="writing_saved">A new diary entry has been saved</string>
 
     <!-- Authentication Activity -->
     <string name="sign_up">Sign up</string>
@@ -104,6 +109,9 @@
     <string name="delete_account">Delete account</string>
     <string name="logout">Logout</string>
     <string name="go_further">Go further</string>
+
+    <string name="cancel_button">Cancel</string>
+    <string name="save_button">Save</string>
 
     <string name="unexpected_error">Unexpected error occurred</string>
 

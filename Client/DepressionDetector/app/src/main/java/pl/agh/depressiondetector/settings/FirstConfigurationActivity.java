@@ -93,12 +93,12 @@ public class FirstConfigurationActivity extends AppCompatActivity {
         if (switchPhoneCalls.isChecked()) {
             permissions.add(Manifest.permission.READ_PHONE_STATE);
             permissions.add(Manifest.permission.PROCESS_OUTGOING_CALLS);
-            permissions.add(Manifest.permission.RECORD_AUDIO);
         }
 
         if (switchTextMessages.isChecked())
             permissions.add(Manifest.permission.READ_SMS);
 
+        permissions.add(Manifest.permission.RECORD_AUDIO);
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // TODO Write to internal storage and remove this
         askForPermissionsIfNeeded(permissions);
     }

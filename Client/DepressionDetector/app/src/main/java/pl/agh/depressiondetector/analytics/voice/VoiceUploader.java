@@ -3,10 +3,13 @@ package pl.agh.depressiondetector.analytics.voice;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -77,9 +80,14 @@ public class VoiceUploader implements Uploader {
         JSONObject json = new JSONObject();
         for (File file : records) {
             String name = file.getName();
+            int extensionPosition = name.lastIndexOf(".");
+            extensionPosition = extensionPosition > 0 ? extensionPosition : name.length();
+            String[] params = name.substring(0, extensionPosition).split("_");
             JSONObject meta = new JSONObject();
-            String date = convertToServerDateTimeFormat(Long.valueOf(name.split("\\.")[0]));
+            String date = convertToServerDateTimeFormat(Long.valueOf(params[0]));
+            Double[] location = convertStringToDoubleArray(params[1]);
             meta.put("date", date);
+            meta.put("location", new JSONArray(location));
             json.put(name, meta);
         }
 
@@ -93,5 +101,14 @@ public class VoiceUploader implements Uploader {
             builder.addPart(
                     Headers.of("Content-Disposition", String.format("form-data; name=\"file%s\"; filename=\"%s\"", i, records[i].getName())),
                     RequestBody.create(AMR_TYPE, records[i]));
+    }
+
+    private Double[] convertStringToDoubleArray(String string) {
+        List<Double> list = new ArrayList<>();
+        for (String doubleString : string.substring(1, string.length() - 1).split(","))
+            list.add(Double.valueOf(doubleString));
+        Double[] result = new Double[list.size()];
+        result = list.toArray(result);
+        return result;
     }
 }

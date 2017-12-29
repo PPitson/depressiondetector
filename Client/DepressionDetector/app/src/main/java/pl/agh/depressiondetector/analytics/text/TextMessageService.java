@@ -74,7 +74,7 @@ public class TextMessageService extends Service {
                 if (!id.equals(lastTextMessageId)) {
                     lastTextMessageId = id;
                     String textMessage = cursor.getString(cursor.getColumnIndex("body"));
-                    TextFileWriter textFileWriter = new TextFileWriter(textMessage, new Date());
+                    TextFileWriter textFileWriter = new TextFileWriter(textMessage, new Date(), getApplicationContext());
                     try {
                         textFileWriter.saveText();
                     } catch (IOException | JSONException e) {

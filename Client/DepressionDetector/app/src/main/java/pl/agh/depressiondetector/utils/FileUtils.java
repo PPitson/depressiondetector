@@ -33,8 +33,18 @@ public final class FileUtils {
         return new File(Environment.getExternalStorageDirectory(), "/DepressionDetector/Temporary");
     }
 
-    public static String getVoiceFileName() {
+    public static String getTemporaryVoiceFileName() {
         return String.valueOf(System.currentTimeMillis());
+    }
+
+    public static String getVoiceFileName(String ...params) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.valueOf(System.currentTimeMillis()));
+        for (String param : params) {
+            stringBuilder.append("_");
+            stringBuilder.append(param.replaceAll("\\s+", ""));
+        }
+        return stringBuilder.toString();
     }
 
     public static String getTextFileName() {

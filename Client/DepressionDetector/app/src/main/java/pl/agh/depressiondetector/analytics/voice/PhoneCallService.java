@@ -68,7 +68,6 @@ public class PhoneCallService extends Service {
                                     isRecording = false;
                                     if (recorder != null) {
                                         recorder.saveOutputFile();
-                                        recorder.deleteOutputFile();
                                     }
                                 }
                             }
@@ -86,7 +85,7 @@ public class PhoneCallService extends Service {
         }
 
         private void recordPhoneCall() throws IOException {
-            recorder = new Recorder(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+            recorder = new Recorder(MediaRecorder.AudioSource.VOICE_COMMUNICATION, getApplicationContext());
             recorder.startRecording();
             isRecording = true;
         }

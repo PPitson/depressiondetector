@@ -24,11 +24,11 @@ public class VoiceDiaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_voice_diary);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT < 24)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             ButterKnife.findById(this, R.id.pause_resume_recording).setEnabled(false);
 
         try {
-            recorder = new Recorder(MediaRecorder.AudioSource.MIC);
+            recorder = new Recorder(MediaRecorder.AudioSource.MIC, this);
             recorder.startRecording();
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,7 +53,6 @@ public class VoiceDiaryActivity extends AppCompatActivity {
     @OnClick(R.id.save_recording)
     public void onSaveClick() {
         recorder.saveOutputFile();
-        recorder.deleteOutputFile();
         ToastUtils.show(this, getString(R.string.recording_saved));
         finish();
     }

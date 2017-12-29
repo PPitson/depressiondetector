@@ -36,11 +36,11 @@ public class TextDiaryActivity extends AppCompatActivity {
 
     @OnClick(R.id.save_text_diary)
     public void onSaveClick() {
-        TextFileWriter textFileWriter = new TextFileWriter(editText.getText().toString(), new Date());
+        TextFileWriter textFileWriter = new TextFileWriter(editText.getText().toString(), new Date(), this);
         try {
             textFileWriter.saveText();
             ToastUtils.show(this, getString(R.string.writing_saved));
-        } catch (JSONException | IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
             ToastUtils.show(this, getString(R.string.unexpected_error));
         } finally {

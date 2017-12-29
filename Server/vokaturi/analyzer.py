@@ -21,7 +21,7 @@ def create_lib_path(system, architecture):
     return os.path.join(lib_dir, lib_file)
 
 
-def analyze_file(file_bytes, datetime, user):
+def analyze_file(file_bytes, datetime, user, coordinates):
     filename = uuid.uuid4().hex
     amr_filename, wav_filename = f'{filename}.amr', f'{filename}.wav'
     with open(amr_filename, 'wb') as file:
@@ -33,4 +33,4 @@ def analyze_file(file_bytes, datetime, user):
     os.remove(amr_filename)
     os.remove(wav_filename)
     if emotions:
-        return EmotionExtractionResult(user=user, datetime=datetime, **emotions)
+        return EmotionExtractionResult(user=user, datetime=datetime, coordinates=coordinates, **emotions)

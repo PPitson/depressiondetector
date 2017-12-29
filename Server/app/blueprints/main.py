@@ -4,6 +4,7 @@ from datetime import datetime
 import dateutil.parser
 from flask import jsonify, make_response, request, Blueprint, render_template, g
 from flask_googlemaps import Map
+from mongoengine import PointField
 
 from app.celery.tasks import analyze_file_task, analyze_text_task, save_result
 from app.commons import get_json_list_or_raise_exception
@@ -51,7 +52,7 @@ def post_sound_files():
     files_metadata = json.loads(request.form['data'])
     for file in request.files.values():
         date_time = datetime.strptime(files_metadata[file.filename]['date'], '%Y-%m-%d %H:%M:%S')
-        analyze_file_task.delay(file.read(), date_time, g.current_user)
+        analyze_file_task.delay(file.read(), date_time, g.current_user, files_metadata[file.filename]['location'])
     return make_response(jsonify({'received': True}), 200)
 
 
@@ -62,7 +63,7 @@ def post_text_files():
     for json in request_json:
         message = json['message']
         datetime = dateutil.parser.parse(json['datetime'])
-        analyze_text_task.delay(message, datetime, g.current_user)
+        analyze_text_task.delay(message, datetime, g.current_user, json['location'])
     return make_response(jsonify({'received': True}), 200)
 
 
@@ -72,7 +73,7 @@ def post_moods():
     mood_results = get_json_list_or_raise_exception()
     for result in mood_results:
         mood = Mood(user=g.current_user, datetime=datetime.strptime(result['date'], '%Y-%m-%d'),
-                    mood_level=result['mood_level'])
+                    mood_level=result['mood_level'], coordinates=result['location'])
         mood.validate()
         save_result.delay(mood)
     return make_response(jsonify({'received': True}), 200)

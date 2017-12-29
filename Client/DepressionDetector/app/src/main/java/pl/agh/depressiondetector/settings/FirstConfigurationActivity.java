@@ -100,6 +100,7 @@ public class FirstConfigurationActivity extends AppCompatActivity {
 
         permissions.add(Manifest.permission.RECORD_AUDIO);
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // TODO Write to internal storage and remove this
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         askForPermissionsIfNeeded(permissions);
     }
 

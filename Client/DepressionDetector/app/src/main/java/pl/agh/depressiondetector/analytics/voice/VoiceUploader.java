@@ -85,9 +85,9 @@ public class VoiceUploader implements Uploader {
             String[] params = name.substring(0, extensionPosition).split("_");
             JSONObject meta = new JSONObject();
             String date = convertToServerDateTimeFormat(Long.valueOf(params[0]));
-            Double[] location = convertStringToDoubleArray(params[1]);
+            Double[] location = params.length > 1 ? convertStringToDoubleArray(params[1]) : null;
             meta.put("date", date);
-            meta.put("location", new JSONArray(location));
+            meta.put("location", location != null ? new JSONArray(location) : JSONObject.NULL);
             json.put(name, meta);
         }
 

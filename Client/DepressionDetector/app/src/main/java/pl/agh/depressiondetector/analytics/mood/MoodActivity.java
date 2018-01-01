@@ -45,7 +45,7 @@ public class MoodActivity extends AppCompatActivity implements OnCompleteListene
     private Date date;
 
     private int mood;
-    private Double[] location = new Double[]{0.0, 0.0};
+    private Double[] location = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class MoodActivity extends AppCompatActivity implements OnCompleteListene
             JSONObject today = new JSONObject();
             today.put("date", convertToServerDateFormat(date));
             today.put("mood_level", mood);
-            today.put("location", new JSONArray(location));
+            today.put("location", location != null ? new JSONArray(location) : JSONObject.NULL);
             json.put(today);
 
             writeStringToFile(file, json.toString());

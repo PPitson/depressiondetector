@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 
 import pl.agh.depressiondetector.R;
@@ -29,7 +28,7 @@ import pl.agh.depressiondetector.utils.ToastUtils;
 public class TextFileWriter implements OnCompleteListener<Location> {
     private String text;
     private Date date;
-    private Double[] location = new Double[]{0.0, 0.0};
+    private Double[] location = null;
 
     private Context context;
 
@@ -72,7 +71,7 @@ public class TextFileWriter implements OnCompleteListener<Location> {
 
         json.put("message", text);
         json.put("datetime", DateUtils.convertToServerDateTimeFormat(date));
-        json.put("location", new JSONArray(location));
+        json.put("location", location != null ? new JSONArray(location) : JSONObject.NULL);
 
         return json.toString();
     }

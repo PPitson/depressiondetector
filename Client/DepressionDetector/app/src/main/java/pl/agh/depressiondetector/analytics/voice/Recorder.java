@@ -25,7 +25,7 @@ public class Recorder implements OnCompleteListener<Location> {
 
     private Context context;
 
-    private Double[] location = {0.0, 0.0};
+    private Double[] location = null;
 
     Recorder(int audioSource, Context context) throws IOException {
         this.context = context;
@@ -76,7 +76,8 @@ public class Recorder implements OnCompleteListener<Location> {
     private void saveFile() {
         File outputDir = FileUtils.getVoiceDirectory();
         FileUtils.createDirectory(outputDir);
-        FileUtils.copyFile(outputFile, new File(outputDir, FileUtils.getVoiceFileName(Arrays.toString(location)) + ".amr"));
+        String fileName = location != null ? FileUtils.getVoiceFileName(Arrays.toString(location)) : FileUtils.getVoiceFileName();
+        FileUtils.copyFile(outputFile, new File(outputDir, fileName + ".amr"));
         deleteOutputFile();
     }
 

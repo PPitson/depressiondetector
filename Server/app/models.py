@@ -98,6 +98,7 @@ class DataSourceMongoDocument(MongoDocument):
 
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime: datetime = mongo.DateTimeField(default=datetime.utcnow)
+    coordinates = mongo.PointField()
 
     @abstractmethod
     def compute_happiness_level(self):
@@ -121,7 +122,6 @@ class DataSourceMongoDocument(MongoDocument):
 
 class EmotionExtractionResult(DataSourceMongoDocument):
     data_source = 'voice'
-    coordinates = mongo.PointField()
     neutral = mongo.FloatField()
     happy = mongo.FloatField()
     sad = mongo.FloatField()
@@ -134,7 +134,6 @@ class EmotionExtractionResult(DataSourceMongoDocument):
 
 class EmotionFromTextExtractionResult(DataSourceMongoDocument):
     data_source = 'text'
-    coordinates = mongo.PointField()
     anger = mongo.FloatField()
     joy = mongo.FloatField()
     fear = mongo.FloatField()
@@ -147,7 +146,6 @@ class EmotionFromTextExtractionResult(DataSourceMongoDocument):
 
 class Mood(DataSourceMongoDocument):
     data_source = 'mood'
-    coordinates = mongo.PointField()
     mood_level: int = mongo.IntField(min_value=1, max_value=5)
 
     def compute_happiness_level(self):

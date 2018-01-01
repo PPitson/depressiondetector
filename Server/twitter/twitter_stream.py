@@ -6,7 +6,7 @@ import tweepy
 
 import twitter.config as conf
 from app.celery.tasks import analyze_and_save_tweet
-from app.models import Tweet
+from app.models import Tweet, User
 from twitter import logger
 
 
@@ -24,6 +24,7 @@ class MyStreamListener(tweepy.StreamListener):
     last_timestamp = time.time()
     count = 0
     max_tweets_per_minute = int(os.environ.get('TWEETS_PER_MINUTE', -1))  # -1 -> no limit
+    dummy_user = User.objects.first()
 
     def on_status(self, status):
         if time.time() - self.last_timestamp > 60:
@@ -36,7 +37,7 @@ class MyStreamListener(tweepy.StreamListener):
         coordinates = get_coordinates(status)
         if len(status.text) < 100:
             return
-        tweet = Tweet(id=status.id, created_at=status.created_at, coordinates=coordinates)
+        tweet = Tweet(id=status.id, datetime=status.created_at, coordinates=coordinates, user=self.dummy_user)
         analyze_and_save_tweet.delay(tweet, status.text)
         self.count += 1
 

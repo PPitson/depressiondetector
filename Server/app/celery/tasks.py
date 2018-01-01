@@ -8,7 +8,7 @@ import requests
 from textblob import TextBlob
 
 from app import celery
-from app.models import Tweet, GeoSentiment
+from app.models import Tweet, GeoSentiment, data_source_collections
 from indico.analyzer import analyze_text
 from vokaturi.analyzer import analyze_file
 
@@ -58,8 +58,12 @@ def count_mean_sentiment():
     today = datetime.now().date()
     start_datetime = today - timedelta(days=1)
     sentiments = defaultdict(lambda: [])
-    for tweet in Tweet.objects(created_at__gte=start_datetime, created_at__lt=today):
-        sentiments[tweet.geohash].append(tweet.sentiment)
+    for collection in data_source_collections:
+        for doc in collection.objects(created_at__gte=start_datetime, created_at__lt=today):
+            try:
+                sentiments[doc.geohash].append(doc.compute_happiness_level())
+            except AttributeError:
+                pass
     for ghash, sentiment_list in sentiments.items():
         mean_sentiment = np.mean(sentiment_list)
         GeoSentiment(geohash=ghash, date=start_datetime, mean_sentiment=mean_sentiment).save()

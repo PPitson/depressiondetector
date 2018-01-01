@@ -83,11 +83,11 @@ def post_moods():
 @auth.login_required
 @admins_only
 def get_map():
-    min, max = 1, 5
+    min, max = 1, 30
     slider = int(request.form['days']) if request.method == 'POST' else max
     date_start, date_end = get_dates_by_slider(slider, min, max)
     map = Map(zoom=2, identifier='mymap', lat=0, lng=0,
-              style='height:400px;width:100%;margin-top:10px;margin-bottom:10px;', streetview_control=False,
+              style='height:100%;width:100%;', streetview_control=False,
               rectangles=prepare_sentiment_rects(date_start, date_end))
     return render_template('map.html', mymap=map, max=max, min=min, slider=slider)
 

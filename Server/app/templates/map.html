@@ -1,36 +1,49 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand">Depression Detector - Tweet Sentiment</a>
-        </div>
-    </div>
-</nav>
-
-{% extends "base.html" %}
-
-{% block page_content %}
-<link rel="stylesheet" type="text/css" href="/static/css/slider.css">
+<link rel="stylesheet" type="text/css" href="/static/css/map.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 {{ mymap.js }}
 
-<center>
-    <div id="slidecontainer">
-        <div class="alert alert-info" role="alert">
-            <strong><span>Date:</span> <span id="date"></span></strong>
-        </div>
+
+<div>
+    <div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand">Depression Detector - Tweet Sentiment</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div id="slidecontainer" class="slider-container">
         <form method="POST">
-            <input type="range" min="{{ min }}" max="{{ max }}" value="{{ slider }}" class="slider-color" id="slider"
-                   name="days">
 
-            <br />
+            <center>
+                <div class="left-container">
+                    <div class="alert alert-info date-container" role="alert">
+                        <strong>
+                            <span>Date:</span>
+                            <span id="date"></span>
+                        </strong>
+                    </div>
+                </div>
 
-            <input type="submit" class="btn btn-info" value="Show">
+                <div class="mid-container">
+                    <input type="range" min="{{ min }}" max="{{ max }}" value="{{ slider }}" class="slider-color"
+                           id="slider" name="days" >
+                </div>
+                <div class="right-container">
+                    <input type="submit" class="btn btn-info" value="Show">
+                </div>
+
+            </center>
         </form>
     </div>
-</center>
 
-{{ mymap.html }}
-<script type=text/javascript src="/static/js/slider.js"></script>
-{% endblock %}
+    <div class="map-container">
+        {{ mymap.html }}
+    </div>
+</div>
+
+<script type=text/javascript src="/static/js/map.js"></script>

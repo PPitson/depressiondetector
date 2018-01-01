@@ -65,7 +65,7 @@ def count_mean_sentiment():
             except AttributeError:
                 pass
     for ghash, sentiment_list in sentiments.items():
-        mean_sentiment = np.mean(sentiment_list)
+        mean_sentiment = 2 * np.mean(sentiment_list) - 1  # so that the range is [-1,1]
         GeoSentiment(geohash=ghash, date=start_datetime, mean_sentiment=mean_sentiment).save()
     delete_obsolete_tweets.delay()
 

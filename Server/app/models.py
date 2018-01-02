@@ -183,7 +183,7 @@ class Tweet(DataSourceMongoDocument):
         return (self.sentiment + 1) / 2
 
     def save(self, **kwargs):
-        MongoDocument.save(**kwargs)
+        MongoDocument.save(self, **kwargs)
 
 
 class GeoSentiment(MongoDocument):

@@ -59,7 +59,7 @@ def count_mean_sentiment():
     start_datetime = today - timedelta(days=1)
     sentiments = defaultdict(lambda: [])
     for collection in data_source_collections:
-        for doc in collection.objects(created_at__gte=start_datetime, created_at__lt=today):
+        for doc in collection.objects(datetime__gte=start_datetime, datetime__lt=today):
             try:
                 sentiments[doc.geohash].append(doc.compute_happiness_level())
             except AttributeError:
@@ -73,4 +73,4 @@ def count_mean_sentiment():
 @celery.task(name='delete_obsolete_tweets')
 def delete_obsolete_tweets():
     max_datetime = datetime.now().date()
-    Tweet.objects(created_at__lt=max_datetime).delete()
+    Tweet.objects(datetime__lt=max_datetime).delete()

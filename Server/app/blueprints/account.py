@@ -19,7 +19,7 @@ def get_user_info():
 @auth.login_required
 def update_user():
     for key, value in get_json_or_raise_exception().items():
-        if key not in User.get_fields():
+        if key not in User.get_fields() or key == 'is_admin':
             raise exceptions.InvalidFieldException(payload={'field': key})
         if key == 'email' and g.current_user.email != value and User.objects.filter(email=value).first():
             raise exceptions.EmailTakenException

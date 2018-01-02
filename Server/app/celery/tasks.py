@@ -60,10 +60,8 @@ def count_mean_sentiment():
     sentiments = defaultdict(lambda: [])
     for collection in data_source_collections:
         for doc in collection.objects(datetime__gte=start_datetime, datetime__lt=today):
-            try:
+            if doc.geohash is not None:
                 sentiments[doc.geohash].append(doc.compute_happiness_level())
-            except AttributeError:
-                pass
     for ghash, sentiment_list in sentiments.items():
         mean_sentiment = 2 * np.mean(sentiment_list) - 1  # so that the range is [-1,1]
         GeoSentiment(geohash=ghash, date=start_datetime, mean_sentiment=mean_sentiment).save()

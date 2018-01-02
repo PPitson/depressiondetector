@@ -105,6 +105,10 @@ class DataSourceMongoDocument(MongoDocument):
     def compute_happiness_level(self):
         pass
 
+    @property
+    def data_source(self):
+        raise NotImplementedError
+
     def save(self, **kwargs):
         super().save(**kwargs)
         start_date = self.datetime.date()

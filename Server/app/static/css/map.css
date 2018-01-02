@@ -9,9 +9,11 @@
   -webkit-transition: opacity .15s ease-in-out;
   transition: opacity .15s ease-in-out;
 }
+
 .slider-color:hover {
   opacity:1;
 }
+
 .slider-color::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -21,6 +23,7 @@
   background: #4cafff;
   cursor: pointer;
 }
+
 .slider-color::-moz-range-thumb {
   width: 25px;
   height: 25px;
@@ -28,4 +31,35 @@
   border-radius: 50%;
   background: #4cafff;
   cursor: pointer;
+}
+
+.slider-container {
+  height:10%;
+}
+
+.map-container {
+  height:75%;
+  width:100%;
+}
+
+.left-container {
+  width:20%;
+  float:left;
+}
+
+.date-container {
+  margin-left:15%;
+  margin-right:15%;
+}
+
+.mid-container {
+  width:70%;
+  float:left;
+  margin-top:15px;
+}
+
+.right-container {
+  width:10%;
+  float:right;
+  margin-top:5px;
 }

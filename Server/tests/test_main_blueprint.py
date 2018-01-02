@@ -36,8 +36,8 @@ class VoiceEmotionResultsTestCase(CustomTestCase):
         date2 = '2017-11-11 18:27:38'
         data = {
             'data': json.dumps({
-                'file.amr': {'date': date1},
-                'another.amr': {'date': date2},
+                'file.amr': {'date': date1, "location": [-79, 36]},
+                'another.amr': {'date': date2, "location": [-79, 36]},
             }),
             'file1': (BytesIO(b'file bytes'), 'file.amr'),
             'file2': (BytesIO(b'another file bytes'), 'another.amr')
@@ -46,8 +46,8 @@ class VoiceEmotionResultsTestCase(CustomTestCase):
                                     content_type='multipart/form-data', data=data)
         self.assert200(response)
         calls = [
-            call(b'file bytes', datetime(2017, 11, 11, 16, 24, 35), self.user),
-            call(b'another file bytes', datetime(2017, 11, 11, 18, 27, 38), self.user)
+            call(b'file bytes', datetime(2017, 11, 11, 16, 24, 35), self.user, [-79, 36]),
+            call(b'another file bytes', datetime(2017, 11, 11, 18, 27, 38), self.user, [-79, 36])
         ]
         task_mock.delay.assert_has_calls(calls, any_order=True)
         self.assertTrue(response.json['received'])
@@ -111,9 +111,9 @@ class MoodResultsTestCase(CustomTestCase):
     @patch('app.blueprints.main.save_result')
     def test_post_moods(self, save_result_mock):
         data = json.dumps([
-            {'date': '2017-11-01', 'mood_level': 2},
-            {'date': '2017-11-02', 'mood_level': 3},
-            {'date': '2017-11-03', 'mood_level': 3}
+            {'date': '2017-11-01', 'mood_level': 2, "location": [-79, 36]},
+            {'date': '2017-11-02', 'mood_level': 3, "location": [-79, 36]},
+            {'date': '2017-11-03', 'mood_level': 3, "location": [-79, 36]}
         ])
         self.assertEqual(Mood.objects.count(), 0)
         response = self.client.post('/moods', headers=self.get_headers(), data=data)
@@ -124,7 +124,7 @@ class MoodResultsTestCase(CustomTestCase):
 
     def test_invalid_mood_level(self):
         data = json.dumps([
-            {'date': '2017-11-03', 'mood_level': 6}
+            {'date': '2017-11-03', 'mood_level': 6, "location": [-79, 36]}
         ])
         response = self.client.post('/moods', headers=self.get_headers(), data=data)
         self.assert400(response)

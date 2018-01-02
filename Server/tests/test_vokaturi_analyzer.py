@@ -17,20 +17,20 @@ class VokaturiAnalyzerTestCase(CustomTestCase):
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
     @patch('vokaturi.analyzer.os.remove')
     def test_removes_files_after_analyzing(self, os_remove):
-        analyze_file(b'123', datetime.now(), self.user)
+        analyze_file(b'123', datetime.now(), self.user, [23, 23])
         amr_filename, wav_filename = f'{HEX}.amr', f'{HEX}.wav'
         self.assertEqual(os_remove.mock_calls, [call(amr_filename), call(wav_filename)])
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value=EMOTIONS_DICT))
     @patch('vokaturi.analyzer.os.remove', Mock())
     def test_returns_results_after_successful_analysis(self):
-        result = analyze_file(b'123', datetime.now(), self.user)
+        result = analyze_file(b'123', datetime.now(), self.user, [23, 23])
         self.assertIsInstance(result, EmotionExtractionResult)
 
     @patch('vokaturi.analyzer.extract_emotions', Mock(return_value={}))
     @patch('vokaturi.analyzer.os.remove', Mock())
     def test_returns_nothing_after_unsuccessful_analysis(self):
-        result = analyze_file(b'123', datetime.now(), self.user)
+        result = analyze_file(b'123', datetime.now(), self.user, [23, 23])
         self.assertIsNone(result)
 
     @patch('vokaturi.analyzer.sys')

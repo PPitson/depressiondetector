@@ -94,14 +94,20 @@ class User(MongoDocument):
 
 
 class DataSourceMongoDocument(MongoDocument):
-    meta = {'allow_inheritance': True, 'abstract': True}
+    meta = {'allow_inheritance': True, 'abstract': True, 'indexes': ['datetime', 'user']}
 
     user = mongo.ReferenceField(User, reverse_delete_rule=mongo.CASCADE)
     datetime: datetime = mongo.DateTimeField(default=datetime.utcnow)
+    coordinates = mongo.PointField()
+    geohash = mongo.StringField()
 
     @abstractmethod
     def compute_happiness_level(self):
         pass
+
+    @property
+    def data_source(self):
+        raise NotImplementedError
 
     def save(self, **kwargs):
         super().save(**kwargs)
@@ -173,17 +179,15 @@ class HappinessLevel(MongoDocument):
         self.save()
 
 
-class Tweet(MongoDocument):
-    meta = {
-        'indexes': ['created_at'],
-        'index_cls': False
-    }
-
+class Tweet(DataSourceMongoDocument):
     id = mongo.LongField(primary_key=True)
-    created_at = mongo.DateTimeField()
-    coordinates = mongo.PointField()
-    geohash = mongo.StringField()
     sentiment = mongo.FloatField(min_value=-1, max_value=1)
+
+    def compute_happiness_level(self):
+        return (self.sentiment + 1) / 2
+
+    def save(self, **kwargs):
+        MongoDocument.save(self, **kwargs)
 
 
 class GeoSentiment(MongoDocument):
@@ -199,3 +203,4 @@ class GeoSentiment(MongoDocument):
 
 data_sources = (EmotionFromTextExtractionResult.data_source, EmotionExtractionResult.data_source,
                 Mood.data_source)
+data_source_collections = (EmotionExtractionResult, EmotionFromTextExtractionResult, Mood, Tweet)

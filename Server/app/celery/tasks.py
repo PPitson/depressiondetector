@@ -8,21 +8,21 @@ import requests
 from textblob import TextBlob
 
 from app import celery
-from app.models import Tweet, GeoSentiment
+from app.models import Tweet, GeoSentiment, data_source_collections
 from indico.analyzer import analyze_text
 from vokaturi.analyzer import analyze_file
 
 
 @celery.task(name='analyze_file')
-def analyze_file_task(file_bytes, datetime, user):
-    document = analyze_file(file_bytes, datetime, user)
+def analyze_file_task(file_bytes, datetime, user, coordinates):
+    document = analyze_file(file_bytes, datetime, user, coordinates)
     if document:
         save_result.delay(document)
 
 
 @celery.task(name='analyze_text')
-def analyze_text_task(msg, datetime, user):
-    document = analyze_text(msg, datetime, user)
+def analyze_text_task(msg, datetime, user, coordinates):
+    document = analyze_text(msg, datetime, user, coordinates)
     if document:
         save_result.delay(document)
 
@@ -58,10 +58,12 @@ def count_mean_sentiment():
     today = datetime.now().date()
     start_datetime = today - timedelta(days=1)
     sentiments = defaultdict(lambda: [])
-    for tweet in Tweet.objects(created_at__gte=start_datetime, created_at__lt=today):
-        sentiments[tweet.geohash].append(tweet.sentiment)
+    for collection in data_source_collections:
+        for doc in collection.objects(datetime__gte=start_datetime, datetime__lt=today):
+            if doc.geohash is not None:
+                sentiments[doc.geohash].append(doc.compute_happiness_level())
     for ghash, sentiment_list in sentiments.items():
-        mean_sentiment = np.mean(sentiment_list)
+        mean_sentiment = 2 * np.mean(sentiment_list) - 1  # so that the range is [-1,1]
         GeoSentiment(geohash=ghash, date=start_datetime, mean_sentiment=mean_sentiment).save()
     delete_obsolete_tweets.delay()
 
@@ -69,4 +71,4 @@ def count_mean_sentiment():
 @celery.task(name='delete_obsolete_tweets')
 def delete_obsolete_tweets():
     max_datetime = datetime.now().date()
-    Tweet.objects(created_at__lt=max_datetime).delete()
+    Tweet.objects(datetime__lt=max_datetime).delete()

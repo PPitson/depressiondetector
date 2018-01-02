@@ -4,8 +4,8 @@ from app.models import EmotionFromTextExtractionResult
 from indico.translator import translate
 
 
-def analyze_text(original_message, datetime, user):
+def analyze_text(original_message, datetime, user, coordinates):
     translated_message = translate(original_message, dest='en').text
     emotions = indicoio.emotion(translated_message)
     if emotions:
-        return EmotionFromTextExtractionResult(user=user, datetime=datetime, **emotions)
+        return EmotionFromTextExtractionResult(user=user, datetime=datetime, coordinates=coordinates, **emotions)
